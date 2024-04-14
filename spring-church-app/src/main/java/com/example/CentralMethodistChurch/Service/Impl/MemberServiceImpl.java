@@ -91,14 +91,14 @@ public class MemberServiceImpl implements MemberService {
                 if (!memberOriginal.getGender().equals(familyMember.getGender())) {
                     memberOriginal.setGender(familyMember.getGender());
                 }
-                if (!memberOriginal.getDOB().equals(familyMember.getDOB())) {
-                    memberOriginal.setDOB(familyMember.getDOB());
+                if (!memberOriginal.getDob().equals(familyMember.getDob())) {
+                    memberOriginal.setDob(familyMember.getDob());
                 }
                 if (!memberOriginal.getAge().equals(familyMember.getAge())) {
                     memberOriginal.setAge(familyMember.getAge());
                 }
-                if (!memberOriginal.getMaritialStatus().equals(familyMember.getMaritialStatus())) {
-                    memberOriginal.setMaritialStatus(familyMember.getMaritialStatus());
+                if (!memberOriginal.getMaritalStatus().equals(familyMember.getMaritalStatus())) {
+                    memberOriginal.setMaritalStatus(familyMember.getMaritalStatus());
                 }
                 if (!memberOriginal.getDateOfMarriage().equals(familyMember.getDateOfMarriage())) {
                     memberOriginal.setDateOfMarriage(familyMember.getDateOfMarriage());

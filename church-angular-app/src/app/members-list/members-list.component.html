@@ -1,38 +1,74 @@
-<p>members-list works!</p>
-<table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Last Name</th>
-        <th>First Name</th>
-        <th>Gender</th>
-        <th>Maritial Status</th>
-        <th>Contact</th>
-        <th>Email</th>
-        <th>Baptised</th>
-        <th>Baptised Date</th>
-        <th>Confirmed</th>
-        <th>Confirmation Date</th>
-        <th>Full Member</th>
-        <th>DOB</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let member of members">
-        <td>{{ member.title }}</td>
-        <td>{{ member.lastName }}</td>
-        <td>{{ member.firstName }}</td>
-        <td>{{ member.gender }}</td>
-        <td>{{ member.maritialStatus }}</td>
-        <td>{{ member.contact }}</td>
-        <td>{{ member.email }}</td>
-        <td>{{ member.baptised ? 'Yes' : 'No' }}</td>
-        <td>{{ member.baptisedDate | date }}</td>
-        <td>{{ member.confirmed ? 'Yes' : 'No' }}</td>
-        <td>{{ member.confirmationDate | date }}</td>
-        <td>{{ member.fullMember ? 'Yes' : 'No' }}</td>
-        <td>{{ member.dob | date }}</td>
-      </tr>
-    </tbody>
-  </table>
-  
+<table class="table table-bordered table-striped">
+  <thead class="thead-light">
+    <tr>
+      <th>Membership ID</th>
+      <th>Title</th>
+      <th>Last Name</th>
+      <th>Middle Name</th>
+      <th>First Name</th>
+      <th>Father Name</th>
+      <th>Father ID</th>
+      <th>Mother Name</th>
+      <th>Mother ID</th>
+      <th>Spouse Name</th>
+      <th>Spouse ID</th>
+      <th>Gender</th>
+      <th>Date of Birth</th>
+      <th>Age</th>
+      <th>Marital Status</th>
+      <th>Date of Marriage</th>
+      <th>Years of Marriage</th>
+      <th>Contact</th>
+      <th>Email</th>
+      <th>Baptised</th>
+      <th>Baptised Date</th>
+      <th>Confirmed</th>
+      <th>Confirmation Date</th>
+      <th>Full Member</th>
+      <th>Non-Resident Member</th>
+      <th>Preparatory Member</th>
+      <th>Self-Dependent</th>
+      <th>Pledge Number</th>
+      <th>Pledge Amount</th>
+      <th>Status</th>
+      <th>Inactive Reason</th>
+      <th>Inactive Since</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let member of members">
+      <td>{{ member.membershipId }}</td>
+      <td>{{ member.title || 'N/A' }}</td>
+      <td>{{ member.lastName }}</td>
+      <td>{{ member.middleName || 'N/A' }}</td>
+      <td>{{ member.firstName }}</td>
+      <td>{{ member.fatherName || 'N/A' }}</td>
+      <td>{{ member.fatherId || 'N/A' }}</td>
+      <td>{{ member.motherName || 'N/A' }}</td>
+      <td>{{ member.motherId || 'N/A' }}</td>
+      <td>{{ member.spouseName || 'N/A' }}</td>
+      <td>{{ member.spouseId || 'N/A' }}</td>
+      <td>{{ member.gender }}</td>
+      <td>{{ member.dob }}</td>
+      <td>{{ member.age }}</td>
+      <td>{{ member.maritalStatus }}</td>
+      <td>{{ member.dateOfMarriage || 'N/A' }}</td>
+      <td>{{ member.yearsOfMarriage || 'N/A' }}</td>
+      <td>{{ member.contact }}</td>
+      <td>{{ member.email || 'N/A' }}</td>
+      <td>{{ member.baptised }}</td>
+      <td>{{ member.baptisedDate || 'N/A' }}</td>
+      <td>{{ member.confirmed }}</td>
+      <td>{{ member.confirmationDate || 'N/A' }}</td>
+      <td>{{ member.fullMember }}</td>
+      <td>{{ member.nonResidentMember || 'N/A' }}</td>
+      <td>{{ member.preparatoryMember || 'N/A' }}</td>
+      <td>{{ member.selfDependent || 'N/A' }}</td>
+      <td>{{ member.pledgeNumber || 'N/A' }}</td>
+      <td>{{ member.pledgeAmount || 'N/A' }}</td>
+      <td>{{ member.status }}</td>
+      <td>{{ member.inactiveReason || 'N/A' }}</td>
+      <td>{{ member.inactiveSince || 'N/A' }}</td>
+    </tr>
+  </tbody>
+</table>

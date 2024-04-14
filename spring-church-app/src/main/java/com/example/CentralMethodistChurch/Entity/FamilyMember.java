@@ -6,10 +6,12 @@ package com.example.CentralMethodistChurch.Entity;
 
 import com.example.CentralMethodistChurch.Enums.Gender;
 import com.example.CentralMethodistChurch.Enums.MaritialStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
 
@@ -18,7 +20,7 @@ import java.time.LocalDate;
 @Getter @Setter @NoArgsConstructor
 public class FamilyMember {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @UuidGenerator
     private String membershipId;
     private String title;
     private String lastName;
@@ -31,24 +33,28 @@ public class FamilyMember {
     private String spouseName;
     private String spouseId;
     private Gender gender;
-    private LocalDate DOB;
-    private Integer age;
-    private MaritialStatus maritialStatus;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
+    private LocalDate dob;
+    private String age;
+    private MaritialStatus maritalStatus;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
     private LocalDate dateOfMarriage;
-    private Integer yearsOfMarriage;
+    private String yearsOfMarriage;
     private String contact;
     private String email;
-    private Boolean baptised;
+    private String baptised;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
     private LocalDate baptisedDate;
-    private Boolean confirmed;
+    private String confirmed;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
     private LocalDate confirmationDate;
-    private Boolean fullMember;
-    private Boolean NonResidentMember;
-    private Boolean preparatoryMember;
-    private Boolean selfDependent;
+    private String fullMember;
+    private String nonResidentMember;
+    private String preparatoryMember;
+    private String selfDependent;
     private String pledgeNumber;
-    private Double pledgeAmount;
-    private Boolean status;
+    private String pledgeAmount;
+    private String status;
     private String inactiveReason;
     private String inactiveSince;
 

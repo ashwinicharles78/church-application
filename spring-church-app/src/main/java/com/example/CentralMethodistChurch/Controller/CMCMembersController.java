@@ -8,9 +8,7 @@ package com.example.CentralMethodistChurch.Controller;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
 import com.example.CentralMethodistChurch.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +26,10 @@ public class CMCMembersController {
     @GetMapping(path = "/member-id/{id}")
     private FamilyMember fetchById(@PathVariable("id") String id) {
         return memberService.fetchById(id);
+    }
+
+    @PostMapping(path = "/members")
+    public List<FamilyMember> saveAllMembers(@RequestBody List<FamilyMember> members) {
+        return memberService.saveAllMembers(members);
     }
 }
