@@ -1,1 +1,38 @@
 <p>members-list works!</p>
+<table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Gender</th>
+        <th>Maritial Status</th>
+        <th>Contact</th>
+        <th>Email</th>
+        <th>Baptised</th>
+        <th>Baptised Date</th>
+        <th>Confirmed</th>
+        <th>Confirmation Date</th>
+        <th>Full Member</th>
+        <th>DOB</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let member of members">
+        <td>{{ member.title }}</td>
+        <td>{{ member.lastName }}</td>
+        <td>{{ member.firstName }}</td>
+        <td>{{ member.gender }}</td>
+        <td>{{ member.maritialStatus }}</td>
+        <td>{{ member.contact }}</td>
+        <td>{{ member.email }}</td>
+        <td>{{ member.baptised ? 'Yes' : 'No' }}</td>
+        <td>{{ member.baptisedDate | date }}</td>
+        <td>{{ member.confirmed ? 'Yes' : 'No' }}</td>
+        <td>{{ member.confirmationDate | date }}</td>
+        <td>{{ member.fullMember ? 'Yes' : 'No' }}</td>
+        <td>{{ member.dob | date }}</td>
+      </tr>
+    </tbody>
+  </table>
+  
