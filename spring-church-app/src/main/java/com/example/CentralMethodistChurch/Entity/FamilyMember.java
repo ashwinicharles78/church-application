@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.IdGeneratorType;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
@@ -20,8 +21,8 @@ import java.time.LocalDate;
 @Getter @Setter @NoArgsConstructor
 public class FamilyMember {
     @Id
-    @UuidGenerator
-    private String membershipId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long membershipId;
     private String title;
     private String lastName;
     private String middleName;

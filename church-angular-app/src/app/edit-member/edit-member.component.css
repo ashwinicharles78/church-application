@@ -1,0 +1,22 @@
+/* person-form.component.css */
+
+/* Apply general styling to all input fields */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Style the labels */
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Add spacing between form elements */
+.form-group {
+    margin-bottom: 20px;
+}

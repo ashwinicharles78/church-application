@@ -55,9 +55,6 @@ public class MemberServiceImpl implements MemberService {
             if(memberOriginal.equals(familyMember))
                 return memberRepository.save(familyMember);
             else {
-                if (!memberOriginal.getMembershipId().equals(familyMember.getMembershipId())) {
-                    memberOriginal.setMembershipId(familyMember.getMembershipId());
-                }
                 if (!memberOriginal.getTitle().equals(familyMember.getTitle())) {
                     memberOriginal.setTitle(familyMember.getTitle());
                 }

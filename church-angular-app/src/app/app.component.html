@@ -1,1 +1,9 @@
-<app-members-list></app-members-list>
+<h1>Angular Router App</h1>
+<nav>
+  <ul>
+    <li><a routerLink="/members" routerLinkActive="active" ariaCurrentWhenActive="page">First Component</a></li>
+    <li><a routerLink="/edit" routerLinkActive="active" ariaCurrentWhenActive="page">Second Component</a></li>
+  </ul>
+</nav>
+<!-- The routed views render in the <router-outlet>-->
+<router-outlet></router-outlet>
