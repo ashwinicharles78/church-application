@@ -6,6 +6,7 @@ package com.example.CentralMethodistChurch.Service.Impl;
 
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
 import com.example.CentralMethodistChurch.Repository.MemberRepository;
+import com.example.CentralMethodistChurch.Service.FamilyPopulator;
 import com.example.CentralMethodistChurch.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private FamilyPopulator populator;
 
     @Override
     public List<FamilyMember> fetchAllMembers() {
@@ -40,6 +44,7 @@ public class MemberServiceImpl implements MemberService {
     }
     @Override
     public List<FamilyMember> saveAllMembers(List<FamilyMember> members) {
+        members.forEach(member -> populator.populateFamily(member));
         return memberRepository.saveAll(members);
     }
 
