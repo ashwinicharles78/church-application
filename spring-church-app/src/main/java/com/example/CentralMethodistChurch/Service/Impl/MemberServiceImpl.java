@@ -60,97 +60,97 @@ public class MemberServiceImpl implements MemberService {
             if(memberOriginal.equals(familyMember))
                 return memberRepository.save(familyMember);
             else {
-                if (!memberOriginal.getTitle().equals(familyMember.getTitle())) {
+                if (memberOriginal.getTitle()==null || !memberOriginal.getTitle().equals(familyMember.getTitle())) {
                     memberOriginal.setTitle(familyMember.getTitle());
                 }
-                if (!memberOriginal.getLastName().equals(familyMember.getLastName())) {
+                if (memberOriginal.getLastName()==null || !memberOriginal.getLastName().equals(familyMember.getLastName())) {
                     memberOriginal.setLastName(familyMember.getLastName());
                 }
-                if (!memberOriginal.getMiddleName().equals(familyMember.getMiddleName())) {
+                if (memberOriginal.getMiddleName()==null || !memberOriginal.getMiddleName().equals(familyMember.getMiddleName())) {
                     memberOriginal.setMiddleName(familyMember.getMiddleName());
                 }
-                if (!memberOriginal.getFirstName().equals(familyMember.getFirstName())) {
+                if (memberOriginal.getFirstName()==null || !memberOriginal.getFirstName().equals(familyMember.getFirstName())) {
                     memberOriginal.setFirstName(familyMember.getFirstName());
                 }
-                if (!memberOriginal.getFatherName().equals(familyMember.getFatherName())) {
+                if (memberOriginal.getFatherName()==null || !memberOriginal.getFatherName().equals(familyMember.getFatherName())) {
                     memberOriginal.setFatherName(familyMember.getFatherName());
                 }
-                if (!memberOriginal.getFatherId().equals(familyMember.getFatherId())) {
+                if (memberOriginal.getFatherId()==null || !memberOriginal.getFatherId().equals(familyMember.getFatherId())) {
                     memberOriginal.setFatherId(familyMember.getFatherId());
                 }
-                if (!memberOriginal.getMotherName().equals(familyMember.getMotherName())) {
+                if (memberOriginal.getMotherName()==null || !memberOriginal.getMotherName().equals(familyMember.getMotherName())) {
                     memberOriginal.setMotherName(familyMember.getMotherName());
                 }
-                if (!memberOriginal.getMotherId().equals(familyMember.getMotherId())) {
+                if (memberOriginal.getMotherId()==null || !memberOriginal.getMotherId().equals(familyMember.getMotherId())) {
                     memberOriginal.setMotherId(familyMember.getMotherId());
                 }
-                if (!memberOriginal.getSpouseName().equals(familyMember.getSpouseName())) {
+                if (memberOriginal.getSpouseName()==null || !memberOriginal.getSpouseName().equals(familyMember.getSpouseName())) {
                     memberOriginal.setSpouseName(familyMember.getSpouseName());
                 }
-                if (!memberOriginal.getSpouseId().equals(familyMember.getSpouseId())) {
+                if (memberOriginal.getSpouseId()==null || !memberOriginal.getSpouseId().equals(familyMember.getSpouseId())) {
                     memberOriginal.setSpouseId(familyMember.getSpouseId());
                 }
-                if (!memberOriginal.getGender().equals(familyMember.getGender())) {
+                if (memberOriginal.getGender()==null ||!memberOriginal.getGender().equals(familyMember.getGender())) {
                     memberOriginal.setGender(familyMember.getGender());
                 }
-                if (!memberOriginal.getDob().equals(familyMember.getDob())) {
+                if (null == memberOriginal.getDob() ||!memberOriginal.getDob().equals(familyMember.getDob())) {
                     memberOriginal.setDob(familyMember.getDob());
                 }
-                if (!memberOriginal.getAge().equals(familyMember.getAge())) {
+                if (null == memberOriginal.getAge() ||!memberOriginal.getAge().equals(familyMember.getAge())) {
                     memberOriginal.setAge(familyMember.getAge());
                 }
-                if (!memberOriginal.getMaritalStatus().equals(familyMember.getMaritalStatus())) {
+                if (null == memberOriginal.getAddress() ||!memberOriginal.getAddress().equals(familyMember.getAddress())) {
+                    memberOriginal.setAddress(familyMember.getAddress());
+                }
+                if (null == memberOriginal.getMaritalStatus() ||!memberOriginal.getMaritalStatus().equals(familyMember.getMaritalStatus())) {
                     memberOriginal.setMaritalStatus(familyMember.getMaritalStatus());
                 }
-                if (!memberOriginal.getDateOfMarriage().equals(familyMember.getDateOfMarriage())) {
+                if (null == memberOriginal.getDateOfMarriage() ||!memberOriginal.getDateOfMarriage().equals(familyMember.getDateOfMarriage())) {
                     memberOriginal.setDateOfMarriage(familyMember.getDateOfMarriage());
                 }
-                if (!memberOriginal.getYearsOfMarriage().equals(familyMember.getYearsOfMarriage())) {
+                if (null == memberOriginal.getYearsOfMarriage() ||!memberOriginal.getYearsOfMarriage().equals(familyMember.getYearsOfMarriage())) {
                     memberOriginal.setYearsOfMarriage(familyMember.getYearsOfMarriage());
                 }
-                if (!memberOriginal.getContact().equals(familyMember.getContact())) {
+                if (null == memberOriginal.getContact()||!memberOriginal.getContact().equals(familyMember.getContact())) {
                     memberOriginal.setContact(familyMember.getContact());
                 }
-                if (!memberOriginal.getEmail().equals(familyMember.getEmail())) {
+                if (null == memberOriginal.getEmail() ||!memberOriginal.getEmail().equals(familyMember.getEmail())) {
                     memberOriginal.setEmail(familyMember.getEmail());
                 }
-                if (!memberOriginal.getBaptised().equals(familyMember.getBaptised())) {
-                    memberOriginal.setBaptised(familyMember.getBaptised());
-                }
-                if (!memberOriginal.getBaptisedDate().equals(familyMember.getBaptisedDate())) {
+                if (null == memberOriginal.getBaptisedDate() ||!memberOriginal.getBaptisedDate().equals(familyMember.getBaptisedDate())) {
                     memberOriginal.setBaptisedDate(familyMember.getBaptisedDate());
                 }
-                if (!memberOriginal.getConfirmed().equals(familyMember.getConfirmed())) {
+                if (null == memberOriginal.getConfirmed() ||!memberOriginal.getConfirmed().equals(familyMember.getConfirmed())) {
                     memberOriginal.setConfirmed(familyMember.getConfirmed());
                 }
-                if (!memberOriginal.getConfirmationDate().equals(familyMember.getConfirmationDate())) {
+                if (null == memberOriginal.getConfirmationDate() ||!memberOriginal.getConfirmationDate().equals(familyMember.getConfirmationDate())) {
                     memberOriginal.setConfirmationDate(familyMember.getConfirmationDate());
                 }
-                if (!memberOriginal.getFullMember().equals(familyMember.getFullMember())) {
+                if (null == memberOriginal.getFullMember() ||!memberOriginal.getFullMember().equals(familyMember.getFullMember())) {
                     memberOriginal.setFullMember(familyMember.getFullMember());
                 }
-                if (!memberOriginal.getNonResidentMember().equals(familyMember.getNonResidentMember())) {
+                if (null == memberOriginal.getNonResidentMember() ||!memberOriginal.getNonResidentMember().equals(familyMember.getNonResidentMember())) {
                     memberOriginal.setNonResidentMember(familyMember.getNonResidentMember());
                 }
-                if (!memberOriginal.getPreparatoryMember().equals(familyMember.getPreparatoryMember())) {
+                if (null == memberOriginal.getPreparatoryMember() ||!memberOriginal.getPreparatoryMember().equals(familyMember.getPreparatoryMember())) {
                     memberOriginal.setPreparatoryMember(familyMember.getPreparatoryMember());
                 }
-                if (!memberOriginal.getSelfDependent().equals(familyMember.getSelfDependent())) {
+                if (null == memberOriginal.getSelfDependent() ||!memberOriginal.getSelfDependent().equals(familyMember.getSelfDependent())) {
                     memberOriginal.setSelfDependent(familyMember.getSelfDependent());
                 }
-                if (!memberOriginal.getPledgeNumber().equals(familyMember.getPledgeNumber())) {
+                if (null == memberOriginal.getPledgeNumber() || !memberOriginal.getPledgeNumber().equals(familyMember.getPledgeNumber())) {
                     memberOriginal.setPledgeNumber(familyMember.getPledgeNumber());
                 }
-                if (!memberOriginal.getPledgeAmount().equals(familyMember.getPledgeAmount())) {
+                if (null == memberOriginal.getPledgeAmount() || !memberOriginal.getPledgeAmount().equals(familyMember.getPledgeAmount())) {
                     memberOriginal.setPledgeAmount(familyMember.getPledgeAmount());
                 }
-                if (!memberOriginal.getStatus().equals(familyMember.getStatus())) {
+                if (null == memberOriginal.getStatus() || !memberOriginal.getStatus().equals(familyMember.getStatus())) {
                     memberOriginal.setStatus(familyMember.getStatus());
                 }
-                if (!memberOriginal.getInactiveReason().equals(familyMember.getInactiveReason())) {
+                if (null == memberOriginal.getInactiveReason() || !memberOriginal.getInactiveReason().equals(familyMember.getInactiveReason())) {
                     memberOriginal.setInactiveReason(familyMember.getInactiveReason());
                 }
-                if (!memberOriginal.getInactiveSince().equals(familyMember.getInactiveSince())) {
+                if (null == memberOriginal.getInactiveSince() || !memberOriginal.getInactiveSince().equals(familyMember.getInactiveSince())) {
                     memberOriginal.setInactiveSince(familyMember.getInactiveSince());
                 }
                 return memberRepository.save(memberOriginal);

@@ -6,5 +6,5 @@ import path from 'path';
 
 export const routes: Routes = [
     { path: 'members', component: MembersListComponent},
-    { path: 'edit', component: EditMemberComponent}
+    { path: 'edit/:id', component: EditMemberComponent}
 ];

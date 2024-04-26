@@ -15,6 +15,7 @@
       <th>Gender</th>
       <th>Date of Birth</th>
       <th>Age</th>
+      <th>Address</th>
       <th>Marital Status</th>
       <th>Date of Marriage</th>
       <th>Years of Marriage</th>
@@ -33,6 +34,7 @@
       <th>Status</th>
       <th>Inactive Reason</th>
       <th>Inactive Since</th>
+      <th>Edit</th>
     </tr>
   </thead>
   <tbody>
@@ -51,6 +53,7 @@
       <td>{{ member.gender }}</td>
       <td>{{ member.dob }}</td>
       <td>{{ member.age }}</td>
+      <td>{{ member.address }}</td>
       <td>{{ member.maritalStatus }}</td>
       <td>{{ member.dateOfMarriage || 'N/A' }}</td>
       <td>{{ member.yearsOfMarriage || 'N/A' }}</td>
@@ -69,6 +72,7 @@
       <td>{{ member.status }}</td>
       <td>{{ member.inactiveReason || 'N/A' }}</td>
       <td>{{ member.inactiveSince || 'N/A' }}</td>
+      <td> <button class="btn btn-primary" (click)="editMember(member.membershipId)">Edit</button></td>
     </tr>
   </tbody>
 </table>

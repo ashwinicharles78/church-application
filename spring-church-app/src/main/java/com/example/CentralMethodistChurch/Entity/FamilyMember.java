@@ -37,6 +37,7 @@ public class FamilyMember {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
     private LocalDate dob;
     private String age;
+    private String address;
     private MaritialStatus maritalStatus;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
     private LocalDate dateOfMarriage;

@@ -4,9 +4,7 @@
  */
 package com.example.CentralMethodistChurch.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +15,9 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 public class FamilySubscriptions {
     @Id
-    private String familyId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long familyId;
+
     @OneToMany
     private List<FamilyMember> members;
 }

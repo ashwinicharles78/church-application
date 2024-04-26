@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class CMCMembersController {
 
     @Autowired
@@ -31,5 +32,10 @@ public class CMCMembersController {
     @PostMapping(path = "/members")
     public List<FamilyMember> saveAllMembers(@RequestBody List<FamilyMember> members) {
         return memberService.saveAllMembers(members);
+    }
+
+    @PutMapping(path = "/member-id/{id}")
+    private FamilyMember editMember(@PathVariable("id") String id, @RequestBody FamilyMember familyMember) {
+        return memberService.updateMember(id, familyMember);
     }
 }
