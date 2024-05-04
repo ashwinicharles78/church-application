@@ -20,4 +20,6 @@ public class FamilySubscriptions {
 
     @OneToMany
     private List<FamilyMember> members;
+
+    private String headMemberId;
 }

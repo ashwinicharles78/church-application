@@ -2,6 +2,7 @@
   <thead class="thead-light">
     <tr>
       <th>Membership ID</th>
+      <th>Family ID</th>
       <th>Title</th>
       <th>Last Name</th>
       <th>Middle Name</th>
@@ -40,6 +41,7 @@
   <tbody>
     <tr *ngFor="let member of members">
       <td>{{ member.membershipId }}</td>
+      <td>{{ member.familyId }}</td>
       <td>{{ member.title || 'N/A' }}</td>
       <td>{{ member.lastName }}</td>
       <td>{{ member.middleName || 'N/A' }}</td>

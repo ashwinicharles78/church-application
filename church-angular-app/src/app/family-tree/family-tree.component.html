@@ -1,0 +1,14 @@
+<div *ngFor="let family of families">
+    <h3>Family ID: {{ family.familyId }}</h3>
+    <ul>
+      <li *ngFor="let member of family.members">
+        {{ member.firstName }} {{ member.lastName }} ({{ member.gender }})
+        <ul>
+          <li>Father: {{ getMemberName(member.fatherId, family.members) }}</li>
+          <li>Mother: {{ getMemberName(member.motherId, family.members) }}</li>
+          <li>Spouse: {{ getMemberName(member.spouseId, family.members) }}</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  

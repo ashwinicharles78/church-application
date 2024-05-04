@@ -23,6 +23,7 @@ public class FamilyMember {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long membershipId;
+    private Long familyId;
     private String title;
     private String lastName;
     private String middleName;
@@ -59,5 +60,4 @@ public class FamilyMember {
     private String status;
     private String inactiveReason;
     private String inactiveSince;
-
 }
