@@ -1,0 +1,13 @@
+<div *ngIf="events.length > 0">
+    <h2>Upcoming Events</h2>
+    <ul>
+      <li *ngFor="let event of events">
+        <p><strong>{{ event.eventType }}</strong></p>
+        <p>Date: {{ event.date | date: 'MMM dd, yyyy'}}</p>
+        <p>Members: {{ event.memberName.join(', ') }}</p>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="events.length === 0">
+    <p>No upcoming events</p>
+  </div>

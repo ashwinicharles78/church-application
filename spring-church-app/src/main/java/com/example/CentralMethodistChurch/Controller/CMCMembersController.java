@@ -5,6 +5,7 @@
 
 package com.example.CentralMethodistChurch.Controller;
 
+import com.example.CentralMethodistChurch.DTO.Events;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
 import com.example.CentralMethodistChurch.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class CMCMembersController {
     @PutMapping(path = "/member-id/{id}")
     private FamilyMember editMember(@PathVariable("id") String id, @RequestBody FamilyMember familyMember) {
         return memberService.updateMember(id, familyMember);
+    }
+
+    @GetMapping(path = "/events")
+    private List<Events> getUpcomingEvents() {
+        return memberService.getEvents();
     }
 }

@@ -4,8 +4,8 @@
  */
 package com.example.CentralMethodistChurch.Service;
 
+import com.example.CentralMethodistChurch.DTO.Events;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
-import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 
@@ -55,4 +55,6 @@ public interface MemberService {
      * @return
      */
     FamilyMember updateMember(String id, FamilyMember familyMember);
+
+    List<Events> getEvents();
 }

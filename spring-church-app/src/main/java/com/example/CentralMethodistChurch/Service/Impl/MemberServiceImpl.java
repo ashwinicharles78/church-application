@@ -4,18 +4,25 @@
  */
 package com.example.CentralMethodistChurch.Service.Impl;
 
+import com.example.CentralMethodistChurch.DTO.Events;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
+import com.example.CentralMethodistChurch.Enums.EventType;
 import com.example.CentralMethodistChurch.Repository.MemberRepository;
 import com.example.CentralMethodistChurch.Service.FamilyPopulator;
 import com.example.CentralMethodistChurch.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
 public class MemberServiceImpl implements MemberService {
 
+    private static final String SPACE = " ";
     @Autowired
     private MemberRepository memberRepository;
 
@@ -157,5 +164,37 @@ public class MemberServiceImpl implements MemberService {
             }
         }
         return null;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public List<Events> getEvents() {
+        List<FamilyMember> memebers = memberRepository.findAll();
+        List<Events> events = new ArrayList<>();
+        for(FamilyMember familyMember: memebers){
+            if(isWithinSevenDays(familyMember.getDob())){
+                events.add(new Events(EventType.Birthday, familyMember.getDob(), List.of(familyMember.getFirstName()+familyMember.getLastName())));
+            }
+
+            if(familyMember.getDateOfMarriage()!=null && isWithinSevenDays(familyMember.getDateOfMarriage())){
+                FamilyMember spouse = this.fetchById(familyMember.getSpouseId());
+                events.add(new Events(EventType.Anniversary, familyMember.getDob(), List.of(familyMember.getTitle() + SPACE + familyMember.getFirstName()+ SPACE + familyMember.getLastName(),familyMember.getTitle()+ SPACE + spouse.getFirstName() + SPACE + spouse.getLastName())));
+            }
+
+        }
+        return events;
+    }
+
+    public static boolean isWithinSevenDays(LocalDate dob) {
+        // Calculate the difference in days between the birthday and DOB
+        long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(), dob.withYear(LocalDate.now().getYear()));
+
+        // Take the absolute value to handle cases where birthday is before DOB
+        daysDifference = Math.abs(daysDifference);
+
+        // Check if the difference is less than or equal to 7
+        return daysDifference <= 7;
     }
 }
