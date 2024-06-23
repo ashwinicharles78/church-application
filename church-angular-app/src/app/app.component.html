@@ -1,11 +1,23 @@
-<h1>Angular Router App</h1>
-<nav>
-  <ul>
-    <li><a routerLink="/members" routerLinkActive="active" ariaCurrentWhenActive="page">First Component</a></li>
-    <li><a routerLink="/edit" routerLinkActive="active" ariaCurrentWhenActive="page">Second Component</a></li>
-    <li><a routerLink="/tree" routerLinkActive="active" ariaCurrentWhenActive="page">Third Component</a></li>
-    <li><a routerLink="/events" routerLinkActive="active" ariaCurrentWhenActive="page">fourth Component</a></li>
-  </ul>
-</nav>
-<!-- The routed views render in the <router-outlet>-->
+<!-- <h1>Angular Router App</h1> -->
+<header>
+  <div class="header-container">
+      <img src="assets\logo.png" alt="Logo" class="logo">
+      <nav>
+        <ul>
+          <li><a routerLink="/members" routerLinkActive="active" ariaCurrentWhenActive="page">Member List</a></li>
+          <!-- <li><a routerLink="/edit" routerLinkActive="active" ariaCurrentWhenActive="page">Second Component</a></li> -->
+          <li><a routerLink="/tree" routerLinkActive="active" ariaCurrentWhenActive="page">Family Tree</a></li>
+          <li><a routerLink="/events" routerLinkActive="active" ariaCurrentWhenActive="page">Upcoming events</a></li>
+        </ul>
+      </nav>
+  </div>
+</header>
+<main>
+  <p>This is the main content area. It has a white background.</p>
+
+  <!-- The routed views render in the <router-outlet>-->
 <router-outlet></router-outlet>
+</main>
+<footer>
+  <p>Footer</p>
+</footer>
