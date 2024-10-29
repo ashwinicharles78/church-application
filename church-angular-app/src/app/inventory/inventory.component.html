@@ -1,0 +1,31 @@
+<div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Inventory ID</th>
+          <th>Item Type</th>
+          <th>Quantity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loop through the inventories and display each row -->
+        <tr *ngFor="let inventory of inventories">
+          <td>{{ inventory.inventoryId }}</td>
+          <td>{{ inventory.itemType }}</td>
+          <td>{{ inventory.quantity }}</td>
+          <td>{{ inventory.price }}</td>
+        </tr>
+  
+        <!-- Last row for input fields -->
+        <tr>
+          <td>Auto</td>
+          <td><input [(ngModel)]="newInventory.itemType" placeholder="Item Type" /></td>
+          <td><input type="number" [(ngModel)]="newInventory.quantity" placeholder="Quantity" /></td>
+          <td><input type="number" [(ngModel)]="newInventory.price" placeholder="Price" /></td>
+          <td><button (click)="addInventory()">Add</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

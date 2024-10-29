@@ -190,11 +190,7 @@ public class MemberServiceImpl implements MemberService {
     public static boolean isWithinSevenDays(LocalDate dob) {
         // Calculate the difference in days between the birthday and DOB
         long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(), dob.withYear(LocalDate.now().getYear()));
-
-        // Take the absolute value to handle cases where birthday is before DOB
-        daysDifference = Math.abs(daysDifference);
-
         // Check if the difference is less than or equal to 7
-        return daysDifference <= 7;
+        return daysDifference <= 7 && daysDifference >= 0;
     }
 }
