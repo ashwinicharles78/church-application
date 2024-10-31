@@ -5,13 +5,12 @@ import com.example.CentralMethodistChurch.Entity.FamilySubscriptions;
 import com.example.CentralMethodistChurch.Repository.FamilyTreeRepository;
 import com.example.CentralMethodistChurch.Repository.MemberRepository;
 import com.example.CentralMethodistChurch.Service.FamilyTreeServices;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Member;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Ashwini Charles on 4/27/2024
@@ -37,7 +36,7 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
     }
 
     @Override
-    public String indexFamilyTrees() {
+    public void indexFamilyTrees() {
         List<FamilyMember> members = memberRepository.findAll();
         for(FamilyMember member: members) {
             if(null == member.getFamilyId() && member.getFatherId() != null) {
@@ -68,7 +67,6 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
             }
         }
 
-        return null;
     }
 
     private void LookforChildren(FamilyMember member, List<FamilyMember> members, FamilySubscriptions family, List<FamilyMember> listOfMembers) {
@@ -94,6 +92,17 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
         List<FamilyMember> members = memberRepository.findAll();
         members.forEach(member -> member.setFamilyId(null));
         memberRepository.saveAll(members);
+    }
+
+    @Override
+    public long getCurrentYearPledge(final long familyId) {
+        Optional<FamilySubscriptions> family = familyTreeRepository.findById(String.valueOf(familyId));
+        if(family.isPresent()) {
+            long months = ChronoUnit.MONTHS.between(LocalDate.now(), family.get().getPledgeStartDate().withYear(LocalDate.now().getYear()));
+            if(months > 0)
+                return months * family.get().getPledgeAmount();
+        }
+        return 0L;
     }
 
 

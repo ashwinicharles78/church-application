@@ -13,4 +13,8 @@ public interface InventoryService {
     List<Inventory> fetchAllInventory();
 
     void saveInventory(Inventory item);
+
+    void deleteInventory(Inventory item);
+
+    void editInventory(Inventory item);
 }

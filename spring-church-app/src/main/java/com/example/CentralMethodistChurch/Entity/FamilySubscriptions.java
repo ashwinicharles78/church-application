@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,4 +24,12 @@ public class FamilySubscriptions {
     private List<FamilyMember> members;
 
     private String headMemberId;
+
+    private long pledgeAmount;
+
+    private long pledgeCredit;
+
+    private long pledgeDue;
+
+    private LocalDate pledgeStartDate;
 }

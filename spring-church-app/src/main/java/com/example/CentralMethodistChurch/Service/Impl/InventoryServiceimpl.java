@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Ashwini Charles on 10/28/2024
@@ -28,6 +30,31 @@ public class InventoryServiceimpl implements InventoryService {
 
     @Override
     public void saveInventory(Inventory item) {
+        List<Inventory> inventories = inventoryRepository.findAll();
+        for(Inventory inventory : inventories ) {
+            if(inventory.getItemType().equals(item.getItemType())){
+                if(Objects.equals(inventory.getPrice(), item.getPrice())) {
+                    item.setQuantity(item.getQuantity() + inventory.getQuantity());
+                    inventoryRepository.deleteById(inventory.getInventoryId().toString());
+                }
+            }
+        }
         inventoryRepository.save(item);
+    }
+
+    @Override
+    public void deleteInventory(Inventory item) {
+        inventoryRepository.deleteById(item.getInventoryId().toString());
+    }
+
+    @Override
+    public void editInventory(Inventory item) {
+        Optional<Inventory> inventory = inventoryRepository.findById(item.getInventoryId().toString());
+        if(inventory.isPresent()) {
+            inventory.get().setQuantity(item.getQuantity());
+            inventory.get().setPrice(item.getPrice());
+            inventory.get().setItemType(item.getItemType());
+            inventoryRepository.save(inventory.get());
+        }
     }
 }

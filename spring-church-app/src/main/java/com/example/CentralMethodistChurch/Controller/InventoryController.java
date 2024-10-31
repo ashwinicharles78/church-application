@@ -33,4 +33,14 @@ public class InventoryController {
         inventoryService.saveInventory(item);
     }
 
+    @PutMapping(path = "/edit-inventory")
+    private void editInventory(@RequestBody Inventory item) {
+        inventoryService.editInventory(item);
+    }
+
+    @DeleteMapping(path = "/delete-inventory")
+    private void deleteInventory(@RequestBody Inventory item) {
+        inventoryService.deleteInventory(item);
+    }
+
 }

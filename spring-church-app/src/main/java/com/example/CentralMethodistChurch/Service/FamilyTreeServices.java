@@ -15,7 +15,9 @@ public interface FamilyTreeServices {
      */
     List<FamilySubscriptions> fetchFamilyTrees();
 
-    String indexFamilyTrees();
+    void indexFamilyTrees();
 
     void truncateFamilyTree();
+
+    long getCurrentYearPledge(final long familyId);
 }
