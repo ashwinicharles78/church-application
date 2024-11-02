@@ -39,10 +39,10 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
     public void indexFamilyTrees() {
         List<FamilyMember> members = memberRepository.findAll();
         for(FamilyMember member: members) {
-            if(null == member.getFamilyId() && member.getFatherId() != null) {
+            if(null == member.getFamilyId()) {
                 List<FamilyMember> listOfMembers = new ArrayList<>(List.of(member));
                 FamilySubscriptions family = new FamilySubscriptions();
-                family.setHeadMemberId(String.valueOf(member.getMembershipId()));
+//                family.setHeadMemberId(String.valueOf(member.getMembershipId()));
                 family = familyTreeRepository.save(family);
                 member.setFamilyId(family.getFamilyId());
                 //Married member
@@ -74,6 +74,7 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
                 .filter(child -> child.getFatherId() != null)
                 .filter(child -> child.getFatherId().equals(String.valueOf(member.getMembershipId())))
                 .filter(child -> child.getFamilyId() == null)
+                .filter(child -> child.getSpouseId().isEmpty())
                 .toList();
 
         if(!children.isEmpty()) {
@@ -104,6 +105,11 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
         }
         return 0L;
     }
-
-
+//
+//    public long calculatePledgeDue(final long familyId) {
+//        Optional<FamilySubscriptions> family = familyTreeRepository.findById(String.valueOf(familyId));
+//        if(family.isPresent()) {
+//            family.get()
+//        }
+//    }
 }

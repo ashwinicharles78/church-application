@@ -44,4 +44,9 @@ public class CMCMembersController {
     private List<Events> getUpcomingEvents() {
         return memberService.getEvents();
     }
+
+    @DeleteMapping(path = "/truncate-members")
+    private void truncateFamilyTree() {
+        memberService.truncateMembers();
+    }
 }

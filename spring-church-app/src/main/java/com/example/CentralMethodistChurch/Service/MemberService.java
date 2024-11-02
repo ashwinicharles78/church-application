@@ -57,4 +57,6 @@ public interface MemberService {
     FamilyMember updateMember(String id, FamilyMember familyMember);
 
     List<Events> getEvents();
+
+    void truncateMembers();
 }

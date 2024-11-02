@@ -32,4 +32,8 @@ public class FamilySubscriptions {
     private long pledgeDue;
 
     private LocalDate pledgeStartDate;
+
+    private LocalDate lastPledgeDepositDate;
+
+    private long lastPledgeDepositAmount;
 }

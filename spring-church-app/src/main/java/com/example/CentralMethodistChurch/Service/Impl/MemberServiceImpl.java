@@ -9,6 +9,7 @@ import com.example.CentralMethodistChurch.Entity.FamilyMember;
 import com.example.CentralMethodistChurch.Enums.EventType;
 import com.example.CentralMethodistChurch.Repository.MemberRepository;
 import com.example.CentralMethodistChurch.Service.FamilyPopulator;
+import com.example.CentralMethodistChurch.Service.FamilyTreeServices;
 import com.example.CentralMethodistChurch.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private FamilyPopulator populator;
+
+    @Autowired
+    private FamilyTreeServices familyTreeServices;
 
     @Override
     public List<FamilyMember> fetchAllMembers() {
@@ -72,6 +76,9 @@ public class MemberServiceImpl implements MemberService {
                 }
                 if (memberOriginal.getLastName()==null || !memberOriginal.getLastName().equals(familyMember.getLastName())) {
                     memberOriginal.setLastName(familyMember.getLastName());
+                }
+                if (memberOriginal.getFamilyId()==null || !memberOriginal.getFamilyId().equals(familyMember.getFamilyId())) {
+                    memberOriginal.setFamilyId(familyMember.getFamilyId());
                 }
                 if (memberOriginal.getMiddleName()==null || !memberOriginal.getMiddleName().equals(familyMember.getMiddleName())) {
                     memberOriginal.setMiddleName(familyMember.getMiddleName());
@@ -192,5 +199,11 @@ public class MemberServiceImpl implements MemberService {
         long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(), dob.withYear(LocalDate.now().getYear()));
         // Check if the difference is less than or equal to 7
         return daysDifference <= 7 && daysDifference >= 0;
+    }
+    @Override
+    public void truncateMembers() {
+        List<FamilyMember> members = memberRepository.findAll();
+        familyTreeServices.truncateFamilyTree();
+        memberRepository.deleteAll();
     }
 }
