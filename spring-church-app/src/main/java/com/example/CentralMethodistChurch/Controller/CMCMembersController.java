@@ -35,6 +35,11 @@ public class CMCMembersController {
         return memberService.saveAllMembers(members);
     }
 
+    @PostMapping(path = "/member")
+    public FamilyMember saveMember(@RequestBody FamilyMember member) {
+        return memberService.saveMember(member);
+    }
+
     @PutMapping(path = "/member-id/{id}")
     private FamilyMember editMember(@PathVariable("id") String id, @RequestBody FamilyMember familyMember) {
         return memberService.updateMember(id, familyMember);

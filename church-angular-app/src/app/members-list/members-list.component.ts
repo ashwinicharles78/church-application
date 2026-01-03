@@ -26,4 +26,8 @@ export class MembersListComponent {
     this.router.navigate(['/edit', memberId]);
   }
 
+  addMember() {
+    this.router.navigate(['/add']);
+  }
+
 }

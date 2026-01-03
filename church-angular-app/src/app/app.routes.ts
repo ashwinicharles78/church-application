@@ -4,6 +4,7 @@ import { MembersListComponent } from './members-list/members-list.component';
 import { FamilyTreeComponent } from './family-tree/family-tree.component';
 import { UpcomingEventsComponent } from './upcoming-events/upcoming-events.component';
 import { InventoryComponent } from './inventory/inventory.component';
+import { AddPersonComponent } from './add-person/add-person.component';
 
 
 export const routes: Routes = [
@@ -11,5 +12,7 @@ export const routes: Routes = [
     { path: 'edit/:id', component: EditMemberComponent},
     { path: 'tree', component: FamilyTreeComponent},
     { path: 'events', component: UpcomingEventsComponent},
-    { path: 'inventory', component: InventoryComponent}
+    { path: 'inventory', component: InventoryComponent},
+    { path: 'add', component: AddPersonComponent},
+    { path: '**', redirectTo: 'add' }
 ];
