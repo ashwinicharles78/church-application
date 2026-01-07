@@ -1,99 +1,264 @@
 <div class="container mt-5">
-    <h3>Add Member</h3>
-  
-    <form [formGroup]="addPersonForm" (ngSubmit)="onSubmit()">
-        <label>Title:</label>
-        <input formControlName="title" type="text">
-      
-        <label>Last Name:</label>
-        <input formControlName="lastName" type="text">
-      
-        <label>Middle Name:</label>
-        <input formControlName="middleName" type="text">
-      
-        <label>First Name:</label>
-        <input formControlName="firstName" type="text">
-      
-        <label>Father's Name:</label>
-        <input formControlName="fatherName" type="text">
-    
-        <label>Father's Id:</label>
-        <input formControlName="fatherId" type="text">
-      
-        <label>Mother's Name:</label>
-        <input formControlName="motherName" type="text">
-    
-        <label>Mother's Id:</label>
-        <input formControlName="motherId" type="text">
-    
-        <label>Spouse's Name:</label>
-        <input formControlName="spouseName" type="text">
-    
-        <label>Spouse's Id:</label>
-        <input formControlName="spouseId" type="text">
-    
-      
-        <label>Gender:</label>
-        <input formControlName="gender" type="text">
-      
-        <label>Date of Birth:</label>
-        <input formControlName="dob" type="text">
-      
-        <label>Age:</label>
-        <input formControlName="age" type="text">
-      
-        <label>Marital Status:</label>
-        <input formControlName="maritalStatus" type="text">
-      
-        <label>Date of Marriage:</label>
-        <input formControlName="dateOfMarriage" type="text">
-      
-        <label>Years of Marriage:</label>
-        <input formControlName="yearsOfMarriage" type="text">
-      
-        <label>Address:</label>
-        <input formControlName="address" type="text">
-      
-        <label>Contact:</label>
-        <input formControlName="contact" type="text">
-      
-        <label>Email:</label>
-        <input formControlName="Email" type="text">
-      
-        <label>Baptised:</label>
-        <input formControlName="Baptised" type="text">
-      
-        <label>Baptised Date:</label>
-        <input formControlName="baptisedDate" type="text">
-      
-        <label>Confirmed:</label>
-        <input formControlName="Confirmed" type="text">
-      
-        <label>Confirmation Date:</label>
-        <input formControlName="ConfirmationDate" type="text">
-      
-        <label>Full Member:</label>
-        <input formControlName="fullMember" type="text">
-      
-        <label>Non Resident Member:</label>
-        <input formControlName="NonResidentMember" type="text">
-      
-        <label>Preparatory Member:</label>
-        <input formControlName="preparatoryMember" type="text">
-      
-        <label>Self Dependent:</label>
-        <input formControlName="selfDependent" type="text">
-      
-        <label>Status:</label>
-        <input formControlName="status" type="text">
-      
-        <label>Inactive Reason:</label>
-        <input formControlName="inactiveReason" type="text">
-      
-        <label>Inactive Since:</label>
-        <input formControlName="inactiveSince" type="text">
-  
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+      <h3 class="mb-4 text-center">Add Member</h3>
+
+      <form [formGroup]="addPersonForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+
+        <!-- Personal Info Row -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-3">
+            <label for="title" class="form-label fw-bold">Title</label>
+            <input id="title" formControlName="title" type="text" class="form-control" placeholder="Mr/Mrs/Dr">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="firstName" class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
+            <input id="firstName" formControlName="firstName" type="text" class="form-control" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="lastName" class="form-label fw-bold">Last Name <span class="text-danger">*</span></label>
+            <input id="lastName" formControlName="lastName" type="text" class="form-control" required>
+          </div>
+        </div>
+
+        <!-- DOB + Auto Age Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Date of Birth <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input id="dob"
+                     formControlName="dob"
+                     (input)="onDateInput($event, 'dob')"
+                     type="text"
+                     class="form-control"
+                     placeholder="15-Jan-2000"
+                     maxlength="11">
+              <span class="input-group-text bg-white">
+                <i class="fas fa-calendar-alt text-primary"></i>
+              </span>
+            </div>
+            <small class="form-text text-muted">Format: dd-MMM-yyyy (15-Jan-2000)</small>
+
+            <!-- Actual ISO value sent to backend -->
+            <input type="hidden" formControlName="dob">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="age" class="form-label fw-bold">Age</label>
+            <input id="age" formControlName="age" type="text" class="form-control bg-light" readonly>
+          </div>
+        </div>
+
+        <!-- Parents Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label for="fatherName" class="form-label">Father's Name</label>
+            <input id="fatherName" formControlName="fatherName" type="text" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="fatherId" class="form-label">Father's ID</label>
+            <input id="fatherId" formControlName="fatherId" type="text" class="form-control">
+          </div>
+        </div>
+
+        <!-- Mother/Spouse Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label for="motherName" class="form-label">Mother's Name</label>
+            <input id="motherName" formControlName="motherName" type="text" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="motherId" class="form-label">Mother's ID</label>
+            <input id="motherId" formControlName="motherId" type="text" class="form-control">
+          </div>
+        </div>
+
+        <!-- Spouse/Gender Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label for="spouseName" class="form-label">Spouse's Name</label>
+            <input id="spouseName" formControlName="spouseName" type="text" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="gender" class="form-label fw-bold">Gender</label>
+            <select id="gender" formControlName="gender" class="form-select">
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Contact/Email Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label for="contact" class="form-label fw-bold">Contact <span class="text-danger">*</span></label>
+            <input id="contact" formControlName="contact" type="tel" class="form-control" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="Email" class="form-label">Email</label>
+            <input id="Email" formControlName="Email" type="email" class="form-control">
+          </div>
+        </div>
+
+        <!-- Address Row -->
+        <div class="row mb-4">
+          <div class="col-12 mb-3">
+            <label for="address" class="form-label fw-bold">Address <span class="text-danger">*</span></label>
+            <textarea id="address" formControlName="address" class="form-control" rows="3" required></textarea>
+          </div>
+        </div>
+
+        <!-- Religious Status Row -->
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3">
+            <label for="Baptised" class="form-label">Baptised</label>
+            <select id="Baptised" formControlName="Baptised" class="form-select">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <!-- Baptised Date dd-MMM-yyyy -->
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Baptised Date</label>
+            <div class="input-group">
+              <input id="baptisedDate"
+                     formControlName="baptisedDate"
+                     (input)="onDateInput($event, 'baptisedDate')"
+                     type="text"
+                     class="form-control"
+                     placeholder="10-Mar-1995"
+                     maxlength="11">
+              <span class="input-group-text bg-white">
+                <i class="fas fa-calendar-alt text-primary"></i>
+              </span>
+            </div>
+            <small class="form-text text-muted">dd-MMM-yyyy</small>
+            <input type="hidden" formControlName="baptisedDate">
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label for="Confirmed" class="form-label">Confirmed</label>
+            <select id="Confirmed" formControlName="Confirmed" class="form-select">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <!-- Confirmation Date dd-MMM-yyyy -->
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Confirmation Date</label>
+            <div class="input-group">
+              <input id="ConfirmationDate"
+                     formControlName="ConfirmationDate"
+                     (input)="onDateInput($event, 'ConfirmationDate')"
+                     type="text"
+                     class="form-control"
+                     placeholder="15-Jun-2005"
+                     maxlength="11">
+              <span class="input-group-text bg-white">
+                <i class="fas fa-calendar-alt text-primary"></i>
+              </span>
+            </div>
+            <small class="form-text text-muted">dd-MMM-yyyy</small>
+            <input type="hidden" formControlName="ConfirmationDate">
+          </div>
+        </div>
+
+        <!-- Membership Row -->
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3">
+            <label for="fullMember" class="form-label">Full Member</label>
+            <select id="fullMember" formControlName="fullMember" class="form-select">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="NonResidentMember" class="form-label">Non-Resident</label>
+            <select id="NonResidentMember" formControlName="NonResidentMember" class="form-select">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="preparatoryMember" class="form-label">Preparatory</label>
+            <select id="preparatoryMember" formControlName="preparatoryMember" class="form-select">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="selfDependent" class="form-label">Self Dependent</label>
+            <select id="selfDependent" formControlName="selfDependent" class="form-select">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Status Row -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-3">
+            <label for="maritalStatus" class="form-label">Marital Status</label>
+            <select id="maritalStatus" formControlName="maritalStatus" class="form-select">
+              <option value="">Select</option>
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Divorced">Divorced</option>
+            </select>
+          </div>
+
+          <!-- Marriage Date dd-MMM-yyyy -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Marriage Date</label>
+            <div class="input-group">
+              <input id="dateOfMarriage"
+                     formControlName="dateOfMarriage"
+                     (input)="onDateInput($event, 'dateOfMarriage')"
+                     type="text"
+                     class="form-control"
+                     placeholder="20-Dec-2015"
+                     maxlength="11">
+              <span class="input-group-text bg-white">
+                <i class="fas fa-calendar-alt text-primary"></i>
+              </span>
+            </div>
+            <small class="form-text text-muted">dd-MMM-yyyy</small>
+            <input type="hidden" formControlName="dateOfMarriage">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="status" class="form-label fw-bold">Status</label>
+            <select id="status" formControlName="status" class="form-select">
+              <option value="">Select</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Final buttons -->
+        <div class="row">
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary btn-lg px-5">
+              <i class="fas fa-save me-2"></i>Save Member
+            </button>
+            <a routerLink="/" class="btn btn-secondary btn-lg px-5 ms-3">
+              <i class="fas fa-arrow-left me-2"></i>Cancel
+            </a>
+          </div>
+        </div>
+
+      </form>
+    </div>
   </div>
-  
+</div>

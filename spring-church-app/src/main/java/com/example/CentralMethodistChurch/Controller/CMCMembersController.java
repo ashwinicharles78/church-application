@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 public class CMCMembersController {
 
     @Autowired
@@ -34,7 +33,6 @@ public class CMCMembersController {
     public List<FamilyMember> saveAllMembers(@RequestBody List<FamilyMember> members) {
         return memberService.saveAllMembers(members);
     }
-
     @PostMapping(path = "/member")
     public FamilyMember saveMember(@RequestBody FamilyMember member) {
         return memberService.saveMember(member);

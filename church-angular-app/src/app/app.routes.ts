@@ -13,6 +13,5 @@ export const routes: Routes = [
     { path: 'tree', component: FamilyTreeComponent},
     { path: 'events', component: UpcomingEventsComponent},
     { path: 'inventory', component: InventoryComponent},
-    { path: 'add', component: AddPersonComponent},
-    { path: '**', redirectTo: 'add' }
+    { path: 'add', component: AddPersonComponent}
 ];
