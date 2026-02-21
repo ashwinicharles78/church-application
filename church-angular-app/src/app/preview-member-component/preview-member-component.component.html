@@ -1,0 +1,190 @@
+<div class="container mt-5" *ngIf="memberData">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+
+      <!-- Buttons (hidden on print) -->
+      <div class="row mb-3 no-print">
+        <div class="col-12 text-center">
+          <button class="btn btn-secondary btn-lg px-5 me-3" (click)="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>Back
+          </button>
+          <button class="btn btn-primary btn-lg px-5" (click)="printPage()">
+            <i class="fas fa-print me-2"></i>Print
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Area -->
+      <div class="print-area">
+
+        <!-- Print Header -->
+        <div class="print-header text-center mb-4">
+          <h3 class="mb-1">Member Profile</h3>
+          <small class="text-muted">Membership ID: {{ memberData.membershipId }}</small>
+        </div>
+
+        <!-- Personal Info Row -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Title</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.title || 'N/A'" readonly>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">First Name</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.firstName" readonly>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Last Name</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.lastName" readonly>
+          </div>
+        </div>
+
+        <!-- Middle Name / Gender Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Middle Name</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.middleName || 'N/A'" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Gender</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.gender" readonly>
+          </div>
+        </div>
+
+        <!-- DOB + Age Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Date of Birth</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.dob" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Age</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.age" readonly>
+          </div>
+        </div>
+
+        <!-- Parents Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Father's Name</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.fatherName || 'N/A'" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Mother's Name</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.motherName || 'N/A'" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Spouse's Name</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.spouseName || 'N/A'" readonly>
+          </div>
+        </div>
+
+        <!-- Contact/Email Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Contact</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.contact" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.email || 'N/A'" readonly>
+          </div>
+        </div>
+
+        <!-- Address Row -->
+        <div class="row mb-4">
+          <div class="col-12 mb-3">
+            <label class="form-label fw-bold">Address</label>
+            <textarea class="form-control bg-light" rows="3" readonly>{{ memberData.address }}</textarea>
+          </div>
+        </div>
+
+        <!-- Religious Status Row -->
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Baptised</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.baptised || 'N/A'" readonly>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Baptised Date</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.baptisedDate || 'N/A'" readonly>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Confirmed</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.confirmed || 'N/A'" readonly>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Confirmation Date</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.confirmationDate || 'N/A'" readonly>
+          </div>
+        </div>
+
+        <!-- Membership Row -->
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Full Member</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.fullMember || 'N/A'" readonly>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Non-Resident</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.nonResidentMember || 'N/A'" readonly>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Preparatory</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.preparatoryMember || 'N/A'" readonly>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Self Dependent</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.selfDependent || 'N/A'" readonly>
+          </div>
+        </div>
+
+        <!-- Marital / Marriage / Status Row -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Marital Status</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.maritalStatus || 'N/A'" readonly>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Marriage Date</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.dateOfMarriage || 'N/A'" readonly>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Status</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.status || 'N/A'" readonly>
+          </div>
+        </div>
+
+        <!-- Pledge Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Pledge Number</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.pledgeNumber || 'N/A'" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Pledge Amount</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.pledgeAmount || 'N/A'" readonly>
+          </div>
+        </div>
+
+        <!-- Inactive Row -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Inactive Reason</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.inactiveReason || 'N/A'" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Inactive Since</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.inactiveSince || 'N/A'" readonly>
+          </div>
+        </div>
+
+      </div><!-- end print-area -->
+
+    </div>
+  </div>
+</div>
+
+<div class="container mt-5" *ngIf="!memberData">
+  <p class="text-center">Loading...</p>
+</div>

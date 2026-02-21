@@ -1,0 +1,86 @@
+ @media print {
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm;
+    }
+
+    /* Hide everything except print area */
+    body * { visibility: hidden; }
+    .print-area, .print-area * { visibility: visible; }
+    .print-area {
+      position: absolute;
+      top: 0; left: 0;
+      width: 180mm; /* A4 width minus margins */
+    }
+
+    .no-print { display: none !important; }
+
+    /* Reset Bootstrap container/row interference */
+    .print-area .container,
+    .print-area .row {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      width: 100% !important;
+      margin: 0 0 4px 0 !important;
+      padding: 0 !important;
+      box-sizing: border-box;
+    }
+
+    /* Force Bootstrap col widths in mm for 180mm printable area */
+    .print-area [class*="col-"] {
+      float: none !important;
+      box-sizing: border-box !important;
+      padding: 0 3mm !important;
+      margin-bottom: 4px !important;
+    }
+
+    /* col-md-3 => 25% */
+    .print-area .col-md-3 { width: 25% !important; flex: 0 0 25% !important; max-width: 25% !important; }
+    /* col-md-4 => 33.33% */
+    .print-area .col-md-4 { width: 33.33% !important; flex: 0 0 33.33% !important; max-width: 33.33% !important; }
+    /* col-md-6 => 50% */
+    .print-area .col-md-6 { width: 50% !important; flex: 0 0 50% !important; max-width: 50% !important; }
+    /* col-12 => 100% */
+    .print-area .col-12 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+
+    /* Form controls */
+    .print-area .form-control {
+      display: block !important;
+      width: 100% !important;
+      border: 1px solid #aaa !important;
+      background-color: #f8f8f8 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      padding: 3px 6px !important;
+      font-size: 10pt !important;
+      line-height: 1.3 !important;
+      border-radius: 3px !important;
+      box-sizing: border-box !important;
+      height: auto !important;
+    }
+
+    .print-area textarea.form-control {
+      resize: none !important;
+      height: 40px !important;
+    }
+
+    .print-area .form-label {
+      display: block !important;
+      font-size: 8pt !important;
+      font-weight: 600 !important;
+      margin-bottom: 2px !important;
+      color: #444 !important;
+    }
+
+    /* Header */
+    .print-header {
+      border-bottom: 2px solid #333 !important;
+      padding-bottom: 10px !important;
+      margin-bottom: 20px !important;
+      margin-top: 40px !important;
+      text-align: center !important;
+    }
+
+    .print-header h3 { font-size: 14pt !important; margin: 0 0 2px !important; }
+    .print-header small { font-size: 9pt !important; color: #555 !important; }
+  }

@@ -5,11 +5,13 @@ import { FamilyTreeComponent } from './family-tree/family-tree.component';
 import { UpcomingEventsComponent } from './upcoming-events/upcoming-events.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { AddPersonComponent } from './add-person/add-person.component';
+import { PreviewMemberComponent } from './preview-member-component/preview-member-component.component';
 
 
 export const routes: Routes = [
     { path: 'members', component: MembersListComponent},
     { path: 'edit/:id', component: EditMemberComponent},
+    { path: 'preview/:id', component: PreviewMemberComponent},
     { path: 'tree', component: FamilyTreeComponent},
     { path: 'events', component: UpcomingEventsComponent},
     { path: 'inventory', component: InventoryComponent},

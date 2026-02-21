@@ -78,6 +78,7 @@
       <td>{{ member.inactiveReason || 'N/A' }}</td>
       <td>{{ member.inactiveSince || 'N/A' }}</td>
       <td> <button class="btn btn-primary" (click)="editMember(member.membershipId)">Edit</button></td>
+      <td> <button class="btn btn-primary" (click)="previewMember(member.membershipId)">Preview</button></td>
     </tr>
   </tbody>
 </table>

@@ -30,4 +30,8 @@ export class MembersListComponent {
     this.router.navigate(['/add']);
   }
 
+  previewMember(memberId: any) {
+    this.router.navigate(['/preview', memberId]);
+  }
+
 }
