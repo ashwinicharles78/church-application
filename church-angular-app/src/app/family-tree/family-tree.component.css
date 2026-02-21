@@ -1,0 +1,366 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+/* ── Tokens ──────────────────────────────────────────────────────────────── */
+:host {
+  --ft-bg:          #f5f0e8;
+  --ft-parchment:   #faf7f0;
+  --ft-alt:         #ede8dc;
+  --ft-border:      #c8c0a8;
+  --ft-shadow:      rgba(45, 40, 25, 0.10);
+
+  --ft-green-deep:  #2d5a3d;
+  --ft-green-mid:   #3d7a53;
+  --ft-green-light: #8db89b;
+  --ft-green-faint: #e8f0eb;
+
+  --ft-gold:        #b8960c;
+  --ft-gold-faint:  #f7f0d8;
+
+  --ft-ink:         #1a1a0f;
+  --ft-ink-muted:   #5a5a45;
+  --ft-ink-faint:   #9a9a80;
+
+  --ft-connector:   #a0c4af;
+
+  --ft-font-d:      'Playfair Display', Georgia, serif;
+  --ft-font-b:      'Lora', Georgia, serif;
+
+  --ft-card-w:      280px;
+  --ft-gap-h:       3rem;
+  --ft-gap-v:       2rem;
+}
+
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.ft-wrapper {
+  font-family: var(--ft-font-b);
+  background: var(--ft-bg);
+  min-height: 100vh;
+  padding: 2rem 1.5rem 4rem;
+  color: var(--ft-ink);
+  overflow-x: auto;
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 28px,
+    rgba(180,170,140,0.06) 28px, rgba(180,170,140,0.06) 29px
+  );
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.ft-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--ft-border);
+}
+.ft-header__cross {
+  font-size: 2rem;
+  color: var(--ft-green-deep);
+  line-height: 1;
+}
+.ft-header__title {
+  font-family: var(--ft-font-d);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--ft-green-deep);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+.ft-header__sub {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--ft-ink-muted);
+  margin: 0.2rem 0 0;
+}
+
+/* ── States ──────────────────────────────────────────────────────────────── */
+.ft-state {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--ft-ink-muted);
+  font-style: italic;
+}
+.ft-state--error { color: #8b3a2a; }
+
+.ft-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--ft-border);
+  border-top-color: var(--ft-green-mid);
+  border-radius: 50%;
+  animation: ft-spin 0.85s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes ft-spin { to { transform: rotate(360deg); } }
+
+/* ── Tree container ──────────────────────────────────────────────────────── */
+.ft-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* ── Node ────────────────────────────────────────────────────────────────── */
+.ft-node {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ── Connectors ──────────────────────────────────────────────────────────── */
+
+/* Vertical trunk: drops from card down to children */
+.ft-trunk {
+  width: 2px;
+  min-height: var(--ft-gap-v);
+  background: var(--ft-connector);
+  margin-left: calc(var(--ft-card-w) / 2);
+  flex-shrink: 0;
+}
+
+/* Horizontal child row */
+.ft-child-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--ft-gap-h);
+  position: relative;
+}
+
+/* Horizontal spread bar connecting siblings */
+.ft-child-row--multi::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(var(--ft-card-w) / 2);
+  right: calc(var(--ft-card-w) / 2);
+  height: 2px;
+  background: var(--ft-connector);
+}
+
+/* Each child: branch drop + recursive node */
+.ft-child-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: var(--ft-card-w);
+}
+
+/* Vertical branch from spread bar to child card */
+.ft-branch {
+  width: 2px;
+  height: 1.5rem;
+  background: var(--ft-connector);
+  margin-left: calc(var(--ft-card-w) / 2);
+  flex-shrink: 0;
+}
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.ft-card {
+  width: var(--ft-card-w);
+  background: var(--ft-parchment);
+  border: 1px solid var(--ft-border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px var(--ft-shadow);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+.ft-card:hover {
+  box-shadow: 0 5px 20px var(--ft-shadow);
+  transform: translateY(-2px);
+}
+
+/* Root — dark green top */
+.ft-card--root { border-top: 4px solid var(--ft-green-deep); }
+.ft-card--root .ft-card__top { background: var(--ft-green-deep); }
+.ft-card--root .ft-card__gen { color: rgba(255,255,255,0.85); }
+.ft-card--root .ft-card__fid { color: rgba(255,255,255,0.55); }
+
+/* Child — mid green top */
+.ft-card--child { border-top: 3px solid var(--ft-green-mid); }
+.ft-card--child .ft-card__top { background: var(--ft-green-faint); }
+.ft-card--child .ft-card__gen { color: var(--ft-green-deep); }
+
+/* Grandchild+ — gold top */
+.ft-card--grand { border-top: 3px solid var(--ft-gold); }
+.ft-card--grand .ft-card__top { background: var(--ft-gold-faint); }
+.ft-card--grand .ft-card__gen { color: #7a6000; }
+
+/* Top bar */
+.ft-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+}
+.ft-card__gen {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ft-card__fid {
+  font-size: 0.62rem;
+  color: var(--ft-ink-faint);
+  font-style: italic;
+}
+
+/* Member row */
+.ft-card__row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+}
+
+/* ── Spouse divider ──────────────────────────────────────────────────────── */
+.ft-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.85rem;
+  margin-bottom: 0.1rem;
+}
+.ft-divider__line {
+  flex: 1;
+  border-top: 1px dashed var(--ft-border);
+}
+.ft-divider__ring {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--ft-gold);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Avatar ──────────────────────────────────────────────────────────────── */
+.ft-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ft-font-d);
+  font-size: 0.95rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ft-avatar--spouse { background: var(--ft-gold) !important; }
+.ft-avatar--uchild {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.75rem;
+  background: var(--ft-green-light) !important;
+}
+
+/* ── Info block ──────────────────────────────────────────────────────────── */
+.ft-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1;
+}
+.ft-name {
+  font-family: var(--ft-font-d);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ft-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ft-role {
+  font-size: 0.63rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  width: fit-content;
+}
+.ft-role--head   { background: var(--ft-green-faint); color: var(--ft-green-deep); }
+.ft-role--spouse { background: var(--ft-gold-faint);  color: #7a6000; }
+.ft-role--child  { background: #f0ede8; color: var(--ft-ink-muted); }
+.ft-meta {
+  font-size: 0.68rem;
+  color: var(--ft-ink-faint);
+  font-style: italic;
+  margin-top: 0.1rem;
+}
+
+/* ── Unmarried children section ──────────────────────────────────────────── */
+.ft-uc {
+  border-top: 1px solid var(--ft-border);
+  padding: 0.6rem 0.85rem 0.75rem;
+  background: var(--ft-alt);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ft-uc__label {
+  font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ft-ink-muted);
+  margin-bottom: 0.15rem;
+}
+.ft-uc__pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  background: var(--ft-parchment);
+  border: 1px solid var(--ft-border);
+  border-radius: 6px;
+}
+
+/* ── Legend ──────────────────────────────────────────────────────────────── */
+.ft-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ft-border);
+}
+.ft-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--ft-ink-muted);
+  font-style: italic;
+}
+.ft-legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ft-legend__swatch {
+  width: 22px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  :host {
+    --ft-card-w: 240px;
+    --ft-gap-h:  1.5rem;
+  }
+  .ft-wrapper { padding: 1.25rem 0.75rem 3rem; }
+}

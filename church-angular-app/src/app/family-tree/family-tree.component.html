@@ -1,14 +1,151 @@
-<div *ngFor="let family of families">
-    <h3>Family ID: {{ family.familyId }}</h3>
-    <ul>
-      <li *ngFor="let member of family.members">
-        {{ member.firstName }} {{ member.lastName }} ({{ member.gender }})
-        <ul>
-          <li>Father: {{ getMemberName(member.fatherId, family.members) }}</li>
-          <li>Mother: {{ getMemberName(member.motherId, family.members) }}</li>
-          <li>Spouse: {{ getMemberName(member.spouseId, family.members) }}</li>
-        </ul>
-      </li>
-    </ul>
+<div class="ft-wrapper">
+
+  <!-- ── Header ────────────────────────────────────────────────────────── -->
+  <header class="ft-header">
+    <span class="ft-header__cross">✝</span>
+    <div>
+      <h1 class="ft-header__title">Parish Family Tree</h1>
+      <p class="ft-header__sub">Central Methodist Church</p>
+    </div>
+  </header>
+
+  <!-- ── Loading ───────────────────────────────────────────────────────── -->
+  <div class="ft-state" *ngIf="loading">
+    <div class="ft-spinner"></div>
+    <span>Loading family records…</span>
   </div>
-  
+
+  <!-- ── Error ─────────────────────────────────────────────────────────── -->
+  <div class="ft-state ft-state--error" *ngIf="error && !loading">
+    <span>⚠</span> {{ error }}
+  </div>
+
+  <!-- ── Empty ─────────────────────────────────────────────────────────── -->
+  <div class="ft-state" *ngIf="!loading && !error && familyTree.length === 0">
+    <span>🌿</span> No family records found.
+  </div>
+
+  <!-- ── Tree ──────────────────────────────────────────────────────────── -->
+  <div class="ft-tree" *ngIf="!loading && !error && familyTree.length > 0">
+    <ng-container *ngFor="let root of familyTree">
+      <ng-container *ngTemplateOutlet="nodeTemplate; context: { $implicit: root }">
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- ── Legend ────────────────────────────────────────────────────────── -->
+  <div class="ft-legend" *ngIf="!loading && !error && familyTree.length > 0">
+    <div class="ft-legend__item">
+      <span class="ft-legend__dot" style="background:#2d5a3d"></span> 1st Generation
+    </div>
+    <div class="ft-legend__item">
+      <span class="ft-legend__dot" style="background:#3d7a53"></span> 2nd Generation
+    </div>
+    <div class="ft-legend__item">
+      <span class="ft-legend__dot" style="background:#b8960c"></span> 3rd Generation +
+    </div>
+    <div class="ft-legend__item">
+      <span class="ft-legend__swatch" style="background:#2d5a3d"></span> Head / Father / Mother
+    </div>
+    <div class="ft-legend__item">
+      <span class="ft-legend__swatch" style="background:#b8960c"></span> Spouse
+    </div>
+    <div class="ft-legend__item">
+      <span class="ft-legend__swatch" style="background:#8db89b"></span> Unmarried child
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     Recursive family node template
+     Renders: family card (head + spouse + unmarried children)
+              ↓ vertical trunk
+              → horizontal spread bar (if multiple children)
+                ↓ branch per child → recurse
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<ng-template #nodeTemplate let-node>
+  <div class="ft-node" [attr.data-level]="node.level">
+
+    <!-- ── Family Card ─────────────────────────────────────────────────── -->
+    <div class="ft-card"
+         [class.ft-card--root]="node.level === 0"
+         [class.ft-card--child]="node.level === 1"
+         [class.ft-card--grand]="node.level >= 2">
+
+      <!-- Top bar -->
+      <div class="ft-card__top">
+        <span class="ft-card__gen">{{ generationLabel(node.level) }}</span>
+        <span class="ft-card__fid">Family #{{ node.familyId }}</span>
+      </div>
+
+      <!-- Head member -->
+      <div class="ft-card__row">
+        <div class="ft-avatar" [style.background]="headColor(node.familyId)">
+          {{ initial(node.head) }}
+        </div>
+        <div class="ft-info">
+          <span class="ft-name">{{ displayName(node.head) }}</span>
+          <span class="ft-role ft-role--head">{{ headRole(node) }}</span>
+          <span class="ft-meta" *ngIf="node.head.contact">📞 {{ node.head.contact }}</span>
+        </div>
+      </div>
+
+      <!-- Spouse -->
+      <ng-container *ngIf="node.spouse">
+        <div class="ft-divider">
+          <span class="ft-divider__line"></span>
+          <span class="ft-divider__ring">+</span>
+          <span class="ft-divider__line"></span>
+        </div>
+        <div class="ft-card__row">
+          <div class="ft-avatar ft-avatar--spouse" [style.background]="spouseColor(node.familyId)">
+            {{ initial(node.spouse) }}
+          </div>
+          <div class="ft-info">
+            <span class="ft-name">{{ displayName(node.spouse) }}</span>
+            <span class="ft-role ft-role--spouse">Spouse</span>
+            <span class="ft-meta" *ngIf="node.head.dateOfMarriage">
+              💍 Married {{ node.head.dateOfMarriage }}
+            </span>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Unmarried children still in this family -->
+      <div class="ft-uc" *ngIf="node.unmarriedChildren.length > 0">
+        <div class="ft-uc__label">
+          ⬇ Unmarried {{ node.unmarriedChildren.length === 1 ? 'child' : 'children' }}
+        </div>
+        <div class="ft-uc__pill" *ngFor="let child of node.unmarriedChildren">
+          <div class="ft-avatar ft-avatar--uchild">{{ initial(child) }}</div>
+          <div class="ft-info">
+            <span class="ft-name">{{ displayName(child) }}</span>
+            <span class="ft-role ft-role--child">Child</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /ft-card -->
+
+    <!-- ── Connector + child families ──────────────────────────────────── -->
+    <div class="ft-node__children" *ngIf="hasChildren(node)">
+
+      <!-- Vertical trunk -->
+      <div class="ft-trunk"></div>
+
+      <!-- Horizontal child row -->
+      <div class="ft-child-row" [class.ft-child-row--multi]="node.children.length > 1">
+        <div class="ft-child-wrap" *ngFor="let child of node.children">
+          <!-- Drop branch per child -->
+          <div class="ft-branch"></div>
+          <!-- Recursive -->
+          <ng-container *ngTemplateOutlet="nodeTemplate; context: { $implicit: child }">
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</ng-template>
