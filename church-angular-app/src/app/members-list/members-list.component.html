@@ -1,84 +1,131 @@
-<button class="btn btn-success mb-2" (click)="addMember()">
-  Add
-</button>
-<table class="table table-bordered table-striped">
-  <thead class="thead-light">
-    <tr>
-      <th>Membership ID</th>
-      <th>Family ID</th>
-      <th>Title</th>
-      <th>Last Name</th>
-      <th>Middle Name</th>
-      <th>First Name</th>
-      <th>Father Name</th>
-      <th>Father ID</th>
-      <th>Mother Name</th>
-      <th>Mother ID</th>
-      <th>Spouse Name</th>
-      <th>Spouse ID</th>
-      <th>Gender</th>
-      <th>Date of Birth</th>
-      <th>Age</th>
-      <th>Address</th>
-      <th>Marital Status</th>
-      <th>Date of Marriage</th>
-      <th>Years of Marriage</th>
-      <th>Contact</th>
-      <th>Email</th>
-      <th>Baptised</th>
-      <th>Baptised Date</th>
-      <th>Confirmed</th>
-      <th>Confirmation Date</th>
-      <th>Full Member</th>
-      <th>Non-Resident Member</th>
-      <th>Preparatory Member</th>
-      <th>Self-Dependent</th>
-      <th>Pledge Number</th>
-      <th>Pledge Amount</th>
-      <th>Status</th>
-      <th>Inactive Reason</th>
-      <th>Inactive Since</th>
-      <th>Edit</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let member of members">
-      <td>{{ member.membershipId }}</td>
-      <td>{{ member.familyId }}</td>
-      <td>{{ member.title || 'N/A' }}</td>
-      <td>{{ member.lastName }}</td>
-      <td>{{ member.middleName || 'N/A' }}</td>
-      <td>{{ member.firstName }}</td>
-      <td>{{ member.fatherName || 'N/A' }}</td>
-      <td>{{ member.fatherId || 'N/A' }}</td>
-      <td>{{ member.motherName || 'N/A' }}</td>
-      <td>{{ member.motherId || 'N/A' }}</td>
-      <td>{{ member.spouseName || 'N/A' }}</td>
-      <td>{{ member.spouseId || 'N/A' }}</td>
-      <td>{{ member.gender }}</td>
-      <td>{{ member.dob }}</td>
-      <td>{{ member.age }}</td>
-      <td>{{ member.address }}</td>
-      <td>{{ member.maritalStatus }}</td>
-      <td>{{ member.dateOfMarriage || 'N/A' }}</td>
-      <td>{{ member.yearsOfMarriage || 'N/A' }}</td>
-      <td>{{ member.contact }}</td>
-      <td>{{ member.email || 'N/A' }}</td>
-      <td>{{ member.baptised }}</td>
-      <td>{{ member.baptisedDate || 'N/A' }}</td>
-      <td>{{ member.confirmed }}</td>
-      <td>{{ member.confirmationDate || 'N/A' }}</td>
-      <td>{{ member.fullMember }}</td>
-      <td>{{ member.nonResidentMember || 'N/A' }}</td>
-      <td>{{ member.preparatoryMember || 'N/A' }}</td>
-      <td>{{ member.selfDependent || 'N/A' }}</td>
-      <td>{{ member.pledgeNumber || 'N/A' }}</td>
-      <td>{{ member.pledgeAmount || 'N/A' }}</td>
-      <td>{{ member.status }}</td>
-      <td>{{ member.inactiveReason || 'N/A' }}</td>
-      <td>{{ member.inactiveSince || 'N/A' }}</td>
-      <td> <button class="btn btn-primary" (click)="editMember(member.membershipId)">Edit</button></td>
-      <td> <button class="btn btn-primary" (click)="previewMember(member.membershipId)">Preview</button></td>
-    </tr>
-  </tbody>
-</table>
+<div class="ml-shell">
+
+  <!-- Header -->
+  <div class="ml-header">
+    <div class="ml-title-block">
+      <div class="ml-eyebrow">Church Membership Directory</div>
+      <h1 class="ml-title">Members</h1>
+      <p class="ml-count">{{ members.length }} registered member{{ members.length !== 1 ? 's' : '' }}</p>
+    </div>
+    <button class="ml-add-btn" (click)="addMember()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Member
+    </button>
+  </div>
+
+  <!-- Column Headers -->
+  <div class="ml-col-headers-wrap">
+    <div class="ml-col-headers">
+      <div class="ml-col-label">Full Name</div>
+      <div class="ml-col-label">Family ID</div>
+      <div class="ml-col-label">Date of Birth</div>
+      <div class="ml-col-label">Relations</div>
+      <div class="ml-col-label">Pledge</div>
+    </div>
+    <div class="ml-col-actions"></div>
+  </div>
+
+  <!-- List -->
+  <div class="ml-list">
+
+    <!-- Empty state (show when members is empty) -->
+    <div class="ml-empty" *ngIf="members.length === 0">
+      <div class="ml-empty-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>No members yet</h3>
+      <p>Click "Add Member" to register the first member.</p>
+    </div>
+
+    <!-- Member rows -->
+    <div class="ml-card" *ngFor="let member of members">
+      <div class="ml-card-inner">
+
+        <!-- Full Name + status -->
+        <div class="ml-cell-name">
+          <div class="ml-avatar">
+            {{ (member.firstName[0] || '') }}{{ (member.lastName[0] || '') }}
+          </div>
+          <div class="ml-avatar">
+            {{ member.membershipId }}
+          </div>
+          <div class="ml-name-stack">
+            <div class="ml-full-name">
+              {{ member.title ? member.title + ' ' : '' }}{{ member.firstName }} {{ member.lastName }}
+            </div>
+            <span class="ml-status-badge" [ngClass]="member.status === 'Active' ? 'badge-active' : 'badge-inactive'">
+              {{ member.status || 'Unknown' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Family ID -->
+        <div class="ml-cell-fid">
+          <div class="ml-fid-label">Family</div>
+          <div class="ml-fid-value">{{ member.familyId || '—' }}</div>
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="ml-cell-dob">
+          <div class="ml-dob-date">{{ member.dob || '—' }}</div>
+          <div class="ml-dob-age" *ngIf="member.age">Age {{ member.age }}</div>
+        </div>
+
+        <!-- Father / Spouse -->
+        <div class="ml-cell-rel">
+          <div class="ml-rel-row" *ngIf="member.fatherName">
+            <span class="ml-rel-tag">Father</span>
+            <span class="ml-rel-name">{{ member.fatherName }}</span>
+          </div>
+          <div class="ml-rel-row" *ngIf="member.spouseName">
+            <span class="ml-rel-tag">Spouse</span>
+            <span class="ml-rel-name">{{ member.spouseName }}</span>
+          </div>
+          <span class="ml-na" *ngIf="!member.fatherName && !member.spouseName">—</span>
+        </div>
+
+        <!-- Pledge -->
+        <div class="ml-cell-pledge">
+          <ng-container *ngIf="member.pledgeAmount; else noPledge">
+            <div class="ml-pledge-num"># {{ member.pledgeNumber || '—' }}</div>
+            <div class="ml-pledge-amount">{{ member.pledgeAmount }}</div>
+          </ng-container>
+          <ng-template #noPledge>
+            <span class="ml-pledge-nil">No pledge</span>
+          </ng-template>
+        </div>
+
+      </div>
+
+      <!-- Row Actions -->
+      <div class="ml-actions">
+        <button class="btn btn-sm btn-outline-secondary" (click)="previewMember(member.membershipId)">Preview</button>
+        <button class="btn btn-sm btn-outline-primary" (click)="editMember(member.membershipId)">Edit</button>
+        <button class="btn btn-sm btn-outline-danger" (click)="confirmDelete(member)">Delete</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="ml-overlay" *ngIf="memberToDelete" (click)="cancelDelete()">
+  <div class="ml-modal" (click)="$event.stopPropagation()">
+    <div class="ml-modal-icon">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <h3>Remove Member</h3>
+    <p>
+      Are you sure you want to delete
+      <strong>{{ memberToDelete.title ? memberToDelete.title + ' ' : '' }}{{ memberToDelete.firstName }} {{ memberToDelete.lastName }}</strong>?
+      This action cannot be undone.
+    </p>
+    <div class="ml-modal-actions">
+      <button class="ml-modal-cancel" (click)="cancelDelete()" [disabled]="isDeleting">Cancel</button>
+      <button class="ml-modal-confirm" (click)="deleteMember()" [disabled]="isDeleting">
+        <span class="ml-spinner" *ngIf="isDeleting"></span>
+        {{ isDeleting ? 'Deleting...' : 'Yes, delete' }}
+      </button>
+    </div>
+  </div>
+</div>

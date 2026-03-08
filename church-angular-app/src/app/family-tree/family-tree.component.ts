@@ -94,57 +94,55 @@ export class FamilyTreeComponent implements OnInit {
 
   private buildTree(families: FamilySubscriptionDto[]): FamilyNode[] {
 
-    // Build lookups across all members
-    const idToFamilyId   = new Map<string, number>(); // membershipId -> familyId
-    const nameToFamilyId = new Map<string, number>(); // normalised name variant -> familyId
+  // Guard: skip families with no members
+  const validFamilies = families.filter(f => f.members && f.members.length > 0);
 
-    families.forEach(f =>
-      f.members.forEach(m => {
-        idToFamilyId.set(String(m.membershipId), f.familyId);
-        // Store all name variants so abbreviated middle names still match
-        // e.g. "Sanjay Cherchill Charles" also stored as "Sanjay C Charles"
-        this.nameVariants(m).forEach(v => nameToFamilyId.set(v, f.familyId));
-      })
-    );
+  const idToFamilyId   = new Map<string, number>();
+  const nameToFamilyId = new Map<string, number>();
 
-    // Build one FamilyNode per family
-    const nodeMap = new Map<number, FamilyNode>();
-    families.forEach(f => nodeMap.set(f.familyId, this.buildNode(f)));
+  validFamilies.forEach(f =>
+    f.members.forEach(m => {
+      idToFamilyId.set(String(m.membershipId), f.familyId);
+      this.nameVariants(m).forEach(v => nameToFamilyId.set(v, f.familyId));
+    })
+  );
 
-    // Wire parent -> child edges
-    const childIds = new Set<number>();
+  const nodeMap = new Map<number, FamilyNode>();
+  validFamilies.forEach(f => nodeMap.set(f.familyId, this.buildNode(f)));
 
-    nodeMap.forEach(node => {
-      const head = node.head;
-      let parentFamilyId: number | undefined;
+  const childIds = new Set<number>();
 
-      // Tier 1: fatherId match (direct ID - most reliable)
-      if (this.hasValue(head.fatherId)) {
-        parentFamilyId = idToFamilyId.get(head.fatherId!);
+  nodeMap.forEach(node => {
+    // Guard: skip if head is undefined
+    if (!node.head) return;
+
+    const head = node.head;
+    let parentFamilyId: number | undefined;
+
+    if (this.hasValue(head.fatherId)) {
+      parentFamilyId = idToFamilyId.get(head.fatherId!);
+    }
+
+    if (!parentFamilyId && this.hasValue(head.fatherName)) {
+      parentFamilyId = nameToFamilyId.get(this.normalise(head.fatherName!));
+    }
+
+    if (parentFamilyId != null && parentFamilyId !== node.familyId) {
+      const parentNode = nodeMap.get(parentFamilyId);
+      if (parentNode) {
+        parentNode.children.push(node);
+        childIds.add(node.familyId);
       }
+    }
+  });
 
-      // Tier 2: fatherName match (fallback when fatherId is null)
-      if (!parentFamilyId && this.hasValue(head.fatherName)) {
-        parentFamilyId = nameToFamilyId.get(this.normalise(head.fatherName!));
-      }
+  const roots = Array.from(nodeMap.values()).filter(n => !childIds.has(n.familyId));
 
-      if (parentFamilyId != null && parentFamilyId !== node.familyId) {
-        const parentNode = nodeMap.get(parentFamilyId);
-        if (parentNode) {
-          parentNode.children.push(node);
-          childIds.add(node.familyId);
-        }
-      }
-    });
+  roots.forEach(r => this.sortChildren(r));
+  roots.forEach(r => this.assignLevels(r, 0));
 
-    // Root nodes = families not linked as a child of anyone
-    const roots = Array.from(nodeMap.values()).filter(n => !childIds.has(n.familyId));
-
-    roots.forEach(r => this.sortChildren(r));
-    roots.forEach(r => this.assignLevels(r, 0));
-
-    return roots;
-  }
+  return roots;
+}
 
   // ---------------------------------------------------------------------------
   // Node builder

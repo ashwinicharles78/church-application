@@ -6,6 +6,7 @@ package com.example.CentralMethodistChurch.Entity;
 
 import com.example.CentralMethodistChurch.Enums.Gender;
 import com.example.CentralMethodistChurch.Enums.MaritialStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,7 +24,11 @@ public class FamilyMember {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long membershipId;
-    private Long familyId;
+    @ManyToOne
+    @JoinColumn(name = "family_subscription_id")
+    @JsonBackReference("subscription-members")
+    private FamilySubscriptions familySubscription;
+    private String familyId;
     private String title;
     private String lastName;
     private String middleName;

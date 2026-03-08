@@ -1,0 +1,25 @@
+ALTER TABLE family_member MODIFY COLUMN family_id VARCHAR(255);  // to modify datatype
+-------------------------------------------------------------------------------------------------------------------------------
+
+ALTER TABLE family_member DROP FOREIGN KEY FKbvrshwcp9x5im2dr04im0uyma;
+
+ALTER TABLE family_subscriptions MODIFY COLUMN family_id VARCHAR(255);
+
+-- Assuming the column in family_member is named 'family_subscription_id'
+ALTER TABLE family_member MODIFY COLUMN family_subscription_id VARCHAR(255);
+
+ALTER TABLE family_member 
+ADD CONSTRAINT FKbvrshwcp9x5im2dr04im0uyma 
+FOREIGN KEY (family_subscription_id) REFERENCES family_subscriptions(family_id);
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+ALTER TABLE family_subscriptions_members 
+DROP FOREIGN KEY FKpcdme5e4jyu01n42nq6kjisc8;
+
+ALTER TABLE family_subscriptions_members 
+ADD CONSTRAINT FKcq1h61wbft3kf22j556nh95m 						// tO UPDATE  cascading to composite key
+FOREIGN KEY (members_membership_id) REFERENCES family_member(membership_id) 
+ON DELETE CASCADE;
+
+

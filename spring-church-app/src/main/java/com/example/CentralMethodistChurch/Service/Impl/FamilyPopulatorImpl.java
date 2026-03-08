@@ -2,7 +2,10 @@ package com.example.CentralMethodistChurch.Service.Impl;
 
 
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
+import com.example.CentralMethodistChurch.Entity.FamilySubscriptions;
 import com.example.CentralMethodistChurch.Service.FamilyPopulator;
+import com.example.CentralMethodistChurch.Service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

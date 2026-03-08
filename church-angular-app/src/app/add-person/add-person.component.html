@@ -23,7 +23,7 @@
 
         <!-- DOB + Auto Age Row -->
         <div class="row mb-4">
-          <div class="col-md-6 mb-3">
+          <div class="col-md-4 mb-3">
             <label class="form-label fw-bold">Date of Birth <span class="text-danger">*</span></label>
             <div class="input-group">
               <input id="dob"
@@ -43,9 +43,14 @@
             <input type="hidden" formControlName="dob">
           </div>
 
-          <div class="col-md-6 mb-3">
+          <div class="col-md-4 mb-3">
             <label for="age" class="form-label fw-bold">Age</label>
             <input id="age" formControlName="age" type="text" class="form-control bg-light" readonly>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="familyId" class="form-label fw-bold">Family ID</label>
+            <input id="familyId" formControlName="familyId" type="text" class="form-control">
           </div>
         </div>
 
@@ -72,6 +77,8 @@
             <input id="motherId" formControlName="motherId" type="text" class="form-control">
           </div>
         </div>
+
+        
 
         <!-- Spouse/Gender Row -->
         <div class="row mb-4">

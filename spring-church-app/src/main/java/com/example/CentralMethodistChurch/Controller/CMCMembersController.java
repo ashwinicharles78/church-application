@@ -7,6 +7,7 @@ package com.example.CentralMethodistChurch.Controller;
 
 import com.example.CentralMethodistChurch.DTO.Events;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
+import com.example.CentralMethodistChurch.Entity.FamilySubscriptions;
 import com.example.CentralMethodistChurch.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,12 @@ public class CMCMembersController {
     }
     @PostMapping(path = "/member")
     public FamilyMember saveMember(@RequestBody FamilyMember member) {
+        memberService.saveMember(member);
+        if(fetchById(String.valueOf(member.getMembershipId())) != null) {
+            FamilySubscriptions sub = memberService.fetchById(String.valueOf(member.getMembershipId())).getFamilySubscription();
+            if(sub != null)
+                sub.addMember(member);
+        }
         return memberService.saveMember(member);
     }
 
@@ -51,5 +58,10 @@ public class CMCMembersController {
     @DeleteMapping(path = "/truncate-members")
     private void truncateFamilyTree() {
         memberService.truncateMembers();
+    }
+
+    @DeleteMapping(path = "/member-id/{id}")
+    private void deleteMember(@PathVariable("id") String id) {
+        memberService.deleteMemberbyId(id);
     }
 }

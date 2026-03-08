@@ -6,7 +6,9 @@ package com.example.CentralMethodistChurch.Service.Impl;
 
 import com.example.CentralMethodistChurch.DTO.Events;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
+import com.example.CentralMethodistChurch.Entity.FamilySubscriptions;
 import com.example.CentralMethodistChurch.Enums.EventType;
+import com.example.CentralMethodistChurch.Repository.FamilySubscribtionRepository;
 import com.example.CentralMethodistChurch.Repository.MemberRepository;
 import com.example.CentralMethodistChurch.Service.FamilyPopulator;
 import com.example.CentralMethodistChurch.Service.FamilyTreeServices;
@@ -28,6 +30,9 @@ public class MemberServiceImpl implements MemberService {
     private MemberRepository memberRepository;
 
     @Autowired
+    private FamilySubscribtionRepository subscribtionRepository;
+
+    @Autowired
     private FamilyPopulator populator;
 
     @Autowired
@@ -46,6 +51,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void deleteMemberbyId(String id) {
+        Optional<FamilyMember> member = memberRepository.findById(id);
+        if (member.isPresent()) {
+            // 1. Get the parent subscription
+            Optional<FamilySubscriptions> subscription = subscribtionRepository.findById(String.valueOf(member.get().getFamilyId()));
+            // 2. Remove the member from the list (this updates the JOIN TABLE)
+            if(subscription.isPresent()) {
+                subscription.get().getMembers().removeIf(m -> String.valueOf(m.getMembershipId()).equals(id));
+
+                // 3. Save the subscription (with orphanRemoval = true, this deletes the member record)
+                subscribtionRepository.save(subscription.get());
+            }
+        }
         memberRepository.deleteById(id);
     }
 
@@ -55,7 +72,15 @@ public class MemberServiceImpl implements MemberService {
     }
     @Override
     public List<FamilyMember> saveAllMembers(List<FamilyMember> members) {
-        members.forEach(member -> populator.populateFamily(member));
+        members.forEach(member -> {
+            populator.populateFamily(member);
+            memberRepository.save(member);
+            if(fetchById(String.valueOf(member.getMembershipId())) != null) {
+                FamilySubscriptions sub = fetchById(String.valueOf(member.getMembershipId())).getFamilySubscription();
+                if(sub != null)
+                    sub.addMember(member);
+            }
+        });
         return memberRepository.saveAll(members);
     }
 

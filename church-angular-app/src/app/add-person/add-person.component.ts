@@ -34,6 +34,7 @@ export class AddPersonComponent implements OnInit {
       motherId:           [""],
       spouseName:         [""],
       spouseId:           [""],
+      familyId:           [""],
       gender:             ["", Validators.required],
       dob:                ["", Validators.required],
       age:                [{ value: '', disabled: true }],
