@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Invoice</title>
+    <style>
+        /* Print-specific CSS */
+        @media print {
+            body { font-family: Arial, sans-serif; }
+            .no-print { display: none; }
+        }
+        .invoice-box { border: 1px solid #eee; padding: 20px; max-width: 800px; margin: auto; }
+        .stamp-area { margin-top: 50px; border: 1px dashed #333; width: 150px; height: 150px; text-align: center; line-height: 150px; }
+    </style>
+</head>
+<body>
+<div class="invoice-box">
+    <h2>Central Methodist Church - Official Receipt</h2>
+    <p>Date: <span th:text="${invoice.date}"></span></p>
+    <p>Name: <span th:text="${invoice.name}"></span></p>
+    <p>Amount: ₹<span th:text="${invoice.amount}"></span></p>
+    <p>Amount in Words: <span th:text="${invoice.amountInWords}"></span></p>
+
+    <div class="stamp-area">
+        Church Stamp Here
+    </div>
+
+    <button class="no-print" onclick="window.print()">Print Invoice</button>
+</div>
+</body>
+</html>

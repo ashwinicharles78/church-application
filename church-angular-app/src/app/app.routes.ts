@@ -6,6 +6,7 @@ import { UpcomingEventsComponent } from './upcoming-events/upcoming-events.compo
 import { InventoryComponent } from './inventory/inventory.component';
 import { AddPersonComponent } from './add-person/add-person.component';
 import { PreviewMemberComponent } from './preview-member-component/preview-member-component.component';
+import { SubscriptionEditComponent } from './subscription-edit/subscription-edit.component';
 
 
 export const routes: Routes = [
@@ -16,5 +17,6 @@ export const routes: Routes = [
     { path: 'events', component: UpcomingEventsComponent},
     { path: 'inventory', component: InventoryComponent},
     { path: 'add', component: AddPersonComponent},
-    { path: 'family-tree', component: FamilyTreeComponent}
+    { path: 'family-tree', component: FamilyTreeComponent},
+    { path: 'subscription/:id', component:SubscriptionEditComponent}
 ];

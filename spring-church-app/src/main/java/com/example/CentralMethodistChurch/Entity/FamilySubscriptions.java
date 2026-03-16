@@ -26,6 +26,7 @@ public class FamilySubscriptions {
     private long pledgeAmount;
     private long pledgeCredit;
     private long pledgeDue;
+    private long lastPledgeDue;
     private LocalDate pledgeStartDate;
     private LocalDate lastPledgeDepositDate;
     private long lastPledgeDepositAmount;
