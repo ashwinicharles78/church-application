@@ -1,4 +1,4 @@
-<form [formGroup]="subForm" (ngSubmit)="save()">
+<!-- <form [formGroup]="subForm" (ngSubmit)="save()">
   <div class="form-group">
     <label>Pledge Amount</label>
     <input type="number" formControlName="pledgeAmount" class="form-control">
@@ -15,4 +15,64 @@
   </div>
 
   <button type="submit" class="btn btn-primary">Save Changes</button>
-</form>
+</form> -->
+
+<div class="edit-container">
+  <div class="header-row">
+    <h2>Edit Subscription & Pledge Details</h2>
+    <button type="button" class="btn-invoice" (click)='goToInvoice()'>
+      📄 View/Generate Invoice
+    </button>
+  </div>
+
+  <form [formGroup]="subscriptionForm" (ngSubmit)="onUpdate()">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Total Pledge Amount</label>
+        <input type="number" formControlName="pledgeAmount">
+      </div>
+
+      <div class="form-group">
+        <label>Pledge Credit</label>
+        <input type="number" formControlName="pledgeCredit">
+      </div>
+
+      <div class="form-group">
+        <label>Current Pledge Due</label>
+        <input type="number" formControlName="pledgeDue" readonly class="readonly-field">
+      </div>
+
+      <div class="form-group">
+        <label>Last Pledge Due</label>
+        <input type="number" formControlName="lastPledgeDue">
+      </div>
+
+      <div class="form-group">
+        <label>Pledge Start Date</label>
+        <input type="date" formControlName="pledgeStartDate">
+      </div>
+
+      <div class="form-group">
+        <label>Last Deposit Date</label>
+        <input type="date" formControlName="lastPledgeDepositDate">
+      </div>
+
+      <div class="form-group">
+        <label>Last Deposit Amount</label>
+        <input type="number" formControlName="lastPledgeDepositAmount">
+      </div>
+    </div>
+
+    <div class="action-footer">
+      <button type="submit" class="btn-save" [disabled]="!subscriptionForm.valid">
+        Update Details
+      </button>
+    </div>
+  </form>
+
+      <div>
+        <button class="btn-save" [disabled]="!subscriptionForm.valid" (click)="deductPledge()">
+        Submit Pledge
+      </button>
+    </div>
+</div>

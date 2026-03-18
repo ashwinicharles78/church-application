@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 
 @Service
 public class FamilyPledgeImpl implements FamilyPledge {
@@ -24,9 +22,10 @@ public class FamilyPledgeImpl implements FamilyPledge {
         if (subscription.getLastPledgeDepositDate() != null && subscription.getLastPledgeDue() <= 0L) {
             amountDue = subscription.getPledgeAmount() * calculateMonthsUntilNow(subscription.getLastPledgeDepositDate());
         } else {
-            amountDue = subscription.getPledgeDue() + subscription.getLastPledgeDue();
+            amountDue = subscription.getPledgeDue() - subscription.getPledgeCredit();
         }
-        subscription.setPledgeAmount(amountDue);
+        subscription.setPledgeDue(amountDue);
+        subscription.setLastPledgeDepositDate(LocalDate.now());
         return subscription;
     }
     public static long calculateMonthsUntilNow(LocalDate dateString) {
@@ -46,7 +45,13 @@ public class FamilyPledgeImpl implements FamilyPledge {
         }
     }
 
+    @Override
     public FamilySubscriptions fetchById(String id) {
         return familySubscribtionRepository.findById(id).isPresent() ? familySubscribtionRepository.findById(id).get() : null;
+    }
+
+    @Override
+    public FamilySubscriptions saveSubscription(FamilySubscriptions subscription) {
+        return familySubscribtionRepository.save(subscription);
     }
 }

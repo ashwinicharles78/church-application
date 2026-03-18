@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SubscriptionService } from '../subscription.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-subscription-edit',
@@ -11,16 +12,19 @@ import { SubscriptionService } from '../subscription.service';
   styleUrl: './subscription-edit.component.css'
 })
 export class SubscriptionEditComponent implements OnInit {
-  subForm: FormGroup;
-  familyId: string = '';
+  subscriptionForm: FormGroup;
+  subscriptionId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private subService: SubscriptionService
+    private router: Router,
+    private http: HttpClient
   ) {
-    this.subForm = this.fb.group({
-      pledgeAmount: [0],
+    // Initializing form with attributes from your code base
+    this.subscriptionForm = this.fb.group({
+      familyId: [''],
+      pledgeAmount: [0, Validators.required],
       pledgeCredit: [0],
       pledgeDue: [0],
       lastPledgeDue: [0],
@@ -30,21 +34,38 @@ export class SubscriptionEditComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.familyId = this.route.snapshot.paramMap.get('id')!;
-    this.loadSubscription();
+  ngOnInit(): void {
+    this.subscriptionId = this.route.snapshot.paramMap.get('id');
+    if (this.subscriptionId) {
+      this.loadSubscriptionData();
+    }
   }
 
-  loadSubscription() {
-    this.subService.getById(this.familyId).subscribe(data => {
-      // Patch values into the form - if data is null, fields remain empty/default
-      this.subForm.patchValue(data);
-    });
+  loadSubscriptionData() {
+    this.http.get(`http://localhost:8080/subscription/${this.subscriptionId}`)
+      .subscribe((data: any) => {
+        this.subscriptionForm.patchValue(data);
+      });
   }
 
-  save() {
-    this.subService.update(this.familyId, this.subForm.value).subscribe(() => {
-      alert('Subscription updated successfully!');
-    });
+  onUpdate() {
+    if (this.subscriptionForm.valid) {
+      this.http.put(`http://localhost:8080/subscription/${this.subscriptionId}`, this.subscriptionForm.value)
+        .subscribe(() => alert('Subscription Updated Successfully'));
+    }
+  }
+
+  goToInvoice() {
+  const id = this.subscriptionId;
+  // This URL now points to the @Controller we just created
+  window.open(`http://localhost:8080/invoice/${id}`, '_blank');
+}
+  
+  deductPledge() {
+    if (this.subscriptionForm.valid) {
+      console.log("print")
+      this.http.get(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`)
+        .subscribe(() => alert('Pledge successfull'));
+    }
   }
 }

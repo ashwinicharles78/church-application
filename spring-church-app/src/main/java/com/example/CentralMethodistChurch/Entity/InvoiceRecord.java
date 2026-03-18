@@ -1,6 +1,8 @@
 package com.example.CentralMethodistChurch.Entity;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 public class InvoiceRecord {
     @Id
@@ -10,4 +12,6 @@ public class InvoiceRecord {
     private byte[] pdfData;
     @OneToOne
     private FamilySubscriptions subscription;
+    private LocalDate date;
+    private long amount;
 }
