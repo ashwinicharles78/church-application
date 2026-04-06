@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { map } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 // ---------------------------------------------------------------------------
 // Interfaces - matching http://localhost:8080/members-tree response
@@ -65,7 +66,7 @@ interface FamilyNode {
 @Component({
   selector: 'app-family-tree',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule, RouterModule],
   templateUrl: './family-tree.component.html',
   styleUrls: ['./family-tree.component.css']
 })

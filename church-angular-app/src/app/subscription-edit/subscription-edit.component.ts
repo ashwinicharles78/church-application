@@ -3,17 +3,20 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router } from '@angular/router';
 import { SubscriptionService } from '../subscription.service';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-subscription-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule],
   templateUrl: './subscription-edit.component.html',
   styleUrl: './subscription-edit.component.css'
 })
 export class SubscriptionEditComponent implements OnInit {
   subscriptionForm: FormGroup;
   subscriptionId: string | null = null;
+  // Inside your component class
+  paymentTransactionEntries: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -52,6 +55,7 @@ export class SubscriptionEditComponent implements OnInit {
     if (this.subscriptionForm.valid) {
       this.http.put(`http://localhost:8080/subscription/${this.subscriptionId}`, this.subscriptionForm.value)
         .subscribe(() => alert('Subscription Updated Successfully'));
+        window.location.reload();
     }
   }
 
@@ -66,6 +70,7 @@ export class SubscriptionEditComponent implements OnInit {
       console.log("print")
       this.http.get(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`)
         .subscribe(() => alert('Pledge successfull'));
+        window.location.reload();
     }
   }
 }

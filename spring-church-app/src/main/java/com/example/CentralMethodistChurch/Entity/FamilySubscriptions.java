@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,6 +23,8 @@ public class FamilySubscriptions {
     @JsonManagedReference("subscription-members")
     private Set<FamilyMember> members = new HashSet<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<PaymentTransactionEntry> paymentTransactionEntries;
     private String headMemberId;
     private long pledgeAmount;
     private long pledgeCredit;

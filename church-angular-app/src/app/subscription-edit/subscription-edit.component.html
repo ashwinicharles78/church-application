@@ -1,22 +1,3 @@
-<!-- <form [formGroup]="subForm" (ngSubmit)="save()">
-  <div class="form-group">
-    <label>Pledge Amount</label>
-    <input type="number" formControlName="pledgeAmount" class="form-control">
-  </div>
-  
-  <div class="form-group">
-    <label>Pledge Start Date</label>
-    <input type="date" formControlName="pledgeStartDate" class="form-control">
-  </div>
-
-  <div class="form-group">
-    <label>Last Deposit Amount</label>
-    <input type="number" formControlName="lastPledgeDepositAmount" class="form-control">
-  </div>
-
-  <button type="submit" class="btn btn-primary">Save Changes</button>
-</form> -->
-
 <div class="edit-container">
   <div class="header-row">
     <h2>Edit Subscription & Pledge Details</h2>
@@ -70,9 +51,44 @@
     </div>
   </form>
 
-      <div>
-        <button class="btn-save" [disabled]="!subscriptionForm.valid" (click)="deductPledge()">
-        Submit Pledge
-      </button>
+  <div class="submit-section">
+    <button class="btn-save" [disabled]="!subscriptionForm.valid" (click)="deductPledge()">
+      Submit Pledge
+    </button>
+  </div>
+
+  <!-- ── Payment Transactions Table Section ────────────────────────────────── -->
+  <div class="transactions-container">
+    <hr class="divider">
+    <h3>Payment Transaction History</h3>
+
+    <div class="table-responsive">
+      <table class="tx-table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loop through the transactions array from your TypeScript file -->
+          <tr *ngFor="let tx of paymentTransactionEntries">
+            <td class="tx-id">{{ tx.transaction_id }}</td>
+            <td>{{ tx.name }}</td>
+            <!-- Formats the date (e.g., Oct 24, 2023) -->
+            <td>{{ tx.date | date:'mediumDate' }}</td>
+            <!-- Formats the amount as currency (e.g., $150.00) -->
+            <td class="tx-amount">{{ tx.amount | currency }}</td>
+          </tr>
+          
+          <!-- Fallback row if the array is empty or undefined -->
+          <tr *ngIf="!paymentTransactionEntries || paymentTransactionEntries.length === 0">
+            <td colspan="4" class="empty-state">No payment transactions found.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
 </div>

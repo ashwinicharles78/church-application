@@ -69,6 +69,7 @@
 
     <!-- ── Family Card ─────────────────────────────────────────────────── -->
     <div class="ft-card"
+    [routerLink]="['/subscription', node.familyId]"
          [class.ft-card--root]="node.level === 0"
          [class.ft-card--child]="node.level === 1"
          [class.ft-card--grand]="node.level >= 2">
