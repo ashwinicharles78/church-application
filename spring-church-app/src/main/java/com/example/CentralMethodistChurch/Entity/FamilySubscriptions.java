@@ -50,4 +50,9 @@ public class FamilySubscriptions {
         this.members.remove(member);
         member.setFamilySubscription(null);
     }
+
+    public void addPaymentTransactionEntry(PaymentTransactionEntry entry) {
+        this.paymentTransactionEntries.add(entry);
+        entry.setMember(this); // Crucial for Hibernate to persist the foreign key
+    }
 }

@@ -5,8 +5,6 @@ import com.example.CentralMethodistChurch.Entity.PaymentTransactionEntry;
 import com.example.CentralMethodistChurch.Service.FamilyPledge;
 import com.example.CentralMethodistChurch.Service.PaymentTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,11 +31,11 @@ public class InvoiceController {
         return familyPledge.fetchById(id);
     }
 
-    @GetMapping("subscription/pledge/{id}")
-    public FamilySubscriptions deductPledge(@PathVariable String id) {
+    @PostMapping("subscription/pledge/{id}")
+    public FamilySubscriptions deductPledge(@PathVariable String id, @RequestBody FamilySubscriptions updatedDetails) {
         FamilySubscriptions subscriptions = familyPledge.fetchById(id);
-        familyPledge.calculatePledge(subscriptions);
-        PaymentTransactionEntry entry = paymentTransactionService.createTransactionForPledge(subscriptions);
+        PaymentTransactionEntry entry = paymentTransactionService.createTransactionForPledge(subscriptions, updatedDetails.getPledgeCredit());
+        familyPledge.calculatePledge(subscriptions, updatedDetails.getPledgeCredit());
         return familyPledge.updateSubscriptionManual(subscriptions.getFamilyId(), subscriptions, entry);
     }
 

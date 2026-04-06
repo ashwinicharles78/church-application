@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,41 +39,83 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
     public void indexFamilyTrees() {
         List<FamilyMember> allMembers = memberRepository.findAll();
         sanitiseNaValues(allMembers);
-        memberRepository.saveAll(allMembers);
+        memberRepository.saveAll(allMembers); // Persist sanitised basic fields first
 
+        // Group active members by their declared familyId
         Map<String, List<FamilyMember>> byFamily = allMembers.stream()
                 .filter(m -> m.getFamilyId() != null && !m.getFamilyId().trim().isEmpty())
                 .collect(Collectors.groupingBy(m -> m.getFamilyId().trim()));
 
+        // 1. Process active families (creates new ones and updates existing)
         byFamily.forEach(this::processFamily);
+
+        // 2. Clean up completely orphaned families
+        // If a family previously existed but now has 0 members mapped to its ID, remove it
+        Set<String> activeFamilyIds = byFamily.keySet();
+        List<FamilySubscriptions> existingFamilies = familyTreeRepository.findAll();
+
+        for (FamilySubscriptions existingFamily : existingFamilies) {
+            if (!activeFamilyIds.contains(existingFamily.getFamilyId())) {
+                existingFamily.getMembers().clear(); // Sever all bidirectional links
+                familyTreeRepository.delete(existingFamily);
+            }
+        }
     }
 
-    private void processFamily(String familyId, List<FamilyMember> members) {
-        if (members == null || members.isEmpty()) return;
+    private void processFamily(String familyId, List<FamilyMember> currentMembers) {
+        if (currentMembers == null || currentMembers.isEmpty()) return;
 
-        // 1. Fetch or create the parent record
-        FamilySubscriptions family = familyTreeRepository
-                .findById(familyId)
-                .orElseGet(() -> {
-                    FamilySubscriptions fs = new FamilySubscriptions();
-                    fs.setFamilyId(familyId);
-                    return familyTreeRepository.save(fs);
-                });
+        // 1. Fetch existing parent record, or create and MANAGE a clean new one
+        FamilySubscriptions family = familyTreeRepository.findById(familyId).orElse(null);
 
-        // 2. Identify the head for metadata
-        FamilyMember head = findHead(members);
-        if (head != null && family.getHeadMemberId() == null) {
-            family.setHeadMemberId(String.valueOf(head.getMembershipId()));
+        if (family == null) {
+            FamilySubscriptions newFamily = new FamilySubscriptions();
+            newFamily.setFamilyId(familyId);
+
+            // 🚨 CRITICAL FIX: Because FamilySubscriptions uses a manually assigned ID (String),
+            // repository.save() performs a merge() and returns a NEW managed instance.
+            // We MUST reassign our variable to capture this managed instance before linking children.
+            family = familyTreeRepository.save(newFamily);
         }
 
-        // 3. Link members using the bidirectional helper method
-        // This ensures the Set<FamilyMember> is updated AND the member's reference is set
-        members.stream()
-                .filter(m -> m.getFamilyId() != null && m.getFamilyId().trim().equals(familyId))
-                .forEach(family::addMember);
+        // 2. Re-evaluate and dynamically update the Head Member
+        FamilyMember head = findHead(currentMembers);
+        if (head != null) {
+            family.setHeadMemberId(String.valueOf(head.getMembershipId()));
+        } else {
+            family.setHeadMemberId(null);
+        }
 
-        // 4. Save the parent ONLY
-        // Hibernate's persistence context detects the updated Set and syncs the FKs
+        // 3. Safely sync the bidirectional relationships
+        Set<FamilyMember> existingFamilySet = family.getMembers();
+
+        Set<Long> incomingMemberIds = currentMembers.stream()
+                .map(FamilyMember::getMembershipId)
+                .collect(Collectors.toSet());
+
+        // A. Remove members that left this family (Orphan cleanup)
+        existingFamilySet.removeIf(existingMember -> {
+            boolean isLeaving = !incomingMemberIds.contains(existingMember.getMembershipId());
+            if (isLeaving) {
+                existingMember.setFamilySubscription(null); // Sever child-to-parent tie
+            }
+            return isLeaving;
+        });
+
+        // B. Add new members or enforce existing links
+        for (FamilyMember incomingMember : currentMembers) {
+            boolean alreadyInFamily = existingFamilySet.stream()
+                    .anyMatch(m -> m.getMembershipId() == incomingMember.getMembershipId());
+
+            if (!alreadyInFamily) {
+                family.addMember(incomingMember); // Bidirectional helper correctly assigns parent
+            } else {
+                // Enforce that the incoming member points to the managed parent reference
+                incomingMember.setFamilySubscription(family);
+            }
+        }
+
+        // 4. Save parent to cascade the final updates
         familyTreeRepository.save(family);
     }
 

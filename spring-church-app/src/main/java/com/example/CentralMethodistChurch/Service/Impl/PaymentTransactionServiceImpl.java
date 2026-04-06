@@ -17,9 +17,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
     PaymentTransactionRepository paymentTransactionRepository;
 
     @Override
-    public PaymentTransactionEntry createTransactionForPledge(FamilySubscriptions familySubscriptions) {
+    public PaymentTransactionEntry createTransactionForPledge(FamilySubscriptions familySubscriptions, Long credit) {
         PaymentTransactionEntry paymentTransactionEntry = new PaymentTransactionEntry();
-        paymentTransactionEntry.setAmount(familySubscriptions.getPledgeCredit());
+        paymentTransactionEntry.setAmount(credit);
         paymentTransactionEntry.setName(familySubscriptions.getMembers().stream()
                 .filter(member -> String.valueOf(member.getMembershipId()).equals(familySubscriptions.getHeadMemberId()))
                 .map(familyMember -> familyMember.getFirstName() + " " + familyMember.getLastName()).collect(Collectors.joining())

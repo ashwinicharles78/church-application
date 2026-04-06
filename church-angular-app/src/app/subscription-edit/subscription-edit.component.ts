@@ -48,6 +48,8 @@ export class SubscriptionEditComponent implements OnInit {
     this.http.get(`http://localhost:8080/subscription/${this.subscriptionId}`)
       .subscribe((data: any) => {
         this.subscriptionForm.patchValue(data);
+        console.log(data);
+        this.paymentTransactionEntries = data.paymentTransactionEntries;
       });
   }
 
@@ -67,8 +69,7 @@ export class SubscriptionEditComponent implements OnInit {
   
   deductPledge() {
     if (this.subscriptionForm.valid) {
-      console.log("print")
-      this.http.get(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`)
+      this.http.post(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`, this.subscriptionForm.value)
         .subscribe(() => alert('Pledge successfull'));
         window.location.reload();
     }

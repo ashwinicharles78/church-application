@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -27,13 +26,13 @@ public class FamilyPledgeImpl implements FamilyPledge {
     PaymentTransactionService paymentTransactionService;
 
     @Override
-    public void calculatePledge(FamilySubscriptions subscription) {
+    public void calculatePledge(FamilySubscriptions subscription, Long credit) {
 
         // ── Step 1: Recalculate pledgeDue from scratch ONLY when slate is clean ──
         // Conditions: a prior deposit exists, nothing is owed, and no credit is pending
         if (subscription.getLastPledgeDepositDate() != null
                 && subscription.getPledgeDue() <= 0L
-                && subscription.getPledgeCredit() <= 0L) {
+                && credit <= 0L) {
 
             long months = calculateMonthsUntilNow(subscription.getLastPledgeDepositDate());
             long freshDue = subscription.getPledgeAmount() * months;
@@ -46,10 +45,9 @@ public class FamilyPledgeImpl implements FamilyPledge {
         // ── Step 2: Apply credit if any exists (runs independently of Step 1) ──
         // This handles credit that arrived in the same cycle as a fresh calculation
         // or credit carried in from a previous cycle
-        if (subscription.getPledgeCredit() > 0L) {
+        if (credit > 0L) {
 
             long due    = subscription.getPledgeDue();
-            long credit = subscription.getPledgeCredit();
 
             if (credit >= due) {
                 // Credit fully covers the due amount — carry leftover forward
@@ -105,7 +103,7 @@ public class FamilyPledgeImpl implements FamilyPledge {
         incomingData.setMembers(existingSub.getMembers());
 
         // 2. Update basic fields
-        calculatePledge(existingSub);
+        if(Objects.isNull(entry)) calculatePledge(existingSub, incomingData.getPledgeCredit());
         existingSub.setPledgeAmount(incomingData.getPledgeAmount());
         existingSub.setPledgeCredit(incomingData.getPledgeCredit());
         existingSub.setLastPledgeDue(incomingData.getLastPledgeDue());
@@ -114,9 +112,7 @@ public class FamilyPledgeImpl implements FamilyPledge {
         existingSub.setLastPledgeDepositAmount(incomingData.getLastPledgeDepositAmount());
 
         if(Objects.nonNull(entry)){
-            List<PaymentTransactionEntry> existingEntries = existingSub.getPaymentTransactionEntries();
-            existingEntries.add(entry);
-            existingSub.setPaymentTransactionEntries(existingSub.getPaymentTransactionEntries());
+            existingSub.addPaymentTransactionEntry(entry);
         }
 
         // 3. Sync the Members Collection manually

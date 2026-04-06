@@ -32,15 +32,15 @@ export class EditMemberComponent implements OnInit {
     response.subscribe((data)=> this.persons = data);
 
     this.personForm = this.formBuilder.group({
-      title:              [this.persons.title || "", Validators.required],
+      title:              [this.persons.title || ""],
       lastName:           [this.persons.lastName || "", Validators.required],
       middleName:         [this.persons.middleName || ""],
       firstName:          [this.persons.firstName || "", Validators.required],
       familyId:          [this.persons.familyId || ""],
       fatherName:         [this.persons.fatherName  || "", Validators.required],
-      fatherId:         [this.persons.fatherId  || "", Validators.required],
+      fatherId:         [this.persons.fatherId  || ""],
       motherName:         [this.persons.motherName  || "", Validators.required],
-      motherId:         [this.persons.motherId  || "", Validators.required],
+      motherId:         [this.persons.motherId  || ""],
       spouseName:         [this.persons.spouseName || ""],
       spouseId:           [this.persons.spouseId || ""],
       gender:             [this.persons.gender || "", Validators.required],

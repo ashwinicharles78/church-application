@@ -5,5 +5,5 @@ import com.example.CentralMethodistChurch.Entity.PaymentTransactionEntry;
 
 public interface PaymentTransactionService {
 
-    PaymentTransactionEntry createTransactionForPledge(FamilySubscriptions familySubscriptions);
+    PaymentTransactionEntry createTransactionForPledge(FamilySubscriptions familySubscriptions, Long aLong);
 }

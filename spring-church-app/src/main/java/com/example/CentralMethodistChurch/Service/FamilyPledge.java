@@ -6,7 +6,7 @@ import jakarta.transaction.Transactional;
 
 public interface FamilyPledge {
     public FamilySubscriptions fetchById(String id);
-    public void calculatePledge(FamilySubscriptions subscription);
+    public void calculatePledge(FamilySubscriptions subscription, Long aLong);
     FamilySubscriptions saveSubscription(FamilySubscriptions subscription);
     @Transactional
     FamilySubscriptions updateSubscriptionManual(String id, FamilySubscriptions incomingData, PaymentTransactionEntry entry);

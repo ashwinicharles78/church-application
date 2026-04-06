@@ -80,7 +80,7 @@
             <!-- Formats the date (e.g., Oct 24, 2023) -->
             <td>{{ tx.date | date:'mediumDate' }}</td>
             <!-- Formats the amount as currency (e.g., $150.00) -->
-            <td class="tx-amount">{{ tx.amount | currency }}</td>
+            <td class="tx-amount">{{ tx.amount | currency: 'INR' }}</td>
           </tr>
           
           <!-- Fallback row if the array is empty or undefined -->
