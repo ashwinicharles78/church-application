@@ -13,6 +13,15 @@
     </button>
   </div>
 
+  <div style="display: flex; justify-content: flex-end; margin-bottom: 16px; padding: 0 20px;">
+    <button 
+      (click)="saveAllChanges()" 
+      [disabled]="editedMembers.size === 0 || isSaving"
+      style="padding: 8px 16px; border-radius: 6px; background-color: #28a745; color: white; border: none; font-weight: 500; cursor: pointer; transition: 0.2s;"
+      [style.opacity]="editedMembers.size === 0 ? '0.5' : '1'">
+      {{ isSaving ? 'Saving...' : 'Save All Changes (' + editedMembers.size + ')' }}
+    </button>
+  </div>
   <!-- Column Headers -->
   <div class="ml-col-headers-wrap">
     <div class="ml-col-headers">
@@ -20,7 +29,7 @@
       <div class="ml-col-label">Family ID</div>
       <div class="ml-col-label">Date of Birth</div>
       <div class="ml-col-label">Relations</div>
-      <div class="ml-col-label">Pledge</div>
+      <div class="ml-col-label">Membership ID</div>
     </div>
     <div class="ml-col-actions"></div>
   </div>
@@ -61,8 +70,18 @@
 
         <!-- Family ID -->
         <div class="ml-cell-fid">
-          <div class="ml-fid-label">Family</div>
-          <div class="ml-fid-value">{{ member.familyId || '—' }}</div>
+          <div class="ml-fid-label">Family ID</div>
+          <input 
+            type="text" 
+            [value]="member.familyId || ''" 
+            (input)="onFamilyIdInput(member.membershipId, $event)"
+            style="width: 100px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-size: 14px;"
+            placeholder="Enter ID"
+            [ngStyle]="{
+              'border-color': editedMembers.has(member.membershipId) ? '#28a745' : '#ccc', 
+              'background-color': editedMembers.has(member.membershipId) ? '#f0fff0' : 'transparent'
+            }" 
+          >
         </div>
 
         <!-- Date of Birth -->
@@ -79,16 +98,15 @@
           </div>
           <div class="ml-rel-row" *ngIf="member.spouseName">
             <span class="ml-rel-tag">Spouse</span>
-            <span class="ml-rel-name">{{ member.spouseName }}</span>
+            <span class="ml-rel-name">{{ member.spouseName }} | {{member.spouseId}}</span>
           </div>
           <span class="ml-na" *ngIf="!member.fatherName && !member.spouseName">—</span>
         </div>
 
         <!-- Pledge -->
         <div class="ml-cell-pledge">
-          <ng-container *ngIf="member.pledgeAmount; else noPledge">
-            <div class="ml-pledge-num"># {{ member.pledgeNumber || '—' }}</div>
-            <div class="ml-pledge-amount">{{ member.pledgeAmount }}</div>
+          <ng-container *ngIf="member.pledgeNumber; else noPledge">
+            <div class="ml-pledge-num">#{{ member.pledgeNumber || '—' }}</div>
           </ng-container>
           <ng-template #noPledge>
             <span class="ml-pledge-nil">No pledge</span>

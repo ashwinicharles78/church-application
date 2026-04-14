@@ -40,4 +40,11 @@ public class CMCMembersTreeController {
     private void truncateFamilyTree() {
         familyTreeServices.truncateFamilyTree();
     }
+
+    // Add this inside CMCMembersTreeController class
+    @GetMapping(path = "/auto-map-relations")
+    public String autoMapRelations() {
+        familyTreeServices.autoMapFamilyRelations();
+        return "Family relations mapped successfully based on names!";
+    }
 }

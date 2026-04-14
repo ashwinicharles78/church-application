@@ -65,4 +65,7 @@ public class FamilyMember {
     private String status;
     private String inactiveReason;
     private String inactiveSince;
+    private String CMCMebershipId;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
+    private LocalDate dateOfDemise;
 }

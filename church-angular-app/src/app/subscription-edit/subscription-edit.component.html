@@ -45,17 +45,16 @@
     </div>
 
     <div class="action-footer">
+      <button type="button" class="btn-submit-pledge" [disabled]="!subscriptionForm.valid" (click)="deductPledge()">
+        Submit Pledge
+      </button>
+
       <button type="submit" class="btn-save" [disabled]="!subscriptionForm.valid">
         Update Details
       </button>
     </div>
   </form>
 
-  <div class="submit-section">
-    <button class="btn-save" [disabled]="!subscriptionForm.valid" (click)="deductPledge()">
-      Submit Pledge
-    </button>
-  </div>
 
   <!-- ── Payment Transactions Table Section ────────────────────────────────── -->
   <div class="transactions-container">
@@ -70,22 +69,23 @@
             <th>Name</th>
             <th>Date</th>
             <th>Amount</th>
-          </tr>
+            <th>Action</th> </tr>
         </thead>
         <tbody>
-          <!-- Loop through the transactions array from your TypeScript file -->
           <tr *ngFor="let tx of paymentTransactionEntries">
             <td class="tx-id">{{ tx.transaction_id }}</td>
             <td>{{ tx.name }}</td>
-            <!-- Formats the date (e.g., Oct 24, 2023) -->
             <td>{{ tx.date | date:'mediumDate' }}</td>
-            <!-- Formats the amount as currency (e.g., $150.00) -->
-            <td class="tx-amount">{{ tx.amount | currency: 'INR' }}</td>
+            <td class="tx-amount">{{ tx.amount | currency: "INR" }}</td>
+            <td>
+              <button type="button" class="btn-invoice-sm" (click)="openInvoice()">
+                📄 Invoice
+              </button>
+            </td>
           </tr>
           
-          <!-- Fallback row if the array is empty or undefined -->
           <tr *ngIf="!paymentTransactionEntries || paymentTransactionEntries.length === 0">
-            <td colspan="4" class="empty-state">No payment transactions found.</td>
+            <td colspan="5" class="empty-state">No payment transactions found.</td>
           </tr>
         </tbody>
       </table>

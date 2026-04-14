@@ -6,12 +6,16 @@
 package com.example.CentralMethodistChurch.Controller;
 
 import com.example.CentralMethodistChurch.DTO.Events;
+import com.example.CentralMethodistChurch.DTO.FamilyIdData;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
 import com.example.CentralMethodistChurch.Entity.FamilySubscriptions;
+import com.example.CentralMethodistChurch.Repository.MemberRepository;
 import com.example.CentralMethodistChurch.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +23,9 @@ public class CMCMembersController {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @GetMapping(path = "/all-members")
     private List<FamilyMember> fetchAllMembers() {
@@ -63,5 +70,24 @@ public class CMCMembersController {
     @DeleteMapping(path = "/member-id/{id}")
     private void deleteMember(@PathVariable("id") String id) {
         memberService.deleteMemberbyId(id);
+    }
+
+    @PutMapping(path = "/bulk-update-family-ids")
+    public ResponseEntity<String> bulkUpdateFamilyIds(@RequestBody List<FamilyIdData> updates) {
+
+        List<FamilyMember> membersToUpdate = new ArrayList<>();
+
+        // Fetch the specific members, update their family ID, and add to list
+        for (FamilyIdData update : updates) {
+            memberRepository.findById(String.valueOf(update.getMembershipId())).ifPresent(member -> {
+                member.setFamilyId(update.getFamilyId());
+                membersToUpdate.add(member);
+            });
+        }
+
+        // Save all changes to the database in one single batch query!
+        memberRepository.saveAll(membersToUpdate);
+
+        return ResponseEntity.ok("Successfully updated " + membersToUpdate.size() + " members.");
     }
 }

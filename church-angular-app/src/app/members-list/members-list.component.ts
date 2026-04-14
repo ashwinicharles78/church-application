@@ -16,6 +16,9 @@ export class MembersListComponent {
   members: Member[] = [];
   memberToDelete: any;
   isDeleting: boolean | undefined;
+  editedMembers = new Map<number, string>(); 
+  isSaving = false;
+
 
   constructor(private http:HttpClient, private router: Router) {
   }
@@ -45,6 +48,37 @@ ngOnInit() {
     this.memberToDelete = member;
   }
 
+  // Triggered whenever a user types in the input box
+  onFamilyIdInput(memberId: number, event: any) {
+    const newValue = event.target.value;
+    this.editedMembers.set(memberId, newValue);
+  }
+
+  // Triggered by the "Save All" button
+  saveAllChanges() {
+    if (this.editedMembers.size === 0) return; // Nothing to save
+
+    this.isSaving = true;
+
+    // Convert the Map into an Array of objects for the backend
+    const payload = Array.from(this.editedMembers, ([membershipId, familyId]) => ({
+      membershipId,
+      familyId
+    }));
+
+    this.bulkUpdateFamilyIds(payload).subscribe({
+      next: (res) => {
+        alert('All changes saved successfully!');
+        this.editedMembers.clear(); // Clear the tracking map
+        this.isSaving = false;
+      },
+      error: (err) => {
+        console.error('Error saving changes', err);
+        alert('Failed to save changes.');
+        this.isSaving = false;
+      }
+    });
+  }
   /** Step 2 — user confirmed: call DELETE /member-id/{id} */
   deleteMember(): void {
     if (!this.memberToDelete || this.isDeleting) return;
@@ -75,5 +109,10 @@ ngOnInit() {
   private resetDeleteState(): void {
     this.memberToDelete = null;
     this.isDeleting = false;
+  }
+
+  // In your Angular Service
+  bulkUpdateFamilyIds(updates: {membershipId: number, familyId: string}[]) {
+    return this.http.put("http://localhost:8080/bulk-update-family-ids", updates, { responseType: 'text' });
   }
 }

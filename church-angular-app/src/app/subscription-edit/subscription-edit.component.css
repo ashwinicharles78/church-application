@@ -149,3 +149,31 @@ input {
   color: #888;
   font-style: italic;
 }
+.action-footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end; /* Aligns both buttons to the right side */
+  gap: 15px; /* Adds a clean space between the two buttons */
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+/* Optional: New styling for the Submit Pledge button to differentiate it */
+.btn-submit-pledge {
+  background-color: #3498db; /* A distinct blue */
+  color: white;
+  padding: 12px 40px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+/* Add a disabled state so the buttons look grayed out when the form is invalid */
+.btn-save:disabled, 
+.btn-submit-pledge:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

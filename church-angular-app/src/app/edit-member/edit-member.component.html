@@ -101,13 +101,17 @@
 
         <!-- Contact/Email Row -->
         <div class="row mb-4">
-          <div class="col-md-6 mb-3">
+          <div class="col-md-4 mb-3">
             <label for="contact" class="form-label fw-bold">Contact <span class="text-danger">*</span></label>
             <input id="contact" formControlName="contact" type="tel" class="form-control" required>
           </div>
-          <div class="col-md-6 mb-3">
+          <div class="col-md-4 mb-3">
             <label for="Email" class="form-label">Email</label>
             <input id="Email" formControlName="Email" type="email" class="form-control">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="pledgeNumber" class="form-label">Pledge Number</label>
+            <input id="pledgeNumber" formControlName="pledgeNumber" type="pledgeNumber" class="form-control">
           </div>
         </div>
 
@@ -119,6 +123,21 @@
           </div>
         </div>
 
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label for="CMCMebershipId" class="form-label fw-bold">CMC Membership ID</label>
+            <input id="CMCMebershipId" formControlName="CMCMebershipId" type="text" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Date of Demise</label>
+            <div class="input-group">
+              <input id="dateOfDemise" formControlName="dateOfDemise" (input)="onDateInput($event, 'dateOfDemise')" 
+                    type="text" class="form-control" placeholder="dd-MMM-yyyy" maxlength="11">
+              <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-primary"></i></span>
+            </div>
+            <input type="hidden" formControlName="dateOfDemise">
+          </div>
+      </div>
         <!-- Religious Status Row -->
         <div class="row mb-4">
           <div class="col-md-3 mb-3">

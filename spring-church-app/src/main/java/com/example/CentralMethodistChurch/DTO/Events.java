@@ -20,4 +20,5 @@ public class Events {
     private EventType eventType;
     private LocalDate date;
     private List<String> memberName;
+    private String familyId;
 }

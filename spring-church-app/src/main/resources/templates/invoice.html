@@ -1,149 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
+    <title>Pledge Invoice</title>
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 0; }
-        .invoice-box { max-width: 800px; margin: 40px auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); font-size: 16px; line-height: 24px; }
-
-        /* Header and Layout */
-        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 3px solid #333; padding-bottom: 20px; }
-        .invoice-header h1 { margin: 0; font-size: 40px; text-transform: uppercase; color: #000; }
-
-        .info-section { display: flex; justify-content: space-between; margin-bottom: 40px; }
-        .info-block h3 { margin: 0 0 10px 0; border-bottom: 1px solid #ddd; display: inline-block; padding-right: 20px; }
-
-        /* Table Design */
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        table th { background: #f9f9f9; border-bottom: 2px solid #333; padding: 12px; font-weight: bold; }
-        table td { padding: 12px; border-bottom: 1px solid #eee; }
-
-        /* Specific alignment for currency/numbers */
-        .text-right { text-align: right; }
-
-        /* Totals section matching the image layout */
-        .totals-container { margin-top: 30px; display: flex; justify-content: flex-end; }
-        .totals-table { width: 40%; }
-        .totals-table td { border-bottom: none; padding: 5px 12px; }
-        .grand-total { border-top: 2px solid #333 !important; font-weight: bold; font-size: 1.1em; }
-
-        .footer { margin-top: 60px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #eee; padding-top: 20px; }
-
-        @media print {
-            .invoice-box { border: none; box-shadow: none; margin: 0; padding: 0; }
-            .no-print { display: none; }
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background-color: #f9f9f9; padding: 40px; }
+        .invoice-container { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header { border-bottom: 2px solid #2ecc71; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .header h1 { margin: 0; color: #2c3e50; font-size: 28px; }
+        .header .meta { text-align: right; color: #7f8c8d; font-size: 14px; }
+        .summary-box { background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin-bottom: 30px; }
+        .summary-box p { margin: 8px 0; font-size: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th { background-color: #f4f6f7; color: #34495e; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+        td { padding: 12px; border-bottom: 1px solid #eee; color: #555; }
+        .amount { text-align: right; font-weight: bold; }
+        .total-row td { font-size: 18px; color: #2c3e50; font-weight: bold; border-top: 2px solid #333; }
+        .footer { text-align: center; color: #95a5a6; font-size: 13px; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="invoice-box">
-    <div class="invoice-header">
+<div class="invoice-container">
+    <div class="header">
         <div>
-            <h1>Invoice</h1>
-            <p>Invoice #: <span></span></p>
-            <p>Date: <span></span></p>
+            <h1>Central Methodist Church</h1>
+            <p style="margin: 5px 0 0; color: #7f8c8d;">Subscription Statement</p>
         </div>
-        <div style="text-align: right;">
-            <strong>CENTRAL METHODIST CHURCH</strong><br>
-            <br>
-            <br>
+        <div class="meta">
+            <p style="margin: 0;">Date: <span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}"></span></p>
+            <p style="margin: 5px 0 0;">Family ID: <strong th:text="${subscription.familyId}"></strong></p>
         </div>
     </div>
 
-    <div class="info-section">
-        <div class="info-block">
-            <h3>Bill To:</h3>
-            <div><strong></strong></div>
-            <div></div>
-            <div></div>
-        </div>
-        <div class="info-block" style="text-align: right;">
-            <h3>Payment Status:</h3>
-            <div style="font-weight: bold; font-size: 1.2em;">
-            </div>
-        </div>
+    <div class="summary-box">
+        <p><strong>Pledge Start Date:</strong> <span th:text="${subscription.pledgeStartDate}"></span></p>
+        <p><strong>Last Deposit Date:</strong> <span th:text="${subscription.lastPledgeDepositDate}"></span></p>
     </div>
 
     <table>
         <thead>
         <tr>
-            <th>Subscription Name</th>
-            <th>Subscription Type</th>
-            <th class="text-right">Amount</th>
-            <th class="text-right">Total</th>
+            <th>Description</th>
+            <th class="amount">Amount</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td></td>
-            <td></td>
-            <td class="text-right"></td>
-            <td class="text-right"></td>
+            <td>Amount</td>
+            <td class="amount" th:text="'INR ' + ${subscription.pledgeCredit}"></td>
+        </tr>
+        <tr>
+            <td>Current Available Credit</td>
+            <td class="amount" th:text="'$' + ${subscription.pledgeCredit}"></td>
+        </tr>
+        <tr>
+            <td>Amount Deposited (Last Transaction)</td>
+            <td class="amount" th:text="'$' + ${subscription.lastPledgeDepositAmount}"></td>
+        </tr>
+        <tr class="total-row">
+            <td>Total Pledge Due</td>
+            <td class="amount" th:text="'$' + ${subscription.pledgeDue}"></td>
         </tr>
         </tbody>
     </table>
 
-    <div class="totals-container">
-        <table class="totals-table">
-            <tr>
-                <td>Subtotal:</td>
-                <td class="text-right"></td>
-            </tr>
-            <tr>
-                <td>Tax/Other:</td>
-                <td class="text-right"></td>
-            </tr>
-            <tr class="grand-total">
-                <td><strong>Grand Total:</strong></td>
-                <td class="text-right"><strong></strong></td>
-            </tr>
-        </table>
-    </div>
-
     <div class="footer">
-        <p>Thank you for your contribution.</p>
-        <p>Generated by Church Management System</p>
+        <p>Thank you for your continued support and generous pledge.</p>
+        <p>If you have any questions concerning this invoice, please contact the church office.</p>
     </div>
-</div>
-
-<div class="no-print" style="text-align: center; margin-top: 20px;">
-    <button onclick="window.print()" style="padding: 10px 25px; background: #333; color: #fff; border: none; cursor: pointer; border-radius: 4px;">Print PDF</button>
 </div>
 
 </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <title>Church Invoice</title>-->
-<!--    <style>-->
-<!--        /* Add the professional CSS from previous turn here */-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body onload="window.print()">-->
-<!--<div class="invoice-box">-->
-<!--    <h2>Invoice for Family ID: <span th:text="${subscription.familyId}"></span></h2>-->
-<!--    <hr>-->
-<!--    <table>-->
-<!--        <tr>-->
-<!--            <td>Pledge Amount</td>-->
-<!--            <td th:text="${subscription.pledgeAmount}"></td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td>Pledge Credit</td>-->
-<!--            <td th:text="${subscription.pledgeCredit}"></td>-->
-<!--        </tr>-->
-<!--        <tr style="font-weight:bold">-->
-<!--            <td>Pledge Due</td>-->
-<!--            <td th:text="${subscription.pledgeDue}"></td>-->
-<!--        </tr>-->
-<!--    </table>-->
-<!--    <p>Last Deposit Date: <span th:text="${subscription.lastPledgeDepositDate}"></span></p>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->

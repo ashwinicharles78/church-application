@@ -103,13 +103,13 @@ public class FamilyPledgeImpl implements FamilyPledge {
         incomingData.setMembers(existingSub.getMembers());
 
         // 2. Update basic fields
-        if(Objects.isNull(entry)) calculatePledge(existingSub, incomingData.getPledgeCredit());
         existingSub.setPledgeAmount(incomingData.getPledgeAmount());
         existingSub.setPledgeCredit(incomingData.getPledgeCredit());
         existingSub.setLastPledgeDue(incomingData.getLastPledgeDue());
         existingSub.setPledgeStartDate(incomingData.getPledgeStartDate());
         existingSub.setLastPledgeDepositDate(incomingData.getLastPledgeDepositDate());
         existingSub.setLastPledgeDepositAmount(incomingData.getLastPledgeDepositAmount());
+        if(Objects.isNull(entry)) calculatePledge(existingSub, incomingData.getPledgeCredit());
 
         if(Objects.nonNull(entry)){
             existingSub.addPaymentTransactionEntry(entry);

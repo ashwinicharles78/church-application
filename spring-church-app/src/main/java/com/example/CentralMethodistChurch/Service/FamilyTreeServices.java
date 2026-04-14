@@ -1,6 +1,7 @@
 package com.example.CentralMethodistChurch.Service;
 
 import com.example.CentralMethodistChurch.Entity.FamilySubscriptions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface FamilyTreeServices {
     void truncateFamilyTree();
 
     long getCurrentYearPledge(final long familyId);
+
+    @Transactional
+    void autoMapFamilyRelations();
 }

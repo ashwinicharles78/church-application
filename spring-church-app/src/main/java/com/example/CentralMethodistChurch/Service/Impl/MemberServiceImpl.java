@@ -13,12 +13,14 @@ import com.example.CentralMethodistChurch.Repository.MemberRepository;
 import com.example.CentralMethodistChurch.Service.FamilyPopulator;
 import com.example.CentralMethodistChurch.Service.FamilyTreeServices;
 import com.example.CentralMethodistChurch.Service.MemberService;
+
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -26,6 +28,8 @@ import java.util.*;
 public class MemberServiceImpl implements MemberService {
 
     private static final String SPACE = " ";
+    private static final String EMPTY = "";
+    private static final Logger LOG = Logger.getLogger(MemberServiceImpl.class.getName());
     @Autowired
     private MemberRepository memberRepository;
 
@@ -56,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
             // 1. Get the parent subscription
             Optional<FamilySubscriptions> subscription = subscribtionRepository.findById(String.valueOf(member.get().getFamilyId()));
             // 2. Remove the member from the list (this updates the JOIN TABLE)
-            if(subscription.isPresent()) {
+            if (subscription.isPresent()) {
                 subscription.get().getMembers().removeIf(m -> String.valueOf(m.getMembershipId()).equals(id));
 
                 // 3. Save the subscription (with orphanRemoval = true, this deletes the member record)
@@ -67,17 +71,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public FamilyMember saveMember (FamilyMember member) {
+    public FamilyMember saveMember(FamilyMember member) {
         return memberRepository.save(member);
     }
+
     @Override
     public List<FamilyMember> saveAllMembers(List<FamilyMember> members) {
         members.forEach(member -> {
             populator.populateFamily(member);
             memberRepository.save(member);
-            if(fetchById(String.valueOf(member.getMembershipId())) != null) {
+            if (fetchById(String.valueOf(member.getMembershipId())) != null) {
                 FamilySubscriptions sub = fetchById(String.valueOf(member.getMembershipId())).getFamilySubscription();
-                if(sub != null)
+                if (sub != null)
                     sub.addMember(member);
             }
         });
@@ -92,89 +97,89 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public FamilyMember updateMember(String id, FamilyMember familyMember) {
         FamilyMember memberOriginal = memberRepository.findById(id).orElse(null);
-        if(Objects.nonNull(memberOriginal)) {
-            if(memberOriginal.equals(familyMember))
+        if (Objects.nonNull(memberOriginal)) {
+            if (memberOriginal.equals(familyMember))
                 return memberRepository.save(familyMember);
             else {
-                if (memberOriginal.getTitle()==null || !memberOriginal.getTitle().equals(familyMember.getTitle())) {
+                if (memberOriginal.getTitle() == null || !memberOriginal.getTitle().equals(familyMember.getTitle())) {
                     memberOriginal.setTitle(familyMember.getTitle());
                 }
-                if (memberOriginal.getLastName()==null || !memberOriginal.getLastName().equals(familyMember.getLastName())) {
+                if (memberOriginal.getLastName() == null || !memberOriginal.getLastName().equals(familyMember.getLastName())) {
                     memberOriginal.setLastName(familyMember.getLastName());
                 }
-                if (memberOriginal.getFamilyId()==null || !memberOriginal.getFamilyId().equals(familyMember.getFamilyId())) {
+                if (memberOriginal.getFamilyId() == null || !memberOriginal.getFamilyId().equals(familyMember.getFamilyId())) {
                     memberOriginal.setFamilyId(familyMember.getFamilyId());
                 }
-                if (memberOriginal.getMiddleName()==null || !memberOriginal.getMiddleName().equals(familyMember.getMiddleName())) {
+                if (memberOriginal.getMiddleName() == null || !memberOriginal.getMiddleName().equals(familyMember.getMiddleName())) {
                     memberOriginal.setMiddleName(familyMember.getMiddleName());
                 }
-                if (memberOriginal.getFirstName()==null || !memberOriginal.getFirstName().equals(familyMember.getFirstName())) {
+                if (memberOriginal.getFirstName() == null || !memberOriginal.getFirstName().equals(familyMember.getFirstName())) {
                     memberOriginal.setFirstName(familyMember.getFirstName());
                 }
-                if (memberOriginal.getFatherName()==null || !memberOriginal.getFatherName().equals(familyMember.getFatherName())) {
+                if (memberOriginal.getFatherName() == null || !memberOriginal.getFatherName().equals(familyMember.getFatherName())) {
                     memberOriginal.setFatherName(familyMember.getFatherName());
                 }
-                if (memberOriginal.getFatherId()==null || !memberOriginal.getFatherId().equals(familyMember.getFatherId())) {
+                if (memberOriginal.getFatherId() == null || !memberOriginal.getFatherId().equals(familyMember.getFatherId())) {
                     memberOriginal.setFatherId(familyMember.getFatherId());
                 }
-                if (memberOriginal.getMotherName()==null || !memberOriginal.getMotherName().equals(familyMember.getMotherName())) {
+                if (memberOriginal.getMotherName() == null || !memberOriginal.getMotherName().equals(familyMember.getMotherName())) {
                     memberOriginal.setMotherName(familyMember.getMotherName());
                 }
-                if (memberOriginal.getMotherId()==null || !memberOriginal.getMotherId().equals(familyMember.getMotherId())) {
+                if (memberOriginal.getMotherId() == null || !memberOriginal.getMotherId().equals(familyMember.getMotherId())) {
                     memberOriginal.setMotherId(familyMember.getMotherId());
                 }
-                if (memberOriginal.getSpouseName()==null || !memberOriginal.getSpouseName().equals(familyMember.getSpouseName())) {
+                if (memberOriginal.getSpouseName() == null || !memberOriginal.getSpouseName().equals(familyMember.getSpouseName())) {
                     memberOriginal.setSpouseName(familyMember.getSpouseName());
                 }
-                if (memberOriginal.getSpouseId()==null || !memberOriginal.getSpouseId().equals(familyMember.getSpouseId())) {
+                if (memberOriginal.getSpouseId() == null || !memberOriginal.getSpouseId().equals(familyMember.getSpouseId())) {
                     memberOriginal.setSpouseId(familyMember.getSpouseId());
                 }
-                if (memberOriginal.getGender()==null ||!memberOriginal.getGender().equals(familyMember.getGender())) {
+                if (memberOriginal.getGender() == null || !memberOriginal.getGender().equals(familyMember.getGender())) {
                     memberOriginal.setGender(familyMember.getGender());
                 }
-                if (null == memberOriginal.getDob() ||!memberOriginal.getDob().equals(familyMember.getDob())) {
+                if (null == memberOriginal.getDob() || !memberOriginal.getDob().equals(familyMember.getDob())) {
                     memberOriginal.setDob(familyMember.getDob());
                 }
-                if (null == memberOriginal.getAge() ||!memberOriginal.getAge().equals(familyMember.getAge())) {
+                if (null == memberOriginal.getAge() || !memberOriginal.getAge().equals(familyMember.getAge())) {
                     memberOriginal.setAge(familyMember.getAge());
                 }
-                if (null == memberOriginal.getAddress() ||!memberOriginal.getAddress().equals(familyMember.getAddress())) {
+                if (null == memberOriginal.getAddress() || !memberOriginal.getAddress().equals(familyMember.getAddress())) {
                     memberOriginal.setAddress(familyMember.getAddress());
                 }
-                if (null == memberOriginal.getMaritalStatus() ||!memberOriginal.getMaritalStatus().equals(familyMember.getMaritalStatus())) {
+                if (null == memberOriginal.getMaritalStatus() || !memberOriginal.getMaritalStatus().equals(familyMember.getMaritalStatus())) {
                     memberOriginal.setMaritalStatus(familyMember.getMaritalStatus());
                 }
-                if (null == memberOriginal.getDateOfMarriage() ||!memberOriginal.getDateOfMarriage().equals(familyMember.getDateOfMarriage())) {
+                if (null == memberOriginal.getDateOfMarriage() || !memberOriginal.getDateOfMarriage().equals(familyMember.getDateOfMarriage())) {
                     memberOriginal.setDateOfMarriage(familyMember.getDateOfMarriage());
                 }
-                if (null == memberOriginal.getYearsOfMarriage() ||!memberOriginal.getYearsOfMarriage().equals(familyMember.getYearsOfMarriage())) {
+                if (null == memberOriginal.getYearsOfMarriage() || !memberOriginal.getYearsOfMarriage().equals(familyMember.getYearsOfMarriage())) {
                     memberOriginal.setYearsOfMarriage(familyMember.getYearsOfMarriage());
                 }
-                if (null == memberOriginal.getContact()||!memberOriginal.getContact().equals(familyMember.getContact())) {
+                if (null == memberOriginal.getContact() || !memberOriginal.getContact().equals(familyMember.getContact())) {
                     memberOriginal.setContact(familyMember.getContact());
                 }
-                if (null == memberOriginal.getEmail() ||!memberOriginal.getEmail().equals(familyMember.getEmail())) {
+                if (null == memberOriginal.getEmail() || !memberOriginal.getEmail().equals(familyMember.getEmail())) {
                     memberOriginal.setEmail(familyMember.getEmail());
                 }
-                if (null == memberOriginal.getBaptisedDate() ||!memberOriginal.getBaptisedDate().equals(familyMember.getBaptisedDate())) {
+                if (null == memberOriginal.getBaptisedDate() || !memberOriginal.getBaptisedDate().equals(familyMember.getBaptisedDate())) {
                     memberOriginal.setBaptisedDate(familyMember.getBaptisedDate());
                 }
-                if (null == memberOriginal.getConfirmed() ||!memberOriginal.getConfirmed().equals(familyMember.getConfirmed())) {
+                if (null == memberOriginal.getConfirmed() || !memberOriginal.getConfirmed().equals(familyMember.getConfirmed())) {
                     memberOriginal.setConfirmed(familyMember.getConfirmed());
                 }
-                if (null == memberOriginal.getConfirmationDate() ||!memberOriginal.getConfirmationDate().equals(familyMember.getConfirmationDate())) {
+                if (null == memberOriginal.getConfirmationDate() || !memberOriginal.getConfirmationDate().equals(familyMember.getConfirmationDate())) {
                     memberOriginal.setConfirmationDate(familyMember.getConfirmationDate());
                 }
-                if (null == memberOriginal.getFullMember() ||!memberOriginal.getFullMember().equals(familyMember.getFullMember())) {
+                if (null == memberOriginal.getFullMember() || !memberOriginal.getFullMember().equals(familyMember.getFullMember())) {
                     memberOriginal.setFullMember(familyMember.getFullMember());
                 }
-                if (null == memberOriginal.getNonResidentMember() ||!memberOriginal.getNonResidentMember().equals(familyMember.getNonResidentMember())) {
+                if (null == memberOriginal.getNonResidentMember() || !memberOriginal.getNonResidentMember().equals(familyMember.getNonResidentMember())) {
                     memberOriginal.setNonResidentMember(familyMember.getNonResidentMember());
                 }
-                if (null == memberOriginal.getPreparatoryMember() ||!memberOriginal.getPreparatoryMember().equals(familyMember.getPreparatoryMember())) {
+                if (null == memberOriginal.getPreparatoryMember() || !memberOriginal.getPreparatoryMember().equals(familyMember.getPreparatoryMember())) {
                     memberOriginal.setPreparatoryMember(familyMember.getPreparatoryMember());
                 }
-                if (null == memberOriginal.getSelfDependent() ||!memberOriginal.getSelfDependent().equals(familyMember.getSelfDependent())) {
+                if (null == memberOriginal.getSelfDependent() || !memberOriginal.getSelfDependent().equals(familyMember.getSelfDependent())) {
                     memberOriginal.setSelfDependent(familyMember.getSelfDependent());
                 }
                 if (null == memberOriginal.getPledgeNumber() || !memberOriginal.getPledgeNumber().equals(familyMember.getPledgeNumber())) {
@@ -203,16 +208,23 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public List<Events> getEvents() {
-        List<FamilyMember> memebers = memberRepository.findAll();
+        List<FamilyMember> members = memberRepository.findAll();
         List<Events> events = new ArrayList<>();
-        for(FamilyMember familyMember: memebers){
-            if(isWithinSevenDays(familyMember.getDob())){
-                events.add(new Events(EventType.Birthday, familyMember.getDob(), List.of(familyMember.getFirstName()+familyMember.getLastName())));
+        for (FamilyMember familyMember : members) {
+            if (isWithinSevenDays(familyMember.getDob())) {
+                events.add(new Events(EventType.Birthday, familyMember.getDob(), List.of(familyMember.getFirstName() + SPACE + familyMember.getLastName()), Optional.ofNullable(familyMember.getPledgeNumber()).orElse(EMPTY)));
             }
 
-            if(familyMember.getDateOfMarriage()!=null && isWithinSevenDays(familyMember.getDateOfMarriage())){
-                FamilyMember spouse = this.fetchById(familyMember.getSpouseId());
-                events.add(new Events(EventType.Anniversary, familyMember.getDob(), List.of(familyMember.getTitle() + SPACE + familyMember.getFirstName()+ SPACE + familyMember.getLastName(),familyMember.getTitle()+ SPACE + spouse.getFirstName() + SPACE + spouse.getLastName())));
+            if (familyMember.getDateOfMarriage() != null && isWithinSevenDays(familyMember.getDateOfMarriage())) {
+                if (familyMember.getSpouseId() != null && familyMember.getFamilyId() != null) {
+                    FamilyMember spouse = this.fetchById(familyMember.getSpouseId());
+                    if(!events.stream().filter(event -> event.getFamilyId() != null).anyMatch(event -> event.getFamilyId().equals(familyMember.getFamilyId()))) {
+                        events.add(new Events(EventType.Anniversary, familyMember.getDateOfMarriage(), List.of(familyMember.getTitle() + SPACE + familyMember.getFirstName() + SPACE + familyMember.getLastName(), familyMember.getTitle() + SPACE + spouse.getFirstName() + SPACE + spouse.getLastName()), familyMember.getFamilyId()));
+                    }
+                } else {
+                    LOG.info("Missing spouse id for : " + familyMember.getMembershipId() + " Name : " + familyMember.getFirstName() + SPACE + familyMember.getLastName());
+                    events.add(new Events(EventType.Anniversary, familyMember.getDateOfMarriage(), List.of(familyMember.getTitle() + SPACE + familyMember.getFirstName() + SPACE + familyMember.getLastName(), ""), familyMember.getFamilyId()));
+                }
             }
 
         }
@@ -225,6 +237,7 @@ public class MemberServiceImpl implements MemberService {
         // Check if the difference is less than or equal to 7
         return daysDifference <= 7 && daysDifference >= 0;
     }
+
     @Override
     public void truncateMembers() {
         List<FamilyMember> members = memberRepository.findAll();

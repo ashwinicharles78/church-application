@@ -66,12 +66,30 @@ export class SubscriptionEditComponent implements OnInit {
   // This URL now points to the @Controller we just created
   window.open(`http://localhost:8080/invoice/${id}`, '_blank');
 }
-  
+
+
+  // Helper method to open the Thymeleaf invoice in a new browser tab
+  openInvoice() {
+    // Uses the GET /invoice/{id} endpoint from InvoiceController
+    const invoiceUrl = `http://localhost:8080/invoice/${this.subscriptionId}`;
+    window.open(invoiceUrl, '_blank');
+  }
+
+  // Update your existing deductPledge method
   deductPledge() {
-    if (this.subscriptionForm.valid) {
-      this.http.post(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`, this.subscriptionForm.value)
-        .subscribe(() => alert('Pledge successfull'));
-        window.location.reload();
-    }
+    // Assuming you have a method in your service that calls the GET /subscription/pledge/{id} endpoint
+    this.http.post(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`, this.subscriptionForm.value).subscribe({
+      next: (updatedSubscription : any) => {
+        console.log('Pledge submitted successfully');
+        
+        // 1. Refresh your local form/data so the UI updates
+        this.subscriptionForm.patchValue(updatedSubscription);
+        this.paymentTransactionEntries = updatedSubscription.paymentTransactionEntries;
+        
+        // 2. Automatically pop open the invoice template in a new tab
+        this.openInvoice();
+      },
+      error: (err) => console.error('Error submitting pledge', err)
+    });
   }
 }

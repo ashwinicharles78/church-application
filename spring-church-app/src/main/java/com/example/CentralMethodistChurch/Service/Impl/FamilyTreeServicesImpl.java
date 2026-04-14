@@ -177,4 +177,60 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
                 })
                 .orElse(0L);
     }
+
+    // Add these methods inside FamilyTreeServicesImpl class
+
+    @Transactional
+    @Override
+    public void autoMapFamilyRelations() {
+        List<FamilyMember> allMembers = memberRepository.findAll();
+
+        for (FamilyMember member : allMembers) {
+
+            // 1. Map Father ID
+            if (!isBlank(member.getFatherName()) && isBlank(member.getFatherId())) {
+                findMatchingMember(allMembers, member.getFatherName())
+                        .ifPresent(match -> member.setFatherId(String.valueOf(match.getMembershipId())));
+            }
+
+            // 2. Map Mother ID
+            if (!isBlank(member.getMotherName()) && isBlank(member.getMotherId())) {
+                findMatchingMember(allMembers, member.getMotherName())
+                        .ifPresent(match -> member.setMotherId(String.valueOf(match.getMembershipId())));
+            }
+
+            // 3. Map Spouse ID
+            if (!isBlank(member.getSpouseName()) && isBlank(member.getSpouseId())) {
+                findMatchingMember(allMembers, member.getSpouseName())
+                        .ifPresent(match -> member.setSpouseId(String.valueOf(match.getMembershipId())));
+            }
+        }
+
+        // Save all updated members back to the database in one batch
+        memberRepository.saveAll(allMembers);
+    }
+
+    /**
+     * Helper to find a member by comparing a target name against
+     * combinations of first and last names in the database.
+     */
+    private java.util.Optional<FamilyMember> findMatchingMember(List<FamilyMember> members, String targetName) {
+        if (isBlank(targetName)) {
+            return java.util.Optional.empty();
+        }
+
+        String normalizedTarget = targetName.trim().toLowerCase();
+
+        return members.stream().filter(m -> {
+            String fName = m.getFirstName() != null ? m.getFirstName().trim().toLowerCase() : "";
+            String lName = m.getLastName() != null ? m.getLastName().trim().toLowerCase() : "";
+
+            String fullNameStandard = (fName + " " + lName).trim();
+            String fullNameReversed = (lName + " " + fName).trim();
+
+            return fullNameStandard.equals(normalizedTarget) ||
+                    fullNameReversed.equals(normalizedTarget) ||
+                    fName.equals(normalizedTarget); // Fallback: checks if they only provided a first name
+        }).findFirst();
+    }
 }

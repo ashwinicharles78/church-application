@@ -275,7 +275,7 @@
   }
 
   /* ── Actions ── */
-.ml-actions { display: flex; align-items: center; gap: 6px; }
+.ml-actions { display: flex; align-items: center; gap: 10px; font-size: large; padding: 10px; margin: 10px;}
 
   /* Override: make last column actions not part of grid count — append after */
   .ml-card { position: relative; }
@@ -316,7 +316,7 @@
   .ml-col-actions { width: 116px; flex-shrink: 0; }
 
   .ml-btn-icon {
-    width: 32px;
+    width: 48px;
     height: 32px;
     border-radius: 4px;
     border: 1px solid var(--rule);
