@@ -31,7 +31,7 @@ export interface Member {
     pledgeNumber: string | null;
     pledgeAmount: string | null;
     status: string;
-    CMCMebershipId: string | null; // Added
+    CMCMembershipId: string | null; // Added
     dateOfDemise: Date | null; // Added
     inactiveReason: string;
     inactiveSince: string;

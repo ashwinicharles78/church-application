@@ -44,7 +44,7 @@ export class AddPersonComponent implements OnInit {
       address:            ["", Validators.required],
       contact:            ["", Validators.required],
       Email:              [""],
-      CMCMebershipId:     [""], // Added
+      CMCMembershipId:     [""], // Added
       dateOfDemise:       [""],
       pledgeNumber:       ["", Validators.required],
       Baptised:           ["", Validators.required],

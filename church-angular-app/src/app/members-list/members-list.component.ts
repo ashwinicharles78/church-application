@@ -115,4 +115,18 @@ ngOnInit() {
   bulkUpdateFamilyIds(updates: {membershipId: number, familyId: string}[]) {
     return this.http.put("http://localhost:8080/bulk-update-family-ids", updates, { responseType: 'text' });
   }
+
+  // members-list.component.ts
+bulkUpdateCmcIds() {
+  // Create a list of objects containing only the primary ID and the new CMC ID
+  const updateData = this.members.map(m => ({
+    membershipId: m.membershipId,
+    cmcMembershipId: m.CMCMembershipId
+  }));
+
+  this.http.put("http://localhost:8080//bulk-update-cmc-ids",updateData).subscribe({
+    next: () => alert('CMC Membership IDs updated successfully'),
+    error: (err) => console.error('Bulk update failed', err)
+  });
+}
 }

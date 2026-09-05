@@ -25,26 +25,26 @@
 
         <!-- Personal Info Row -->
         <div class="row mb-4">
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
             <label class="form-label fw-bold">Title</label>
             <input type="text" class="form-control bg-light" [value]="memberData.title || 'N/A'" readonly>
           </div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
             <label class="form-label fw-bold">First Name</label>
             <input type="text" class="form-control bg-light" [value]="memberData.firstName" readonly>
           </div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-bold">Middle Name</label>
+            <input type="text" class="form-control bg-light" [value]="memberData.middleName || 'N/A'" readonly>
+          </div>
+          <div class="col-md-3 mb-3">
             <label class="form-label fw-bold">Last Name</label>
             <input type="text" class="form-control bg-light" [value]="memberData.lastName" readonly>
           </div>
         </div>
 
-        <!-- Middle Name / Gender Row -->
+        <!-- Gender Row -->
         <div class="row mb-4">
-          <div class="col-md-6 mb-3">
-            <label class="form-label fw-bold">Middle Name</label>
-            <input type="text" class="form-control bg-light" [value]="memberData.middleName || 'N/A'" readonly>
-          </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">Gender</label>
             <input type="text" class="form-control bg-light" [value]="memberData.gender" readonly>
@@ -102,7 +102,7 @@
         <div class="row mb-4">
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">CMC Membership ID</label>
-            <input type="text" class="form-control bg-light" [value]="memberData.CMCMebershipId || 'N/A'" readonly>
+            <input type="text" class="form-control bg-light" [value]="memberData.CMCMembershipId || 'N/A'" readonly>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">Date of Demise</label>

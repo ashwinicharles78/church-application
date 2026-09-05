@@ -77,7 +77,6 @@ export class SubscriptionEditComponent implements OnInit {
 
   // Update your existing deductPledge method
   deductPledge() {
-    // Assuming you have a method in your service that calls the GET /subscription/pledge/{id} endpoint
     this.http.post(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`, this.subscriptionForm.value).subscribe({
       next: (updatedSubscription : any) => {
         console.log('Pledge submitted successfully');

@@ -11,6 +11,7 @@
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add Member
     </button>
+  
   </div>
 
   <div style="display: flex; justify-content: flex-end; margin-bottom: 16px; padding: 0 20px;">
@@ -22,6 +23,15 @@
       {{ isSaving ? 'Saving...' : 'Save All Changes (' + editedMembers.size + ')' }}
     </button>
   </div>
+    <!-- <div style="display: flex; justify-content: flex-end; margin-bottom: 16px; padding: 0 20px;">
+    <button 
+      (click)="bulkUpdateCmcIds()" 
+      [disabled]="editedMembers.size === 0 || isSaving"
+      style="padding: 8px 16px; border-radius: 6px; background-color: #28a745; color: white; border: none; font-weight: 500; cursor: pointer; transition: 0.2s;"
+      [style.opacity]="editedMembers.size === 0 ? '0.5' : '1'">
+      {{ isSaving ? 'Saving...' : 'Save All Changes (' + editedMembers.size + ')' }}
+    </button>
+  </div> -->
   <!-- Column Headers -->
   <div class="ml-col-headers-wrap">
     <div class="ml-col-headers">
@@ -105,13 +115,25 @@
 
         <!-- Pledge -->
         <div class="ml-cell-pledge">
-          <ng-container *ngIf="member.pledgeNumber; else noPledge">
+          <!-- <ng-container *ngIf="member.pledgeNumber; else noPledge">
             <div class="ml-pledge-num">#{{ member.pledgeNumber || '—' }}</div>
           </ng-container>
           <ng-template #noPledge>
             <span class="ml-pledge-nil">No pledge</span>
-          </ng-template>
+          </ng-template> -->
+          <input 
+            type="text" 
+            [value]="member.CMCMembershipId || ''" 
+            (input)="onFamilyIdInput(member.membershipId, $event)"
+            style="width: 100px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-size: 14px;"
+            placeholder="Enter ID"
+            [ngStyle]="{
+              'border-color': editedMembers.has(member.membershipId) ? '#28a745' : '#ccc', 
+              'background-color': editedMembers.has(member.membershipId) ? '#f0fff0' : 'transparent'
+            }" 
+          >
         </div>
+        
 
       </div>
 

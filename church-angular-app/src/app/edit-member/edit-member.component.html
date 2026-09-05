@@ -9,15 +9,19 @@
 
         <!-- Personal Info Row -->
         <div class="row mb-4">
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
             <label for="title" class="form-label fw-bold">Title</label>
             <input id="title" formControlName="title" type="text" class="form-control" placeholder="Mr/Mrs/Dr">
           </div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
             <label for="firstName" class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
             <input id="firstName" formControlName="firstName" type="text" class="form-control" required>
           </div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
+            <label for="middleName" class="form-label fw-bold">Middle Name</label>
+            <input id="middleName" formControlName="middleName" type="text" class="form-control">
+          </div>
+          <div class="col-md-3 mb-3">
             <label for="lastName" class="form-label fw-bold">Last Name <span class="text-danger">*</span></label>
             <input id="lastName" formControlName="lastName" type="text" class="form-control" required>
           </div>
@@ -125,8 +129,8 @@
 
         <div class="row mb-4">
           <div class="col-md-6 mb-3">
-            <label for="CMCMebershipId" class="form-label fw-bold">CMC Membership ID</label>
-            <input id="CMCMebershipId" formControlName="CMCMebershipId" type="text" class="form-control">
+            <label for="CMCMembershipId" class="form-label fw-bold">CMC Membership ID</label>
+            <input id="CMCMembershipId" formControlName="CMCMembershipId" type="text" class="form-control">
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">Date of Demise</label>
@@ -307,9 +311,9 @@
             <button type="submit" class="btn btn-primary btn-lg px-5">
               <i class="fas fa-save me-2"></i>Update Member
             </button>
-            <a routerLink="/" class="btn btn-secondary btn-lg px-5 ms-3">
+            <button type="button" (click)="onCancel()" class="btn btn-secondary btn-lg px-5 ms-3">
               <i class="fas fa-arrow-left me-2"></i>Cancel
-            </a>
+            </button>
           </div>
         </div>
 
