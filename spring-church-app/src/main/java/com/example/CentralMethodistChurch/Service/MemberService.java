@@ -4,8 +4,11 @@
  */
 package com.example.CentralMethodistChurch.Service;
 
+import com.example.CentralMethodistChurch.DTO.CmcIdUpdateDTO;
 import com.example.CentralMethodistChurch.DTO.Events;
+import com.example.CentralMethodistChurch.DTO.FamilyIdData;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -59,4 +62,10 @@ public interface MemberService {
     List<Events> getEvents();
 
     void truncateMembers();
+
+    @Transactional
+    void bulkUpdateCmcIds(List<CmcIdUpdateDTO> updates);
+
+    @Transactional
+    void bulkUpdateFamilyIds(List<FamilyIdData> updates);
 }

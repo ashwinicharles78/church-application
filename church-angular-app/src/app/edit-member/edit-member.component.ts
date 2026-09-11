@@ -62,7 +62,7 @@ export class EditMemberComponent implements OnInit {
       address:            ["", Validators.required],
       contact:            ["", Validators.required],
       Email:              [""],
-      CMCMembershipId:     [""],
+      cmcmembershipId:     [""],
       dateOfDemise:       [""],
       pledgeNumber:       ["", Validators.required],
       Baptised:           ["", Validators.required],

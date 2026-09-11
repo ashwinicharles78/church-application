@@ -5,6 +5,7 @@
 
 package com.example.CentralMethodistChurch.Controller;
 
+import com.example.CentralMethodistChurch.DTO.CmcIdUpdateDTO;
 import com.example.CentralMethodistChurch.DTO.Events;
 import com.example.CentralMethodistChurch.DTO.FamilyIdData;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
@@ -74,20 +75,13 @@ public class CMCMembersController {
 
     @PutMapping(path = "/bulk-update-family-ids")
     public ResponseEntity<String> bulkUpdateFamilyIds(@RequestBody List<FamilyIdData> updates) {
+        memberService.bulkUpdateFamilyIds(updates);
+        return ResponseEntity.ok("Successfully updated family IDs.");
+    }
 
-        List<FamilyMember> membersToUpdate = new ArrayList<>();
-
-        // Fetch the specific members, update their family ID, and add to list
-        for (FamilyIdData update : updates) {
-            memberRepository.findById(String.valueOf(update.getMembershipId())).ifPresent(member -> {
-                member.setFamilyId(update.getFamilyId());
-                membersToUpdate.add(member);
-            });
-        }
-
-        // Save all changes to the database in one single batch query!
-        memberRepository.saveAll(membersToUpdate);
-
-        return ResponseEntity.ok("Successfully updated " + membersToUpdate.size() + " members.");
+    @PostMapping("/bulk-update-cmc-ids")
+    public ResponseEntity<Void> bulkUpdateCmcIds(@RequestBody List<CmcIdUpdateDTO> updates) {
+        memberService.bulkUpdateCmcIds(updates);
+        return ResponseEntity.ok().build();
     }
 }

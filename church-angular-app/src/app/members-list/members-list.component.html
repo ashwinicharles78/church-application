@@ -14,24 +14,26 @@
   
   </div>
 
-  <div style="display: flex; justify-content: flex-end; margin-bottom: 16px; padding: 0 20px;">
-    <button 
-      (click)="saveAllChanges()" 
-      [disabled]="editedMembers.size === 0 || isSaving"
-      style="padding: 8px 16px; border-radius: 6px; background-color: #28a745; color: white; border: none; font-weight: 500; cursor: pointer; transition: 0.2s;"
-      [style.opacity]="editedMembers.size === 0 ? '0.5' : '1'">
-      {{ isSaving ? 'Saving...' : 'Save All Changes (' + editedMembers.size + ')' }}
-    </button>
+  <div class="ml-bulk-actions">
+    <div class="ml-bulk-action">
+      <button class="ml-bulk-btn ml-bulk-btn--family"
+        (click)="saveFamilyIds()"
+        [disabled]="editedFamilyIds.size === 0 || isSavingFamilyIds">
+        {{ isSavingFamilyIds ? 'Saving Family IDs...' : 'Save Family IDs (' + editedFamilyIds.size + ')' }}
+      </button>
+      <span class="ml-save-message ml-save-message--error" *ngIf="familyIdSaveMessage && familyIdSaveMessage.startsWith('Could')">{{ familyIdSaveMessage }}</span>
+      <span class="ml-save-message" *ngIf="familyIdSaveMessage && !familyIdSaveMessage.startsWith('Could')">{{ familyIdSaveMessage }}</span>
+    </div>
+    <div class="ml-bulk-action">
+      <button class="ml-bulk-btn ml-bulk-btn--cmc"
+        (click)="saveCmcMembershipIds()"
+        [disabled]="editedCmcMembershipIds.size === 0 || isSavingCmcMembershipIds">
+        {{ isSavingCmcMembershipIds ? 'Saving CMC IDs...' : 'Save CMC IDs (' + editedCmcMembershipIds.size + ')' }}
+      </button>
+      <span class="ml-save-message ml-save-message--error" *ngIf="cmcMembershipIdSaveMessage && cmcMembershipIdSaveMessage.startsWith('Could')">{{ cmcMembershipIdSaveMessage }}</span>
+      <span class="ml-save-message" *ngIf="cmcMembershipIdSaveMessage && !cmcMembershipIdSaveMessage.startsWith('Could')">{{ cmcMembershipIdSaveMessage }}</span>
+    </div> 
   </div>
-    <!-- <div style="display: flex; justify-content: flex-end; margin-bottom: 16px; padding: 0 20px;">
-    <button 
-      (click)="bulkUpdateCmcIds()" 
-      [disabled]="editedMembers.size === 0 || isSaving"
-      style="padding: 8px 16px; border-radius: 6px; background-color: #28a745; color: white; border: none; font-weight: 500; cursor: pointer; transition: 0.2s;"
-      [style.opacity]="editedMembers.size === 0 ? '0.5' : '1'">
-      {{ isSaving ? 'Saving...' : 'Save All Changes (' + editedMembers.size + ')' }}
-    </button>
-  </div> -->
   <!-- Column Headers -->
   <div class="ml-col-headers-wrap">
     <div class="ml-col-headers">
@@ -39,7 +41,7 @@
       <div class="ml-col-label">Family ID</div>
       <div class="ml-col-label">Date of Birth</div>
       <div class="ml-col-label">Relations</div>
-      <div class="ml-col-label">Membership ID</div>
+      <div class="ml-col-label">CMC Membership ID</div>
     </div>
     <div class="ml-col-actions"></div>
   </div>
@@ -88,10 +90,11 @@
             style="width: 100px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-size: 14px;"
             placeholder="Enter ID"
             [ngStyle]="{
-              'border-color': editedMembers.has(member.membershipId) ? '#28a745' : '#ccc', 
-              'background-color': editedMembers.has(member.membershipId) ? '#f0fff0' : 'transparent'
-            }" 
+              'border-color': editedFamilyIds.has(member.membershipId) ? '#28a745' : '#ccc',
+              'background-color': editedFamilyIds.has(member.membershipId) ? '#f0fff0' : 'transparent'
+            }"
           >
+          <div class="ml-field-error" *ngIf="familyIdErrors.get(member.membershipId)">{{ familyIdErrors.get(member.membershipId) }}</div>
         </div>
 
         <!-- Date of Birth -->
@@ -123,15 +126,16 @@
           </ng-template> -->
           <input 
             type="text" 
-            [value]="member.CMCMembershipId || ''" 
-            (input)="onFamilyIdInput(member.membershipId, $event)"
+            [value]="member.cmcmembershipId || ''" 
+            (input)="onCmcMembershipIdInput(member.membershipId, $event)"
             style="width: 100px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-size: 14px;"
             placeholder="Enter ID"
             [ngStyle]="{
-              'border-color': editedMembers.has(member.membershipId) ? '#28a745' : '#ccc', 
-              'background-color': editedMembers.has(member.membershipId) ? '#f0fff0' : 'transparent'
-            }" 
+              'border-color': editedCmcMembershipIds.has(member.membershipId) ? '#28a745' : '#ccc',
+              'background-color': editedCmcMembershipIds.has(member.membershipId) ? '#f0fff0' : 'transparent'
+            }"
           >
+          <div class="ml-field-error" *ngIf="cmcMembershipIdErrors.get(member.membershipId)">{{ cmcMembershipIdErrors.get(member.membershipId) }}</div>
         </div>
         
 

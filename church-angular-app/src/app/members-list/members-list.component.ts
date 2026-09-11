@@ -16,8 +16,14 @@ export class MembersListComponent {
   members: Member[] = [];
   memberToDelete: any;
   isDeleting: boolean | undefined;
-  editedMembers = new Map<number, string>(); 
-  isSaving = false;
+  editedFamilyIds = new Map<number, string>();
+  editedCmcMembershipIds = new Map<number, string>();
+  familyIdErrors = new Map<number, string>();
+  cmcMembershipIdErrors = new Map<number, string>();
+  isSavingFamilyIds = false;
+  isSavingCmcMembershipIds = false;
+  familyIdSaveMessage = '';
+  cmcMembershipIdSaveMessage = '';
 
 
   constructor(private http:HttpClient, private router: Router) {
@@ -48,36 +54,118 @@ ngOnInit() {
     this.memberToDelete = member;
   }
 
-  // Triggered whenever a user types in the input box
-  onFamilyIdInput(memberId: number, event: any) {
-    const newValue = event.target.value;
-    this.editedMembers.set(memberId, newValue);
+  onFamilyIdInput(memberId: number, event: Event): void {
+    const newValue = (event.target as HTMLInputElement).value;
+    const member = this.members.find(item => item.membershipId === memberId);
+    const originalValue = String(member?.familyId ?? '');
+
+    if (newValue === originalValue) {
+      this.editedFamilyIds.delete(memberId);
+    } else {
+      this.editedFamilyIds.set(memberId, newValue);
+    }
+
+    this.familyIdSaveMessage = '';
+    this.familyIdErrors.delete(memberId);
   }
 
-  // Triggered by the "Save All" button
-  saveAllChanges() {
-    if (this.editedMembers.size === 0) return; // Nothing to save
+  onCmcMembershipIdInput(memberId: number, event: Event): void {
+    const newValue = (event.target as HTMLInputElement).value;
+    const member = this.members.find(item => item.membershipId === memberId);
+    const originalValue = String(member?.cmcmembershipId ?? '');
 
-    this.isSaving = true;
+    if (newValue === originalValue) {
+      this.editedCmcMembershipIds.delete(memberId);
+    } else {
+      this.editedCmcMembershipIds.set(memberId, newValue);
+    }
 
-    // Convert the Map into an Array of objects for the backend
-    const payload = Array.from(this.editedMembers, ([membershipId, familyId]) => ({
+    this.cmcMembershipIdSaveMessage = '';
+    this.cmcMembershipIdErrors.delete(memberId);
+  }
+
+  saveFamilyIds(): void {
+    if (this.isSavingFamilyIds || this.editedFamilyIds.size === 0) return;
+
+    if (!this.validateFamilyIds()) return;
+
+    const changes = new Map(this.editedFamilyIds);
+    const payload = Array.from(changes, ([membershipId, familyId]) => ({
       membershipId,
       familyId
     }));
 
+    this.isSavingFamilyIds = true;
+    this.familyIdSaveMessage = '';
     this.bulkUpdateFamilyIds(payload).subscribe({
       next: (res) => {
-        alert('All changes saved successfully!');
-        this.editedMembers.clear(); // Clear the tracking map
-        this.isSaving = false;
+        changes.forEach((familyId, membershipId) => {
+          if (this.editedFamilyIds.get(membershipId) === familyId) {
+            const member = this.members.find(item => item.membershipId === membershipId);
+            if (member) member.familyId = familyId || null;
+            this.editedFamilyIds.delete(membershipId);
+          }
+        });
+        this.familyIdSaveMessage = 'Family IDs saved.';
+        this.isSavingFamilyIds = false;
       },
       error: (err) => {
-        console.error('Error saving changes', err);
-        alert('Failed to save changes.');
-        this.isSaving = false;
+        console.error('Error saving family IDs', err);
+        this.familyIdSaveMessage = 'Could not save Family IDs. Try again.';
+        this.isSavingFamilyIds = false;
       }
     });
+  }
+
+  saveCmcMembershipIds(): void {
+    if (this.isSavingCmcMembershipIds || this.editedCmcMembershipIds.size === 0) return;
+
+    if (!this.validateCmcMembershipIds()) return;
+
+    const changes = new Map(this.editedCmcMembershipIds);
+    const payload = Array.from(changes, ([membershipId, CMCMembershipId]) => ({
+      membershipId,
+      cmcMembershipId: CMCMembershipId
+    }));
+
+    this.isSavingCmcMembershipIds = true;
+    this.cmcMembershipIdSaveMessage = '';
+    this.bulkUpdateCmcIds(payload).subscribe({
+      next: (res) => {
+        changes.forEach((CMCMembershipId, membershipId) => {
+          if (this.editedCmcMembershipIds.get(membershipId) === CMCMembershipId) {
+            const member = this.members.find(item => item.membershipId === membershipId);
+            if (member) member.cmcmembershipId = CMCMembershipId || null;
+            this.editedCmcMembershipIds.delete(membershipId);
+          }
+        });
+        this.cmcMembershipIdSaveMessage = 'CMC Membership IDs saved.';
+        this.isSavingCmcMembershipIds = false;
+      },
+      error: (err) => {
+        console.error('Error saving CMC Membership IDs', err);
+        this.cmcMembershipIdSaveMessage = 'Could not save CMC Membership IDs. Try again.';
+        this.isSavingCmcMembershipIds = false;
+      }
+    });
+  }
+
+  private validateFamilyIds(): boolean {
+    this.familyIdErrors.clear();
+    return true;
+  }
+
+  private validateCmcMembershipIds(): boolean {
+    let valid = true;
+    this.cmcMembershipIdErrors.clear();
+    this.editedCmcMembershipIds.forEach((cmcMembershipId, membershipId) => {
+      if (cmcMembershipId.trim() === '') return;
+      if (cmcMembershipId.trim().length > 100) {
+        this.cmcMembershipIdErrors.set(membershipId, 'CMC Membership ID is too long.');
+        valid = false;
+      }
+    });
+    return valid;
   }
   /** Step 2 — user confirmed: call DELETE /member-id/{id} */
   deleteMember(): void {
@@ -116,17 +204,7 @@ ngOnInit() {
     return this.http.put("http://localhost:8080/bulk-update-family-ids", updates, { responseType: 'text' });
   }
 
-  // members-list.component.ts
-bulkUpdateCmcIds() {
-  // Create a list of objects containing only the primary ID and the new CMC ID
-  const updateData = this.members.map(m => ({
-    membershipId: m.membershipId,
-    cmcMembershipId: m.CMCMembershipId
-  }));
-
-  this.http.put("http://localhost:8080//bulk-update-cmc-ids",updateData).subscribe({
-    next: () => alert('CMC Membership IDs updated successfully'),
-    error: (err) => console.error('Bulk update failed', err)
-  });
+  bulkUpdateCmcIds(updates: {membershipId: number, cmcMembershipId: string}[]) {
+    return this.http.post("http://localhost:8080/bulk-update-cmc-ids", updates, { responseType: 'text' });
 }
 }

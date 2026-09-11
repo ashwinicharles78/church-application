@@ -4,7 +4,9 @@
  */
 package com.example.CentralMethodistChurch.Service.Impl;
 
+import com.example.CentralMethodistChurch.DTO.CmcIdUpdateDTO;
 import com.example.CentralMethodistChurch.DTO.Events;
+import com.example.CentralMethodistChurch.DTO.FamilyIdData;
 import com.example.CentralMethodistChurch.Entity.FamilyMember;
 import com.example.CentralMethodistChurch.Entity.FamilySubscriptions;
 import com.example.CentralMethodistChurch.Enums.EventType;
@@ -16,9 +18,9 @@ import com.example.CentralMethodistChurch.Service.MemberService;
 
 import java.util.logging.Logger;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -243,5 +245,33 @@ public class MemberServiceImpl implements MemberService {
         List<FamilyMember> members = memberRepository.findAll();
         familyTreeServices.truncateFamilyTree();
         memberRepository.deleteAll();
+    }
+
+    @Transactional
+    @Override
+    public void bulkUpdateCmcIds(List<CmcIdUpdateDTO> updates) {
+        for (CmcIdUpdateDTO update : updates) {
+            memberRepository.findById(String.valueOf(update.getMembershipId()))
+                    .ifPresent(member -> {
+                        member.setCMCMembershipId(update.getCmcMembershipId());
+                        memberRepository.save(member);
+                    });
+        }
+    }
+
+    @Transactional
+    @Override
+    public void bulkUpdateFamilyIds(List<FamilyIdData> updates) {
+        List<FamilyMember> membersToUpdate = new ArrayList<>();
+
+        for (FamilyIdData update : updates) {
+            memberRepository.findByMembershipId(update.getMembershipId())
+                    .ifPresent(member -> {
+                        member.setFamilyId(update.getFamilyId());
+                        membersToUpdate.add(member);
+                    });
+        }
+
+        memberRepository.saveAll(membersToUpdate);
     }
 }

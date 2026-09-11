@@ -214,23 +214,54 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
      * Helper to find a member by comparing a target name against
      * combinations of first and last names in the database.
      */
+    /**
+     * Helper to find a member by comparing a target name against
+     * combinations of first and last names in the database, while
+     * ignoring common titles.
+     */
     private java.util.Optional<FamilyMember> findMatchingMember(List<FamilyMember> members, String targetName) {
         if (isBlank(targetName)) {
             return java.util.Optional.empty();
         }
 
-        String normalizedTarget = targetName.trim().toLowerCase();
+        // Normalize the target name for comparison
+        String normalizedTarget = normalizeName(targetName);
 
         return members.stream().filter(m -> {
-            String fName = m.getFirstName() != null ? m.getFirstName().trim().toLowerCase() : "";
-            String lName = m.getLastName() != null ? m.getLastName().trim().toLowerCase() : "";
+            // Normalize names fetched from the database
+            String fName = normalizeName(m.getFirstName());
+            String lName = normalizeName(m.getLastName());
 
             String fullNameStandard = (fName + " " + lName).trim();
             String fullNameReversed = (lName + " " + fName).trim();
 
             return fullNameStandard.equals(normalizedTarget) ||
                     fullNameReversed.equals(normalizedTarget) ||
-                    fName.equals(normalizedTarget); // Fallback: checks if they only provided a first name
+                    fName.equals(normalizedTarget);
         }).findFirst();
+    }
+
+    /**
+     * Normalizes a name by trimming, converting to lowercase, and removing
+     * specific titles (Late, Mr, Mrs, Miss, Late Mr, Late Mrs).
+     */
+    private String normalizeName(String name) {
+        if (name == null) return "";
+
+        // Convert to lowercase and trim
+        String normalized = name.trim().toLowerCase();
+
+        // Define titles to remove (order from longest to shortest to handle overlaps like "late mr")
+        String[] titlesToRemove = {
+                "late mr", "late mrs", "late", "mr.", "mr", "mrs.", "mrs", "miss.", "miss"
+        };
+
+        for (String title : titlesToRemove) {
+            if (normalized.startsWith(title + " ")) {
+                normalized = normalized.substring(title.length()).trim();
+            }
+        }
+
+        return normalized;
     }
 }

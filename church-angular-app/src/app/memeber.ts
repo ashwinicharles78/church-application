@@ -1,6 +1,6 @@
 export interface Member {
     membershipId: number;
-    familyId: number | null;
+    familyId: string | null;
     title: string;
     lastName: string;
     middleName: string;
@@ -31,7 +31,7 @@ export interface Member {
     pledgeNumber: string | null;
     pledgeAmount: string | null;
     status: string;
-    CMCMembershipId: string | null; // Added
+    cmcmembershipId: string | null;
     dateOfDemise: Date | null; // Added
     inactiveReason: string;
     inactiveSince: string;

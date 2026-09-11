@@ -61,6 +61,38 @@
     margin-top: 6px;
   }
 
+  .ml-bulk-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: -20px 0 24px;
+    padding: 0 20px;
+  }
+
+  .ml-bulk-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+  }
+
+  .ml-bulk-btn {
+    border: 0;
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: #fff;
+    font: 500 12px 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .ml-bulk-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .ml-bulk-btn--family { background: var(--green, #2d6a4f); }
+  .ml-bulk-btn--cmc { background: var(--gold, #b5862a); }
+  .ml-save-message { font-size: 11px; color: var(--green, #2d6a4f); }
+  .ml-save-message--error, .ml-field-error { color: var(--red); }
+  .ml-field-error { font-size: 11px; margin-top: 4px; }
+
   .ml-add-btn {
     display: inline-flex;
     align-items: center;
