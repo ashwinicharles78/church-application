@@ -14,6 +14,8 @@ export const routes: Routes = [
     { path: 'edit/:id', component: EditMemberComponent},
     { path: 'preview/:id', component: PreviewMemberComponent},
     { path: 'tree', component: FamilyTreeComponent},
+    { path: 'member-tree/:familyId/ancestors', component: FamilyTreeComponent},
+    { path: 'member-tree/:familyId', component: FamilyTreeComponent},
     { path: 'events', component: UpcomingEventsComponent},
     { path: 'inventory', component: InventoryComponent},
     { path: 'add', component: AddPersonComponent},

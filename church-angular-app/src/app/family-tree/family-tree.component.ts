@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { map } from 'rxjs';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 // ---------------------------------------------------------------------------
 // Interfaces - matching http://localhost:8080/members-tree response
@@ -77,12 +77,22 @@ export class FamilyTreeComponent implements OnInit {
   familyTree: FamilyNode[] = [];
   loading = true;
   error: string | null = null;
+  selectedFamilyId: string | null = null;
+  showingAncestors = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    const selectedFamilyId = this.route.snapshot.paramMap.get('familyId');
+    this.selectedFamilyId = selectedFamilyId;
+    this.showingAncestors = this.route.snapshot.routeConfig?.path?.endsWith('/ancestors') ?? false;
+
     this.http.get<FamilySubscriptionDto[]>(this.API_URL).pipe(
-      map(families => this.buildTree(families))
+      map(families => selectedFamilyId
+        ? this.showingAncestors
+          ? this.buildAncestorTree(families, selectedFamilyId)
+          : this.buildIndependentFamily(families, selectedFamilyId)
+        : this.buildTree(families))
     ).subscribe({
       next:  data => { this.familyTree = data; this.loading = false; },
       error: err  => { this.error = 'Failed to load family records.'; this.loading = false; console.error(err); }
@@ -92,6 +102,20 @@ export class FamilyTreeComponent implements OnInit {
   // ---------------------------------------------------------------------------
   // Tree builder
   // ---------------------------------------------------------------------------
+
+  private buildIndependentFamily(families: FamilySubscriptionDto[], familyId: string): FamilyNode[] {
+    const family = families.find(item => String(item.familyId) === familyId);
+    return family?.members?.length ? [this.buildNode(family)] : [];
+  }
+
+  private buildAncestorTree(families: FamilySubscriptionDto[], familyId: string): FamilyNode[] {
+    const tree = this.buildTree(families);
+    const containsFamily = (node: FamilyNode): boolean =>
+      String(node.familyId) === familyId || node.children.some(containsFamily);
+
+    const root = tree.find(containsFamily);
+    return root ? [root] : [];
+  }
 
   private buildTree(families: FamilySubscriptionDto[]): FamilyNode[] {
 

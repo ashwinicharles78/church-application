@@ -144,6 +144,7 @@
       <!-- Row Actions -->
       <div class="ml-actions">
         <button class="btn btn-sm btn-outline-secondary" (click)="previewMember(member.membershipId)">Preview</button>
+        <button class="btn btn-sm btn-outline-success" (click)="openFamilyTree(member.familyId)" [disabled]="!member.familyId" title="Open this member's family tree">Tree</button>
         <button class="btn btn-sm btn-outline-primary" (click)="editMember(member.membershipId)">Edit</button>
         <button class="btn btn-sm btn-outline-danger" (click)="confirmDelete(member)">Delete</button>
       </div>

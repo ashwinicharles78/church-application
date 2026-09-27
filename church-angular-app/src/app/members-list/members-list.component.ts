@@ -45,6 +45,16 @@ ngOnInit() {
   previewMember(memberId: any) {
     this.router.navigate(['/preview', memberId]);
   }
+
+  openFamilyTree(familyId: string | null) {
+    if (!familyId) return;
+
+    const treeUrl = this.router.serializeUrl(
+      this.router.createUrlTree(['/member-tree', familyId])
+    );
+    window.open(treeUrl, '_blank', 'noopener');
+  }
+
  // ─────────────────────────────────────────────────────────────
   // Delete flow
   // ─────────────────────────────────────────────────────────────

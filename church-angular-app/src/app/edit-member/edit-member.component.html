@@ -48,12 +48,12 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <label for="age" class="form-label fw-bold">Age</label>
+            <label for="age" class="form-label fw-bold">Age <span class="text-danger">*</span></label>
             <input id="age" formControlName="age" type="text" class="form-control bg-light" readonly>
           </div>
 
           <div class="col-md-4 mb-3">
-            <label for="gender" class="form-label fw-bold">Gender</label>
+            <label for="gender" class="form-label fw-bold">Gender <span class="text-danger">*</span></label>
             <select id="gender" formControlName="gender" class="form-select">
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
@@ -66,7 +66,7 @@
         <!-- Parents Row -->
         <div class="row mb-4">
           <div class="col-md-3 mb-3">
-            <label for="fatherName" class="form-label">Father's Name</label>
+            <label for="fatherName" class="form-label">Father's Name <span class="text-danger">*</span></label>
             <input id="fatherName" formControlName="fatherName" type="text" class="form-control">
           </div>
           <div class="col-md-3 mb-3">
@@ -82,7 +82,7 @@
         <!-- Mother Row -->
         <div class="row mb-4">
           <div class="col-md-6 mb-3">
-            <label for="motherName" class="form-label">Mother's Name</label>
+            <label for="motherName" class="form-label">Mother's Name <span class="text-danger">*</span></label>
             <input id="motherName" formControlName="motherName" type="text" class="form-control">
           </div>
           <div class="col-md-6 mb-3">
@@ -145,8 +145,8 @@
         <!-- Religious Status Row -->
         <div class="row mb-4">
           <div class="col-md-3 mb-3">
-            <label for="Baptised" class="form-label">Baptised</label>
-            <select id="Baptised" formControlName="Baptised" class="form-select">
+            <label for="baptised" class="form-label">Baptised <span class="text-danger">*</span></label>
+            <select id="baptised" formControlName="baptised" class="form-select">
               <option value="">Select</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
@@ -172,8 +172,8 @@
           </div>
 
           <div class="col-md-3 mb-3">
-            <label for="Confirmed" class="form-label">Confirmed</label>
-            <select id="Confirmed" formControlName="Confirmed" class="form-select">
+            <label for="confirmed" class="form-label">Confirmed <span class="text-danger">*</span></label>
+            <select id="confirmed" formControlName="confirmed" class="form-select">
               <option value="">Select</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
@@ -184,8 +184,8 @@
             <label class="form-label">Confirmation Date</label>
             <div class="input-group">
               <input id="ConfirmationDate"
-                     formControlName="ConfirmationDate"
-                     (input)="onDateInput($event, 'ConfirmationDate')"
+                     formControlName="confirmationDate"
+                     (input)="onDateInput($event, 'confirmationDate')"
                      type="text"
                      class="form-control"
                      placeholder="15-Jun-2005"
@@ -195,14 +195,14 @@
               </span>
             </div>
             <small class="form-text text-muted">dd-MMM-yyyy</small>
-            <input type="hidden" formControlName="ConfirmationDate">
+            <input type="hidden" formControlName="confirmationDate">
           </div>
         </div>
 
         <!-- Membership Row -->
         <div class="row mb-4">
           <div class="col-md-3 mb-3">
-            <label for="fullMember" class="form-label">Full Member</label>
+            <label for="fullMember" class="form-label">Full Member <span class="text-danger">*</span></label>
             <select id="fullMember" formControlName="fullMember" class="form-select">
               <option value="">Select</option>
               <option value="Yes">Yes</option>
@@ -238,7 +238,7 @@
         <!-- Marital Status Row -->
         <div class="row mb-4">
           <div class="col-md-4 mb-3">
-            <label for="maritalStatus" class="form-label">Marital Status</label>
+            <label for="maritalStatus" class="form-label">Marital Status <span class="text-danger">*</span></label>
             <select id="maritalStatus" formControlName="maritalStatus" class="form-select">
               <option value="">Select</option>
               <option value="Unmarried">Unmarried</option>
@@ -275,7 +275,7 @@
         <!-- Status Row -->
         <div class="row mb-4">
           <div class="col-md-4 mb-3">
-            <label for="status" class="form-label fw-bold">Status</label>
+            <label for="status" class="form-label fw-bold">Status <span class="text-danger">*</span></label>
             <select id="status" formControlName="status" class="form-select">
               <option value="">Select</option>
               <option value="Active">Active</option>

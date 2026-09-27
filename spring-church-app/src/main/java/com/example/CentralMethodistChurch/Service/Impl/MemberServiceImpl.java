@@ -163,6 +163,9 @@ public class MemberServiceImpl implements MemberService {
                 if (null == memberOriginal.getEmail() || !memberOriginal.getEmail().equals(familyMember.getEmail())) {
                     memberOriginal.setEmail(familyMember.getEmail());
                 }
+                if (null == memberOriginal.getBaptised() || !memberOriginal.getBaptised().equals(familyMember.getBaptised())) {
+                    memberOriginal.setBaptised(familyMember.getBaptised());
+                }
                 if (null == memberOriginal.getBaptisedDate() || !memberOriginal.getBaptisedDate().equals(familyMember.getBaptisedDate())) {
                     memberOriginal.setBaptisedDate(familyMember.getBaptisedDate());
                 }
