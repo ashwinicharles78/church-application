@@ -17,11 +17,47 @@
         .amount { text-align: right; font-weight: bold; }
         .total-row td { font-size: 18px; color: #2c3e50; font-weight: bold; border-top: 2px solid #333; }
         .footer { text-align: center; color: #95a5a6; font-size: 13px; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+        .invoice-sheet { max-width: 800px; margin: 0 auto; }
+        .cut-line { display: flex; align-items: center; justify-content: center; height: 28px; color: #777; font-size: 11px; letter-spacing: 1px; }
+        .cut-line::before, .cut-line::after { content: ''; flex: 1; border-top: 1px dashed #888; }
+        .cut-line span { padding: 0 12px; }
+
+        @media print {
+            @page { size: A4 portrait; margin: 7mm; }
+            html, body { width: 100%; margin: 0; padding: 0; background: #fff; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .invoice-container { width: 100%; max-width: none; box-sizing: border-box; margin: 0; padding: 10mm; border-radius: 0; box-shadow: none; }
+            .invoice-sheet { width: 100%; height: 283mm; max-width: none; display: grid; grid-template-rows: minmax(0, 1fr) 5mm minmax(0, 1fr); }
+            .invoice-container.invoice-copy { width: 100%; height: 139mm; max-width: none; box-sizing: border-box; overflow: hidden; margin: 0; padding: 5mm 7mm; border-radius: 0; box-shadow: none; break-inside: avoid; }
+            .invoice-copy .header { padding-bottom: 3mm; margin-bottom: 4mm; }
+            .invoice-copy .header h1 { font-size: 16pt; }
+            .invoice-copy .header p { font-size: 9pt; }
+            .invoice-copy .header .meta { font-size: 8.5pt; }
+            .invoice-copy .summary-box { padding: 3mm; margin-bottom: 4mm; }
+            .invoice-copy .summary-box p { margin: 1mm 0; font-size: 9pt; }
+            .invoice-copy table { margin-bottom: 3mm; font-size: 9pt; }
+            .invoice-copy th, .invoice-copy td { padding: 1.5mm 2mm; }
+            .invoice-copy .total-row td { font-size: 10pt; }
+            .invoice-copy .footer { margin-top: auto; padding-top: 2mm; font-size: 8pt; }
+            .invoice-copy .footer p { margin: 1mm 0; }
+            .cut-line { height: 5mm; font-size: 7pt; }
+            .cut-line span { padding: 0 3mm; }
+        }
     </style>
 </head>
 <body>
 
-<div class="invoice-container">
+<th:block th:if="${!printCopies}">
+<div th:replace="~{::invoiceCopy}"></div>
+</th:block>
+
+<div class="invoice-sheet" th:if="${printCopies}">
+    <div th:replace="~{::invoiceCopy}"></div>
+    <div class="cut-line"><span>CUT HERE</span></div>
+    <div th:replace="~{::invoiceCopy}"></div>
+</div>
+
+<div class="invoice-container invoice-copy" th:fragment="invoiceCopy">
     <div class="header">
         <div>
             <h1>Central Methodist Church</h1>
@@ -71,6 +107,10 @@
         <p>If you have any questions concerning this invoice, please contact the church office.</p>
     </div>
 </div>
+
+<script th:if="${printCopies}">
+    window.addEventListener('load', function () { window.print(); });
+</script>
 
 </body>
 </html>

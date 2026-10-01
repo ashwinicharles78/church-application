@@ -25,6 +25,20 @@ describe('SubscriptionEditComponent', () => {
 
   afterEach(() => httpTesting.verify());
 
+  it('opens a two-copy print invoice for the selected transaction', () => {
+    const openSpy = spyOn(window, 'open');
+    const fixture = TestBed.createComponent(SubscriptionEditComponent);
+    fixture.componentInstance.familyId = 'family-1';
+
+    fixture.componentInstance.openInvoice('payment 1', true);
+
+    expect(openSpy).toHaveBeenCalledWith(
+      'http://localhost:8080/invoice/family-1/transaction/payment%201?printCopies=true',
+      '_blank',
+      'noopener'
+    );
+  });
+
   it('loads the selected family pledge account', () => {
     const fixture = TestBed.createComponent(SubscriptionEditComponent);
     fixture.detectChanges();

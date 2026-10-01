@@ -55,6 +55,26 @@ input {
   font-weight: bold;
 }
 
+.invoice-actions,
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-print-invoice,
+.btn-print-invoice-sm {
+  background-color: #285f49;
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-print-invoice { padding: 10px 16px; }
+.btn-print-invoice-sm { padding: 6px 10px; font-size: 0.8em; }
+
 .btn-save {
   background-color: #2ecc71;
   color: white;
@@ -282,6 +302,8 @@ input {
 
 @media (max-width: 720px) {
   .pledge-header { align-items: flex-start; flex-direction: column; }
+  .invoice-actions { flex-wrap: wrap; }
+  .transaction-actions { align-items: flex-start; flex-direction: column; }
   .workflow-grid { grid-template-columns: 1fr; gap: 0; }
   .balance-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .balance-strip > div:nth-child(2) { border-right: 0; }

@@ -23,21 +23,25 @@ public class InvoiceController {
     }
 
     @GetMapping("invoice/{id}")
-    public ModelAndView getInvoice(@PathVariable String id) {
+    public ModelAndView getInvoice(@PathVariable String id,
+                                   @RequestParam(defaultValue = "false") boolean printCopies) {
         FamilySubscriptions subscription = familyPledge.fetchForInvoice(id);
 
         ModelAndView mav = new ModelAndView("invoice"); // template name
         mav.addObject("subscription", subscription);
+        mav.addObject("printCopies", printCopies);
         return mav;
     }
 
     @GetMapping("invoice/{id}/transaction/{transactionId}")
-    public ModelAndView getTransactionInvoice(@PathVariable String id, @PathVariable String transactionId) {
+    public ModelAndView getTransactionInvoice(@PathVariable String id, @PathVariable String transactionId,
+                                              @RequestParam(defaultValue = "false") boolean printCopies) {
         FamilySubscriptions subscription = familyPledge.fetchForInvoice(id);
         PaymentTransactionEntry transaction = familyPledge.fetchTransaction(id, transactionId);
         ModelAndView mav = new ModelAndView("invoice");
         mav.addObject("subscription", subscription);
         mav.addObject("transaction", transaction);
+        mav.addObject("printCopies", printCopies);
         return mav;
     }
 

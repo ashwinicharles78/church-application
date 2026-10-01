@@ -161,11 +161,12 @@ export class SubscriptionEditComponent implements OnInit {
       });
   }
 
-  openInvoice(transactionId?: string): void {
+  openInvoice(transactionId?: string, printCopies = false): void {
     const path = transactionId
       ? `/invoice/${this.familyId}/transaction/${encodeURIComponent(transactionId)}`
       : `/invoice/${this.familyId}`;
-    window.open(`${this.apiUrl}${path}`, '_blank', 'noopener');
+    const printQuery = printCopies ? '?printCopies=true' : '';
+    window.open(`${this.apiUrl}${path}${printQuery}`, '_blank', 'noopener');
   }
 
   private submitRequest(request: import('rxjs').Observable<PledgeAccount>, message: string): void {
