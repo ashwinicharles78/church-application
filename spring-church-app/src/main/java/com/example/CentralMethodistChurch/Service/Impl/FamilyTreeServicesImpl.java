@@ -49,17 +49,18 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
         // 1. Process active families (creates new ones and updates existing)
         byFamily.forEach(this::processFamily);
 
-        // 2. Clean up completely orphaned families
-        // If a family previously existed but now has 0 members mapped to its ID, remove it
+        // Empty families keep their pledge ledger but no longer retain stale member links.
         Set<String> activeFamilyIds = byFamily.keySet();
-        List<FamilySubscriptions> existingFamilies = familyTreeRepository.findAll();
-
-        for (FamilySubscriptions existingFamily : existingFamilies) {
-            if (!activeFamilyIds.contains(existingFamily.getFamilyId())) {
-                existingFamily.getMembers().clear(); // Sever all bidirectional links
-                familyTreeRepository.delete(existingFamily);
-            }
-        }
+        familyTreeRepository.findAll().stream()
+            .filter(family -> !activeFamilyIds.contains(family.getFamilyId()))
+                .forEach(family -> {
+                    family.getMembers().forEach(member -> {
+                        if (member.getFamilySubscription() == family) {
+                            member.setFamilySubscription(null);
+                        }
+                    });
+                    family.getMembers().clear();
+                });
     }
 
     private void processFamily(String familyId, List<FamilyMember> currentMembers) {
@@ -77,6 +78,7 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
             // We MUST reassign our variable to capture this managed instance before linking children.
             family = familyTreeRepository.save(newFamily);
         }
+        FamilySubscriptions managedFamily = family;
 
         // 2. Re-evaluate and dynamically update the Head Member
         FamilyMember head = findHead(currentMembers);
@@ -96,7 +98,7 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
         // A. Remove members that left this family (Orphan cleanup)
         existingFamilySet.removeIf(existingMember -> {
             boolean isLeaving = !incomingMemberIds.contains(existingMember.getMembershipId());
-            if (isLeaving) {
+            if (isLeaving && existingMember.getFamilySubscription() == managedFamily) {
                 existingMember.setFamilySubscription(null); // Sever child-to-parent tie
             }
             return isLeaving;
@@ -108,6 +110,10 @@ public class FamilyTreeServicesImpl implements FamilyTreeServices {
                     .anyMatch(m -> m.getMembershipId() == incomingMember.getMembershipId());
 
             if (!alreadyInFamily) {
+                FamilySubscriptions previousFamily = incomingMember.getFamilySubscription();
+                if (previousFamily != null && previousFamily != family) {
+                    previousFamily.removeMember(incomingMember);
+                }
                 family.addMember(incomingMember); // Bidirectional helper correctly assigns parent
             } else {
                 // Enforce that the incoming member points to the managed parent reference

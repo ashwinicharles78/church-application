@@ -7,9 +7,11 @@ import { InventoryComponent } from './inventory/inventory.component';
 import { AddPersonComponent } from './add-person/add-person.component';
 import { PreviewMemberComponent } from './preview-member-component/preview-member-component.component';
 import { SubscriptionEditComponent } from './subscription-edit/subscription-edit.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 export const routes: Routes = [
+    { path: '', component: DashboardComponent, pathMatch: 'full' },
     { path: 'members', component: MembersListComponent},
     { path: 'edit/:id', component: EditMemberComponent},
     { path: 'preview/:id', component: PreviewMemberComponent},
@@ -20,5 +22,6 @@ export const routes: Routes = [
     { path: 'inventory', component: InventoryComponent},
     { path: 'add', component: AddPersonComponent},
     { path: 'family-tree', component: FamilyTreeComponent},
-    { path: 'subscription/:id', component:SubscriptionEditComponent}
+    { path: 'subscription/:id', component:SubscriptionEditComponent},
+    { path: '**', redirectTo: '' }
 ];

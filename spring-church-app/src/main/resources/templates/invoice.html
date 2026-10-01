@@ -28,8 +28,9 @@
             <p style="margin: 5px 0 0; color: #7f8c8d;">Subscription Statement</p>
         </div>
         <div class="meta">
-            <p style="margin: 0;">Date: <span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}"></span></p>
+            <p style="margin: 0;">Date: <span th:text="${#temporals.format(transaction != null ? transaction.date : T(java.time.LocalDate).now(), 'dd MMM yyyy')}"></span></p>
             <p style="margin: 5px 0 0;">Family ID: <strong th:text="${subscription.familyId}"></strong></p>
+            <p th:if="${transaction != null}" style="margin: 5px 0 0;">Receipt: <strong th:text="${transaction.transaction_id}"></strong></p>
         </div>
     </div>
 
@@ -47,20 +48,20 @@
         </thead>
         <tbody>
         <tr>
-            <td>Amount</td>
-            <td class="amount" th:text="'INR ' + ${subscription.pledgeCredit}"></td>
+            <td th:text="${transaction != null ? 'Payment received' : 'Available credit'}"></td>
+            <td class="amount" th:text="'INR ' + ${transaction != null ? transaction.amount : subscription.pledgeCredit}"></td>
         </tr>
         <tr>
             <td>Current Available Credit</td>
-            <td class="amount" th:text="'$' + ${subscription.pledgeCredit}"></td>
+            <td class="amount" th:text="'INR ' + ${subscription.pledgeCredit}"></td>
         </tr>
         <tr>
             <td>Amount Deposited (Last Transaction)</td>
-            <td class="amount" th:text="'$' + ${subscription.lastPledgeDepositAmount}"></td>
+            <td class="amount" th:text="'INR ' + ${subscription.lastPledgeDepositAmount}"></td>
         </tr>
         <tr class="total-row">
             <td>Total Pledge Due</td>
-            <td class="amount" th:text="'$' + ${subscription.pledgeDue}"></td>
+            <td class="amount" th:text="'INR ' + ${subscription.pledgeDue}"></td>
         </tr>
         </tbody>
     </table>

@@ -1,94 +1,154 @@
-<div class="edit-container">
-  <div class="header-row">
-    <h2>Edit Subscription & Pledge Details</h2>
-    <button type="button" class="btn-invoice" (click)='goToInvoice()'>
-      📄 View/Generate Invoice
+<main class="pledge-page" *ngIf="!loading; else loadingState">
+  <header class="pledge-header">
+    <div>
+      <p class="eyebrow">Family Account</p>
+      <h1>Pledge account</h1>
+      <p class="family-reference">Family ID <strong>{{ familyId }}</strong></p>
+    </div>
+    <button type="button" class="btn-invoice" *ngIf="account?.configured" (click)="openInvoice()">
+      View account statement
     </button>
-  </div>
+  </header>
 
-  <form [formGroup]="subscriptionForm" (ngSubmit)="onUpdate()">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Total Pledge Amount</label>
-        <input type="number" formControlName="pledgeAmount">
-      </div>
+  <p class="alert alert-danger" role="alert" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="alert alert-success" role="status" *ngIf="successMessage">{{ successMessage }}</p>
 
-      <div class="form-group">
-        <label>Pledge Credit</label>
-        <input type="number" formControlName="pledgeCredit">
-      </div>
+  <section class="reset-account-action" *ngIf="account?.exists">
+    <div>
+      <h2>Reset subscription ledger</h2>
+      <p>Deletes this family's payment and pledge history, then lets you configure it again. Family members remain unchanged.</p>
+    </div>
+    <button type="button" class="btn-reset" [disabled]="saving" (click)="resetAccount()">
+      Reset subscription and payments
+    </button>
+  </section>
 
-      <div class="form-group">
-        <label>Current Pledge Due</label>
-        <input type="number" formControlName="pledgeDue" readonly class="readonly-field">
-      </div>
-
-      <div class="form-group">
-        <label>Last Pledge Due</label>
-        <input type="number" formControlName="lastPledgeDue">
-      </div>
-
-      <div class="form-group">
-        <label>Pledge Start Date</label>
-        <input type="date" formControlName="pledgeStartDate">
-      </div>
-
-      <div class="form-group">
-        <label>Last Deposit Date</label>
-        <input type="date" formControlName="lastPledgeDepositDate">
-      </div>
-
-      <div class="form-group">
-        <label>Last Deposit Amount</label>
-        <input type="number" formControlName="lastPledgeDepositAmount">
+  <section class="setup-panel" *ngIf="account && !account.configured">
+    <div class="section-heading">
+      <div>
+        <h2>{{ account.exists ? 'Bring paper account online' : 'Start a new subscription' }}</h2>
+        <p>{{ account.exists ? 'Enter the account balance from the paper ledger.' : 'Set the monthly pledge and the date the account begins.' }}</p>
       </div>
     </div>
 
-    <div class="action-footer">
-      <button type="button" class="btn-submit-pledge" [disabled]="!subscriptionForm.valid" (click)="deductPledge()">
-        Submit Pledge
-      </button>
-
-      <button type="submit" class="btn-save" [disabled]="!subscriptionForm.valid">
-        Update Details
-      </button>
+    <div class="mode-switch" role="group" aria-label="Subscription setup type">
+      <button type="button" [class.active]="setupMode === 'FRESH'" (click)="selectSetupMode('FRESH')">Fresh subscription</button>
+      <button type="button" [class.active]="setupMode === 'OFFLINE'" (click)="selectSetupMode('OFFLINE')">Import paper balance</button>
     </div>
-  </form>
 
+    <form [formGroup]="setupForm" (ngSubmit)="submitSetup()">
+      <div class="form-grid">
+        <label class="form-group">
+          <span>Monthly pledge amount</span>
+          <input type="number" min="1" step="1" formControlName="monthlyAmount">
+        </label>
+        <label class="form-group">
+          <span>Subscription start date</span>
+          <input type="date" formControlName="pledgeStartDate">
+        </label>
+        <ng-container *ngIf="setupMode === 'OFFLINE'">
+          <label class="form-group">
+            <span>Opening amount due</span>
+            <input type="number" min="0" step="1" formControlName="openingDue">
+          </label>
+          <label class="form-group">
+            <span>Opening credit</span>
+            <input type="number" min="0" step="1" formControlName="openingCredit">
+          </label>
+          <label class="form-group">
+            <span>Balance as of</span>
+            <input type="date" formControlName="asOfDate">
+          </label>
+        </ng-container>
+      </div>
+      <div class="action-footer">
+        <button type="submit" class="btn-save" [disabled]="setupForm.invalid || saving">
+          {{ saving ? 'Saving...' : setupMode === 'OFFLINE' ? 'Import opening balance' : 'Create subscription' }}
+        </button>
+      </div>
+    </form>
+  </section>
 
-  <!-- ── Payment Transactions Table Section ────────────────────────────────── -->
-  <div class="transactions-container">
-    <hr class="divider">
-    <h3>Payment Transaction History</h3>
+  <ng-container *ngIf="account?.configured">
+    <section class="balance-strip" aria-label="Current pledge balance">
+      <div><span>Monthly pledge</span><strong>{{ account?.monthlyAmount | currency:'INR':'symbol':'1.0-0' }}</strong></div>
+      <div><span>Amount due</span><strong>{{ account?.pledgeDue | currency:'INR':'symbol':'1.0-0' }}</strong></div>
+      <div><span>Available credit</span><strong>{{ account?.pledgeCredit | currency:'INR':'symbol':'1.0-0' }}</strong></div>
+      <div><span>Last payment</span><strong>{{ account?.lastDepositDate ? (account?.lastDepositDate | date:'mediumDate') : 'None yet' }}</strong></div>
+    </section>
 
-    <div class="table-responsive">
-      <table class="tx-table">
-        <thead>
-          <tr>
-            <th>Transaction ID</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Action</th> </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let tx of paymentTransactionEntries">
-            <td class="tx-id">{{ tx.transaction_id }}</td>
-            <td>{{ tx.name }}</td>
-            <td>{{ tx.date | date:'mediumDate' }}</td>
-            <td class="tx-amount">{{ tx.amount | currency: "INR" }}</td>
-            <td>
-              <button type="button" class="btn-invoice-sm" (click)="openInvoice()">
-                📄 Invoice
-              </button>
-            </td>
-          </tr>
-          
-          <tr *ngIf="!paymentTransactionEntries || paymentTransactionEntries.length === 0">
-            <td colspan="5" class="empty-state">No payment transactions found.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+    <section class="workflow-grid">
+      <form class="workflow-panel" [formGroup]="termsForm" (ngSubmit)="changeTerms()">
+        <h2>Change pledge amount</h2>
+        <p>Changes take effect at the next monthly billing anniversary.</p>
+        <label class="form-group">
+          <span>New monthly amount</span>
+          <input type="number" min="1" step="1" formControlName="monthlyAmount">
+        </label>
+        <label class="form-group">
+          <span>Requested effective date</span>
+          <input type="date" formControlName="effectiveDate">
+        </label>
+        <button type="submit" class="btn-save" [disabled]="termsForm.invalid || saving">
+          Schedule amount change
+        </button>
+      </form>
+
+      <form class="workflow-panel" [formGroup]="paymentForm" (ngSubmit)="recordPayment()">
+        <h2>Record a payment</h2>
+        <p>Payments must be positive. Overpayments are carried as family credit.</p>
+        <label class="form-group">
+          <span>Deposit amount</span>
+          <input type="number" min="1" step="1" formControlName="amount">
+        </label>
+        <label class="form-group">
+          <span>Payment date</span>
+          <input type="date" formControlName="paymentDate">
+        </label>
+        <button type="submit" class="btn-submit-pledge" [disabled]="paymentForm.invalid || saving">
+          {{ saving ? 'Recording...' : 'Record payment' }}
+        </button>
+      </form>
+    </section>
+
+    <section class="history-panel">
+      <h2>Pledge rate history</h2>
+      <div class="table-responsive">
+        <table class="tx-table">
+          <thead><tr><th>Monthly amount</th><th>Effective from</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let rate of account?.rateHistory">
+              <td>{{ rate.monthlyAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td>{{ rate.effectiveDate | date:'mediumDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="history-panel">
+      <h2>Payment history</h2>
+      <div class="table-responsive">
+        <table class="tx-table">
+          <thead><tr><th>Transaction</th><th>Name</th><th>Date</th><th>Amount</th><th></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let transaction of account?.transactions">
+              <td class="tx-id">{{ transaction.transactionId }}</td>
+              <td>{{ transaction.name }}</td>
+              <td>{{ transaction.date | date:'mediumDate' }}</td>
+              <td class="tx-amount">{{ transaction.amount | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td><button type="button" class="btn-invoice-sm" (click)="openInvoice(transaction.transactionId)">Receipt</button></td>
+            </tr>
+            <tr *ngIf="!account?.transactions?.length">
+              <td colspan="5" class="empty-state">No payments recorded.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </ng-container>
+</main>
+
+<ng-template #loadingState>
+  <main class="pledge-page"><p class="loading-state">Loading pledge account...</p></main>
+</ng-template>

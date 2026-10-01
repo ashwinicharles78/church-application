@@ -1,94 +1,209 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SubscriptionService } from '../subscription.service';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
+interface PledgeRate {
+  monthlyAmount: number;
+  effectiveDate: string;
+}
+
+interface PledgeTransaction {
+  transactionId: string;
+  name: string;
+  date: string;
+  amount: number;
+}
+
+interface PledgeAccount {
+  familyId: string;
+  exists: boolean;
+  configured: boolean;
+  monthlyAmount: number;
+  pledgeStartDate: string | null;
+  pledgeDue: number;
+  pledgeCredit: number;
+  lastDepositDate: string | null;
+  lastDepositAmount: number;
+  recordedTransactionId: string | null;
+  rateHistory: PledgeRate[];
+  transactions: PledgeTransaction[];
+}
 
 @Component({
   selector: 'app-subscription-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './subscription-edit.component.html',
   styleUrl: './subscription-edit.component.css'
 })
 export class SubscriptionEditComponent implements OnInit {
-  subscriptionForm: FormGroup;
-  subscriptionId: string | null = null;
-  // Inside your component class
-  paymentTransactionEntries: any[] = [];
+  private readonly apiUrl = 'http://localhost:8080';
+  familyId = '';
+  account: PledgeAccount | null = null;
+  loading = true;
+  saving = false;
+  errorMessage = '';
+  successMessage = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private http: HttpClient
-  ) {
-    // Initializing form with attributes from your code base
-    this.subscriptionForm = this.fb.group({
-      familyId: [''],
-      pledgeAmount: [0, Validators.required],
-      pledgeCredit: [0],
-      pledgeDue: [0],
-      lastPledgeDue: [0],
-      pledgeStartDate: [''],
-      lastPledgeDepositDate: [''],
-      lastPledgeDepositAmount: [0]
-    });
-  }
+  setupForm = this.fb.group({
+    mode: ['FRESH', Validators.required],
+    monthlyAmount: [0, [Validators.required, Validators.min(1)]],
+    pledgeStartDate: [this.today(), Validators.required],
+    openingDue: [0, [Validators.required, Validators.min(0)]],
+    openingCredit: [0, [Validators.required, Validators.min(0)]],
+    asOfDate: [this.today(), Validators.required]
+  });
+
+  termsForm = this.fb.group({
+    monthlyAmount: [0, [Validators.required, Validators.min(1)]],
+    effectiveDate: [this.today(), Validators.required]
+  });
+
+  paymentForm = this.fb.group({
+    amount: [0, [Validators.required, Validators.min(1)]],
+    paymentDate: [this.today(), Validators.required]
+  });
+
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.subscriptionId = this.route.snapshot.paramMap.get('id');
-    if (this.subscriptionId) {
-      this.loadSubscriptionData();
+    this.familyId = this.route.snapshot.paramMap.get('id') ?? '';
+    this.loadAccount();
+  }
+
+  get setupMode(): string {
+    return this.setupForm.controls.mode.value ?? 'FRESH';
+  }
+
+  selectSetupMode(mode: 'FRESH' | 'OFFLINE'): void {
+    this.setupForm.controls.mode.setValue(mode);
+    if (mode === 'FRESH') {
+      this.setupForm.patchValue({ openingDue: 0, openingCredit: 0 });
     }
   }
 
-  loadSubscriptionData() {
-    this.http.get(`http://localhost:8080/subscription/${this.subscriptionId}`)
-      .subscribe((data: any) => {
-        this.subscriptionForm.patchValue(data);
-        console.log(data);
-        this.paymentTransactionEntries = data.paymentTransactionEntries;
+  loadAccount(): void {
+    this.loading = true;
+    this.errorMessage = '';
+    this.http.get<PledgeAccount>(`${this.apiUrl}/subscription/${this.familyId}`).subscribe({
+      next: account => this.applyAccount(account),
+      error: error => {
+        this.loading = false;
+        this.errorMessage = error.error?.message ?? 'Could not load the pledge account.';
+      }
+    });
+  }
+
+  submitSetup(): void {
+    if (this.setupForm.invalid || this.saving) return;
+    this.submitRequest(this.http.post<PledgeAccount>(
+      `${this.apiUrl}/subscription/${this.familyId}/setup`, this.setupForm.getRawValue()
+    ), 'Pledge account set up successfully.');
+  }
+
+  changeTerms(): void {
+    if (this.termsForm.invalid || this.saving) return;
+    this.submitRequest(this.http.put<PledgeAccount>(
+      `${this.apiUrl}/subscription/${this.familyId}/terms`, this.termsForm.getRawValue()
+    ), 'Pledge rate change scheduled.');
+  }
+
+  recordPayment(): void {
+    if (this.paymentForm.invalid || this.saving) return;
+    this.saving = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.http.post<PledgeAccount>(
+      `${this.apiUrl}/subscription/${this.familyId}/payments`, this.paymentForm.getRawValue()
+    ).subscribe({
+      next: account => {
+        this.applyAccount(account);
+        this.successMessage = 'Payment recorded.';
+        this.paymentForm.patchValue({ amount: 0, paymentDate: this.today() });
+        if (account.recordedTransactionId) this.openInvoice(account.recordedTransactionId);
+      },
+      error: error => {
+        this.saving = false;
+        this.errorMessage = error.error?.message ?? 'Could not record the payment.';
+      }
+    });
+  }
+
+  resetAccount(): void {
+    const confirmation = window.prompt(
+      `This permanently deletes all pledge payments and rate history for ${this.familyId}. Type RESET ${this.familyId} to continue.`
+    );
+    if (confirmation !== `RESET ${this.familyId}`) return;
+
+    this.saving = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.http.post<PledgeAccount>(`${this.apiUrl}/subscription/${this.familyId}/reset`, { confirmation })
+      .subscribe({
+        next: account => {
+          this.applyAccount(account);
+          this.setupForm.patchValue({
+            mode: 'FRESH',
+            monthlyAmount: 0,
+            pledgeStartDate: this.today(),
+            openingDue: 0,
+            openingCredit: 0,
+            asOfDate: this.today()
+          });
+          this.successMessage = 'Pledge account reset. You can now set it up again.';
+        },
+        error: error => {
+          this.saving = false;
+          this.errorMessage = error.error?.message ?? 'Could not reset the pledge account.';
+        }
       });
   }
 
-  onUpdate() {
-    if (this.subscriptionForm.valid) {
-      this.http.put(`http://localhost:8080/subscription/${this.subscriptionId}`, this.subscriptionForm.value)
-        .subscribe(() => alert('Subscription Updated Successfully'));
-        window.location.reload();
-    }
+  openInvoice(transactionId?: string): void {
+    const path = transactionId
+      ? `/invoice/${this.familyId}/transaction/${encodeURIComponent(transactionId)}`
+      : `/invoice/${this.familyId}`;
+    window.open(`${this.apiUrl}${path}`, '_blank', 'noopener');
   }
 
-  goToInvoice() {
-  const id = this.subscriptionId;
-  // This URL now points to the @Controller we just created
-  window.open(`http://localhost:8080/invoice/${id}`, '_blank');
-}
-
-
-  // Helper method to open the Thymeleaf invoice in a new browser tab
-  openInvoice() {
-    // Uses the GET /invoice/{id} endpoint from InvoiceController
-    const invoiceUrl = `http://localhost:8080/invoice/${this.subscriptionId}`;
-    window.open(invoiceUrl, '_blank');
-  }
-
-  // Update your existing deductPledge method
-  deductPledge() {
-    this.http.post(`http://localhost:8080/subscription/pledge/${this.subscriptionId}`, this.subscriptionForm.value).subscribe({
-      next: (updatedSubscription : any) => {
-        console.log('Pledge submitted successfully');
-        
-        // 1. Refresh your local form/data so the UI updates
-        this.subscriptionForm.patchValue(updatedSubscription);
-        this.paymentTransactionEntries = updatedSubscription.paymentTransactionEntries;
-        
-        // 2. Automatically pop open the invoice template in a new tab
-        this.openInvoice();
+  private submitRequest(request: import('rxjs').Observable<PledgeAccount>, message: string): void {
+    this.saving = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+    request.subscribe({
+      next: account => {
+        this.applyAccount(account);
+        this.successMessage = message;
       },
-      error: (err) => console.error('Error submitting pledge', err)
+      error: error => {
+        this.saving = false;
+        this.errorMessage = error.error?.message ?? 'Could not save pledge account changes.';
+      }
     });
+  }
+
+  private applyAccount(account: PledgeAccount): void {
+    this.account = account;
+    this.loading = false;
+    this.saving = false;
+    this.setupForm.patchValue({
+      mode: account.exists ? 'OFFLINE' : 'FRESH',
+      monthlyAmount: account.monthlyAmount || 0,
+      pledgeStartDate: account.pledgeStartDate ?? this.today(),
+      openingDue: account.pledgeDue || 0,
+      openingCredit: account.pledgeCredit || 0,
+      asOfDate: this.today()
+    });
+    this.termsForm.patchValue({ monthlyAmount: account.monthlyAmount || 0, effectiveDate: this.today() });
+    this.paymentForm.patchValue({ amount: 0, paymentDate: this.today() });
+  }
+
+  private today(): string {
+    const date = new Date();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${day}`;
   }
 }

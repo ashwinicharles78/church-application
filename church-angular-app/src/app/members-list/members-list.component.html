@@ -1,17 +1,16 @@
 <div class="ml-shell">
-
-  <!-- Header -->
   <div class="ml-header">
     <div class="ml-title-block">
       <div class="ml-eyebrow">Church Membership Directory</div>
       <h1 class="ml-title">Members</h1>
-      <p class="ml-count">{{ members.length }} registered member{{ members.length !== 1 ? 's' : '' }}</p>
+      <p class="ml-count" *ngIf="!membersLoading && !membersError">{{ members.length }} registered member{{ members.length !== 1 ? 's' : '' }}</p>
+      <p class="ml-count" *ngIf="membersLoading" role="status">Loading member directory...</p>
+      <p class="ml-count ml-count--error" *ngIf="membersError" role="alert">Member directory could not be loaded.</p>
     </div>
-    <button class="ml-add-btn" (click)="addMember()">
+    <button class="ml-add-btn" type="button" (click)="addMember()">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add Member
     </button>
-  
   </div>
 
   <div class="ml-bulk-actions">
@@ -34,77 +33,76 @@
       <span class="ml-save-message" *ngIf="cmcMembershipIdSaveMessage && !cmcMembershipIdSaveMessage.startsWith('Could')">{{ cmcMembershipIdSaveMessage }}</span>
     </div> 
   </div>
-  <!-- Column Headers -->
+
   <div class="ml-col-headers-wrap">
     <div class="ml-col-headers">
-      <div class="ml-col-label">Full Name</div>
+      <div class="ml-col-label">Member</div>
       <div class="ml-col-label">Family ID</div>
-      <div class="ml-col-label">Date of Birth</div>
-      <div class="ml-col-label">Relations</div>
-      <div class="ml-col-label">CMC Membership ID</div>
+      <div class="ml-col-label">Birth date</div>
+      <div class="ml-col-label">Family connections</div>
+      <div class="ml-col-label">CMC ID</div>
     </div>
-    <div class="ml-col-actions"></div>
+    <div class="ml-col-actions">Actions</div>
   </div>
 
-  <!-- List -->
   <div class="ml-list">
+    <div class="ml-empty" *ngIf="membersLoading" role="status">
+      <p>Loading member directory...</p>
+    </div>
 
-    <!-- Empty state (show when members is empty) -->
-    <div class="ml-empty" *ngIf="members.length === 0">
+    <div class="ml-empty ml-empty--error" *ngIf="membersError" role="alert">
+      <h3>Directory unavailable</h3>
+      <p>Members could not be loaded. Please try again later.</p>
+    </div>
+
+    <div class="ml-empty" *ngIf="!membersLoading && !membersError && members.length === 0">
       <div class="ml-empty-icon">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
       <h3>No members yet</h3>
-      <p>Click "Add Member" to register the first member.</p>
+      <p>Register the first person in the church directory.</p>
+      <button class="ml-empty-action" type="button" (click)="addMember()">Add first member</button>
     </div>
 
-    <!-- Member rows -->
-    <div class="ml-card" *ngFor="let member of members">
+    <article class="ml-card" *ngFor="let member of members">
       <div class="ml-card-inner">
-
-        <!-- Full Name + status -->
         <div class="ml-cell-name">
           <div class="ml-avatar">
-            {{ (member.firstName[0] || '') }}{{ (member.lastName[0] || '') }}
-          </div>
-          <div class="ml-avatar">
-            {{ member.membershipId }}
+            {{ (member.firstName || '').charAt(0) }}{{ (member.lastName || '').charAt(0) }}
           </div>
           <div class="ml-name-stack">
-            <div class="ml-full-name">
+            <div class="ml-full-name" [title]="(member.title ? member.title + ' ' : '') + member.firstName + ' ' + member.lastName">
               {{ member.title ? member.title + ' ' : '' }}{{ member.firstName }} {{ member.lastName }}
             </div>
+            <span class="ml-member-id">Member #{{ member.membershipId }}</span>
             <span class="ml-status-badge" [ngClass]="member.status === 'Active' ? 'badge-active' : 'badge-inactive'">
               {{ member.status || 'Unknown' }}
             </span>
           </div>
         </div>
 
-        <!-- Family ID -->
         <div class="ml-cell-fid">
-          <div class="ml-fid-label">Family ID</div>
-          <input 
-            type="text" 
-            [value]="member.familyId || ''" 
+          <span class="ml-mobile-label">Family ID</span>
+          <input
+            class="ml-edit-input"
+            type="text"
+            [attr.aria-label]="'Family ID for ' + member.firstName + ' ' + member.lastName"
+            [value]="member.familyId || ''"
             (input)="onFamilyIdInput(member.membershipId, $event)"
-            style="width: 100px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-size: 14px;"
             placeholder="Enter ID"
-            [ngStyle]="{
-              'border-color': editedFamilyIds.has(member.membershipId) ? '#28a745' : '#ccc',
-              'background-color': editedFamilyIds.has(member.membershipId) ? '#f0fff0' : 'transparent'
-            }"
+            [class.is-edited]="editedFamilyIds.has(member.membershipId)"
           >
           <div class="ml-field-error" *ngIf="familyIdErrors.get(member.membershipId)">{{ familyIdErrors.get(member.membershipId) }}</div>
         </div>
 
-        <!-- Date of Birth -->
         <div class="ml-cell-dob">
+          <span class="ml-mobile-label">Birth date</span>
           <div class="ml-dob-date">{{ member.dob || '—' }}</div>
           <div class="ml-dob-age" *ngIf="member.age">Age {{ member.age }}</div>
         </div>
 
-        <!-- Father / Spouse -->
         <div class="ml-cell-rel">
+          <span class="ml-mobile-label">Family connections</span>
           <div class="ml-rel-row" *ngIf="member.fatherName">
             <span class="ml-rel-tag">Father</span>
             <span class="ml-rel-name">{{ member.fatherName }}</span>
@@ -116,44 +114,32 @@
           <span class="ml-na" *ngIf="!member.fatherName && !member.spouseName">—</span>
         </div>
 
-        <!-- Pledge -->
         <div class="ml-cell-pledge">
-          <!-- <ng-container *ngIf="member.pledgeNumber; else noPledge">
-            <div class="ml-pledge-num">#{{ member.pledgeNumber || '—' }}</div>
-          </ng-container>
-          <ng-template #noPledge>
-            <span class="ml-pledge-nil">No pledge</span>
-          </ng-template> -->
-          <input 
-            type="text" 
-            [value]="member.cmcmembershipId || ''" 
+          <span class="ml-mobile-label">CMC ID</span>
+          <input
+            class="ml-edit-input"
+            type="text"
+            [attr.aria-label]="'CMC membership ID for ' + member.firstName + ' ' + member.lastName"
+            [value]="member.cmcmembershipId || ''"
             (input)="onCmcMembershipIdInput(member.membershipId, $event)"
-            style="width: 100px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-size: 14px;"
             placeholder="Enter ID"
-            [ngStyle]="{
-              'border-color': editedCmcMembershipIds.has(member.membershipId) ? '#28a745' : '#ccc',
-              'background-color': editedCmcMembershipIds.has(member.membershipId) ? '#f0fff0' : 'transparent'
-            }"
+            [class.is-edited]="editedCmcMembershipIds.has(member.membershipId)"
           >
           <div class="ml-field-error" *ngIf="cmcMembershipIdErrors.get(member.membershipId)">{{ cmcMembershipIdErrors.get(member.membershipId) }}</div>
         </div>
-        
-
       </div>
 
-      <!-- Row Actions -->
-      <div class="ml-actions">
-        <button class="btn btn-sm btn-outline-secondary" (click)="previewMember(member.membershipId)">Preview</button>
-        <button class="btn btn-sm btn-outline-success" (click)="openFamilyTree(member.familyId)" [disabled]="!member.familyId" title="Open this member's family tree">Tree</button>
-        <button class="btn btn-sm btn-outline-primary" (click)="editMember(member.membershipId)">Edit</button>
-        <button class="btn btn-sm btn-outline-danger" (click)="confirmDelete(member)">Delete</button>
+      <div class="ml-actions" [attr.aria-label]="'Actions for ' + member.firstName + ' ' + member.lastName">
+        <button type="button" class="ml-action-btn" (click)="previewMember(member.membershipId)">Preview</button>
+        <button type="button" class="ml-action-btn" (click)="openFamilyTree(member.familyId)" [disabled]="!member.familyId" title="Open this member's family tree">Tree</button>
+        <button type="button" class="ml-action-btn ml-action-btn--edit" (click)="editMember(member.membershipId)">Edit</button>
+        <button type="button" class="ml-action-btn ml-action-btn--delete" (click)="confirmDelete(member)">Delete</button>
       </div>
-    </div>
+    </article>
 
   </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div class="ml-overlay" *ngIf="memberToDelete" (click)="cancelDelete()">
   <div class="ml-modal" (click)="$event.stopPropagation()">
     <div class="ml-modal-icon">

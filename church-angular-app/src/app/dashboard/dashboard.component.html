@@ -1,0 +1,87 @@
+<div class="dashboard-page">
+  <section class="dashboard-intro" aria-labelledby="dashboard-title">
+    <div class="intro-copy">
+      <p class="eyebrow">Central Methodist Church</p>
+      <h1 id="dashboard-title">Church overview</h1>
+      <p class="intro-description">A clear view of the people and moments that bring our community together.</p>
+    </div>
+    <a class="primary-action" routerLink="/members">
+      Open member directory
+    </a>
+  </section>
+
+  <section class="overview-section" aria-label="Membership overview">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Your community</p>
+        <h2>Membership at a glance</h2>
+      </div>
+      <a class="text-link" routerLink="/members">View all members <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="stat-grid">
+      <article class="stat-item stat-item--total">
+        <span class="stat-label">Registered members</span>
+        <strong *ngIf="!membersLoading && !membersError">{{ members.length }}</strong>
+        <span class="stat-state" *ngIf="membersLoading" aria-label="Loading member count">Loading</span>
+        <span class="stat-state stat-state--error" *ngIf="membersError">Unavailable</span>
+        <span class="stat-note">Across the directory</span>
+      </article>
+      <article class="stat-item stat-item--active">
+        <span class="stat-label">Active members</span>
+        <strong *ngIf="!membersLoading && !membersError">{{ activeMemberCount }}</strong>
+        <span class="stat-state" *ngIf="membersLoading" aria-label="Loading active member count">Loading</span>
+        <span class="stat-state stat-state--error" *ngIf="membersError">Unavailable</span>
+        <span class="stat-note">Marked active</span>
+      </article>
+      <article class="stat-item stat-item--events">
+        <span class="stat-label">Coming up</span>
+        <strong *ngIf="!eventsLoading && !eventsError">{{ events.length }}</strong>
+        <span class="stat-state" *ngIf="eventsLoading" aria-label="Loading upcoming events">Loading</span>
+        <span class="stat-state stat-state--error" *ngIf="eventsError">Unavailable</span>
+        <span class="stat-note">Birthdays and anniversaries this week</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="dashboard-lower" aria-label="Upcoming events and church tools">
+    <div class="events-section">
+      <div class="section-heading section-heading--compact">
+        <div>
+          <p class="eyebrow">The next seven days</p>
+          <h2>Upcoming moments</h2>
+        </div>
+        <div class="events-heading-actions">
+          <button class="print-events-button" type="button" (click)="printUpcomingEvents()" [disabled]="eventsLoading || eventsError" aria-label="Print upcoming events">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/><path d="M18 11h.01"/></svg>
+            <span>Print</span>
+          </button>
+          <a class="text-link all-events-link" routerLink="/events">All events <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <p class="inline-state" *ngIf="eventsLoading" role="status">Loading upcoming events...</p>
+      <p class="inline-state inline-state--error" *ngIf="eventsError" role="alert">Upcoming events could not be loaded.</p>
+      <p class="inline-state" *ngIf="!eventsLoading && !eventsError && events.length === 0">No birthdays or anniversaries in the next seven days.</p>
+
+      <ul class="event-list" *ngIf="!eventsLoading && !eventsError && events.length">
+        <li class="event-row" *ngFor="let event of events">
+          <span class="event-date">{{ event.date | date:'MMM d' }}</span>
+          <span class="event-mark" aria-hidden="true">{{ event.eventType.toLowerCase().includes('birthday') ? 'B' : 'A' }}</span>
+          <span class="event-person">
+            <strong>{{ event.memberName || 'Church member' }}</strong>
+            <span>{{ event.eventType || 'Upcoming occasion' }}</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <nav class="tools-section" aria-label="Church tools">
+      <p class="eyebrow">Quick access</p>
+      <h2>Church tools</h2>
+      <a class="tool-link" routerLink="/tree"><span class="tool-icon" aria-hidden="true">01</span><span><strong>Family tree</strong><small>Explore family connections</small></span><span class="tool-arrow" aria-hidden="true">→</span></a>
+      <a class="tool-link" routerLink="/inventory"><span class="tool-icon" aria-hidden="true">02</span><span><strong>Inventory</strong><small>View church equipment and supplies</small></span><span class="tool-arrow" aria-hidden="true">→</span></a>
+      <a class="tool-link" routerLink="/add"><span class="tool-icon" aria-hidden="true">03</span><span><strong>Add a member</strong><small>Register someone in the directory</small></span><span class="tool-arrow" aria-hidden="true">→</span></a>
+    </nav>
+  </section>
+</div>

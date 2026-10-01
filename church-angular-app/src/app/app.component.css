@@ -1,65 +1,31 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
+:host { display: block; min-height: 100vh; color: #24221f; font-family: 'DM Sans', 'Segoe UI', sans-serif; }
 
-header {
-    background-color: red;
-    color: white;
-    padding: 1em 0;
-}
-
-.header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1em;
-}
-
-.logo {
-    height: 80px;
-    width: 50px;
-    background-color: white;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
-
-nav li {
-    margin-left: 20px;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 1em;
-}
-
-nav a:hover {
-    text-decoration: underline;
-}
-
-main {
-    background-color: white;
-    padding: 2em;
-    min-height: 60vh;
-}
-
-footer {
-    background-color: red;
-    color: white;
-    text-align: center;
-    padding: 1em 0;
-}
+header { color: #fff; background: #982830; border-bottom: 4px solid #c28d43; }
+.header-container { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1440px; min-height: 82px; margin: 0 auto; padding: 10px clamp(18px, 5vw, 72px); }
+.brand { display: inline-flex; align-items: center; gap: 11px; flex-shrink: 0; color: #fff; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 15px; line-height: 1.05; text-decoration: none; }
+.brand strong { font-size: 20px; font-weight: 600; }
+.logo { display: block; width: 44px; height: 58px; object-fit: contain; background: #fffefa; }
+nav ul { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
+nav li { margin: 0; }
+nav a { display: block; padding: 10px 12px; border-bottom: 2px solid transparent; color: rgba(255, 255, 255, 0.88); font-size: 12px; font-weight: 600; text-decoration: none; transition: background-color 150ms ease, color 150ms ease; }
+nav a:hover, nav a.active { color: #fff; background: rgba(255, 255, 255, 0.1); }
+nav a.active { border-bottom-color: #e5c68d; }
+nav a:focus-visible, .brand:focus-visible { outline: 3px solid #f1d7a6; outline-offset: 3px; }
+main { min-height: calc(100vh - 144px); background: #f7f6f2; }
+footer { padding: 16px 20px; color: #e9e2d8; background: #24221f; text-align: center; }
+footer p { margin: 0; font-size: 11px; letter-spacing: 0.03em; }
+footer span { padding: 0 6px; color: #d0a65d; }
 
 @media print {
   header div nav ul {
     display: none !important;
   }
+}
+
+@media (max-width: 720px) {
+  .header-container { align-items: flex-start; flex-direction: column; gap: 8px; padding-top: 12px; padding-bottom: 9px; }
+  .logo { width: 34px; height: 42px; }
+  nav { width: 100%; overflow-x: auto; }
+  nav ul { width: max-content; flex-wrap: nowrap; }
+  nav a { padding: 9px 11px; }
 }

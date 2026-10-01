@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,12 +20,12 @@ public class FamilySubscriptions {
 
     // 1. Changed List to Set to prevent duplicate references in memory
     // 2. mappedBy corresponds to the 'familySubscription' field in FamilyMember
-    @OneToMany(mappedBy = "familySubscription", orphanRemoval = true)
+    @OneToMany(mappedBy = "familySubscription")
     @JsonManagedReference("subscription-members")
     private Set<FamilyMember> members = new HashSet<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<PaymentTransactionEntry> paymentTransactionEntries;
+    private List<PaymentTransactionEntry> paymentTransactionEntries = new ArrayList<>();
     private String headMemberId;
     private long pledgeAmount;
     private long pledgeCredit;

@@ -8,12 +8,13 @@ import { Member } from '../memeber';
   selector: 'app-members-list',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './members-list.component.html',
-  styleUrl: './members-list.component.css'
+  templateUrl: './members-list.component.html'
 })
 export class MembersListComponent {
 
   members: Member[] = [];
+  membersLoading = true;
+  membersError = false;
   memberToDelete: any;
   isDeleting: boolean | undefined;
   editedFamilyIds = new Map<number, string>();
@@ -31,7 +32,16 @@ export class MembersListComponent {
 
 ngOnInit() {
   this.http.get<Member[]>("http://localhost:8080/all-members")
-    .subscribe((data) => this.members = data);
+    .subscribe({
+      next: (data) => {
+        this.members = data;
+        this.membersLoading = false;
+      },
+      error: () => {
+        this.membersError = true;
+        this.membersLoading = false;
+      }
+    });
 }
 
   editMember(memberId: any) {
