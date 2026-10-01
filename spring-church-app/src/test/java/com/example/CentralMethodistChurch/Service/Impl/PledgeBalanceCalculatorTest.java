@@ -50,6 +50,18 @@ class PledgeBalanceCalculatorTest {
     }
 
     @Test
+    void appliesPaymentsMadeOnTheOpeningBalanceDate() {
+        var opening = opening(1_000, 0, LocalDate.of(2026, 1, 15));
+        var payment = payment(500, LocalDate.of(2026, 1, 15));
+        var rate = rate(100, LocalDate.of(2026, 1, 15));
+
+        var balance = PledgeBalanceCalculator.calculate(
+                LocalDate.of(2026, 1, 15), opening, List.of(rate), List.of(payment), LocalDate.of(2026, 1, 15));
+
+        assertEquals(new PledgeBalanceCalculator.Balance(500, 0), balance);
+    }
+
+    @Test
     void carriesOverpaymentAsCreditAndAppliesItToFutureDues() {
         var opening = opening(100, 0, LocalDate.of(2026, 1, 15));
         var payment = payment(250, LocalDate.of(2026, 1, 20));

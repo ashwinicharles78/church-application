@@ -34,7 +34,7 @@ public final class PledgeBalanceCalculator {
 
         List<PaymentTransactionEntry> orderedPayments = payments.stream()
                 .filter(payment -> payment.getDate() != null
-                        && payment.getDate().isAfter(baselineDate)
+                && !payment.getDate().isBefore(baselineDate)
                         && !payment.getDate().isAfter(asOfDate)
                         && payment.getAmount() > 0L)
                 .sorted(Comparator.comparing(PaymentTransactionEntry::getDate))
