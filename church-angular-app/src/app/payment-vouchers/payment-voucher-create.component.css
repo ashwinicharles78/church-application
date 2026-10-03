@@ -1,0 +1,23 @@
+.voucher-page { max-width: 1040px; margin: 0 auto; padding: 36px 24px 64px; color: #292923; }
+.voucher-page-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding-bottom: 18px; border-bottom: 1px solid #d9d5cf; }
+.voucher-page-header h1 { margin: 0; font: 600 34px/1.1 'Cormorant Garamond', Georgia, serif; }
+.voucher-eyebrow { margin: 0 0 5px; color: #a52b32; font: 700 11px 'DM Sans', sans-serif; text-transform: uppercase; }
+.voucher-back-link { color: #a52b32; font-size: 13px; font-weight: 700; }
+.voucher-form { margin-top: 24px; }
+.voucher-form-section { padding: 23px 0; border-bottom: 1px solid #dedbd4; }
+.voucher-form-section h2 { margin: 0 0 18px; font: 600 23px 'Cormorant Garamond', Georgia, serif; }
+.voucher-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
+.voucher-form-grid label { display: grid; gap: 6px; min-width: 0; color: #504d46; font-size: 12px; font-weight: 700; }
+.voucher-form-grid input, .voucher-form-grid select, .voucher-form-grid output { width: 100%; min-height: 42px; box-sizing: border-box; border: 1px solid #cbc7bf; border-radius: 3px; padding: 9px 11px; color: #292923; background: #fff; font: 14px 'DM Sans', 'Segoe UI', sans-serif; }
+.voucher-form-grid output { display: flex; align-items: center; background: #f3f1eb; font-weight: 700; }
+.span-two { grid-column: span 2; }
+.voucher-form-actions { display: flex; justify-content: flex-end; padding-top: 22px; }
+.voucher-button { border: 1px solid #292923; border-radius: 3px; padding: 10px 15px; cursor: pointer; font: 700 13px 'DM Sans', sans-serif; }
+.voucher-button--primary { color: white; background: #292923; }
+.voucher-button--primary:hover { background: #a52b32; border-color: #a52b32; }
+.voucher-button:disabled { opacity: .5; cursor: not-allowed; }
+.voucher-validation, .voucher-alert--error { color: #a52b32; font-size: 13px; }
+.voucher-success { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 18px; padding: 15px 17px; border-left: 3px solid #38634f; background: #edf2ee; }
+.voucher-success div { display: flex; flex-direction: column; gap: 4px; }
+.voucher-success span { color: #555b55; font-size: 13px; }
+@media (max-width: 600px) { .voucher-page { padding: 24px 17px 44px; } .voucher-page-header { align-items: flex-start; flex-direction: column; } .voucher-form-grid { grid-template-columns: 1fr; } .span-two { grid-column: auto; } .voucher-success { align-items: flex-start; flex-direction: column; } }

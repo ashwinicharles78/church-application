@@ -1,0 +1,39 @@
+<main class="voucher-page">
+  <header class="voucher-page-header">
+    <div><p class="voucher-eyebrow">Outgoing payments</p><h1>Payment vouchers</h1></div>
+    <a class="voucher-button voucher-button--primary" routerLink="/payment-vouchers/new">Create voucher</a>
+  </header>
+
+  <form class="voucher-search" (ngSubmit)="search()">
+    <label for="voucher-serial-search">Search by serial number</label>
+    <input id="voucher-serial-search" name="serialNumber" type="search" [(ngModel)]="serialNumber" placeholder="PV-2026-000001">
+    <button class="voucher-button" type="submit" [disabled]="loading">Search</button>
+    <button class="voucher-clear" type="button" *ngIf="searched" (click)="clearSearch()">Show all</button>
+  </form>
+
+  <p class="voucher-state" *ngIf="loading" role="status">Loading payment vouchers...</p>
+  <p class="voucher-state voucher-state--error" *ngIf="!loading && errorMessage" role="alert">{{ errorMessage }}</p>
+  <p class="voucher-state" *ngIf="!loading && searched && !errorMessage && vouchers.length === 0">No voucher found with that serial number.</p>
+  <p class="voucher-state" *ngIf="!loading && !searched && !errorMessage && vouchers.length === 0">No payment vouchers have been created.</p>
+
+  <div class="voucher-table-wrap" *ngIf="!loading && vouchers.length">
+    <table class="voucher-table">
+      <thead><tr><th>Serial number</th><th>Voucher date</th><th>Payee</th><th>Purpose</th><th class="amount-cell">Net amount</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let voucher of vouchers">
+          <td class="voucher-serial">{{ voucher.serialNumber }}</td>
+          <td>{{ voucher.voucherDate | date:'mediumDate' }}</td>
+          <td>{{ voucher.payee }}</td>
+          <td>{{ voucher.purpose }}</td>
+          <td class="amount-cell">{{ voucher.netAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+          <td><a class="voucher-print-link" [href]="voucherService.printUrl(voucher.serialNumber)" target="_blank" rel="noopener">Print</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="voucher-pagination" *ngIf="!loading && !searched && totalElements > 0">
+    <span>{{ totalElements }} voucher{{ totalElements === 1 ? '' : 's' }} · Page {{ page + 1 }} of {{ totalPages }}</span>
+    <div><button type="button" class="voucher-button" (click)="previous()" [disabled]="page === 0">Previous</button><button type="button" class="voucher-button" (click)="next()" [disabled]="page + 1 >= totalPages">Next</button></div>
+  </footer>
+</main>

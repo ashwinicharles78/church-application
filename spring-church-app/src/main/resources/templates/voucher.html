@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="|Payment Voucher ${voucher.serialNumber}|">Payment Voucher</title>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; }
+        body { color: #111; background: #e7d3dc; font: 11px/1.25 "Times New Roman", serif; }
+        .voucher { position: relative; width: 148mm; height: 210mm; margin: 18px auto; padding: 6mm 7mm 5mm; overflow: hidden; background: #f3e6ec; box-shadow: 0 4px 24px #2929232b; }
+        .voucher-header { display: grid; grid-template-columns: 18mm 1fr; gap: 3mm; min-height: 22mm; align-items: center; }
+        .logo-box { display: grid; width: 17mm; height: 18mm; place-items: center; }
+        .logo-box img { display: block; max-width: 17mm; max-height: 18mm; object-fit: contain; }
+        .church-name { margin: 0; font: 900 22px/1 "Arial Narrow", "Liberation Sans Narrow", Arial, sans-serif; }
+        .church-denomination { margin: 2px 0 3px; font: 700 9px "Times New Roman", serif; font-variant: small-caps; letter-spacing: .8px; }
+        .church-address { margin: 0; font: 8px/1.2 Arial, sans-serif; }
+        .title-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; align-items: end; gap: 3mm; margin: 2mm 0 1.5mm; }
+        .serial-date { display: flex; align-items: baseline; gap: 2mm; white-space: nowrap; }
+        .serial-date--right { justify-content: flex-end; }
+        .title { margin: 0; text-align: center; font: bold 15px/1.1 "Times New Roman", serif; text-decoration: underline; }
+        .field { display: inline-flex; min-width: 10mm; min-height: 4mm; flex: 1; align-items: flex-end; padding: 0 1mm 1px; border-bottom: 1px dotted #000; outline: none; }
+        .field:focus { background: #fff9fc; }
+        .section-title { margin: 1mm 0 1.4mm; text-align: center; font-weight: bold; line-height: 1.05; }
+        .section-title strong { display: block; font-size: 12px; }
+        .section-title span { display: block; font-size: 10px; }
+        .part-one { display: grid; gap: 2.2mm; }
+        .form-row { display: flex; min-height: 5mm; align-items: end; gap: 1.4mm; white-space: nowrap; }
+        .form-row .field { min-width: 8mm; }
+        .words-row .field { min-width: 20mm; }
+        .short-field { flex: 0 0 23mm !important; }
+        .approval-row { justify-content: space-between; align-items: center; }
+        .approval-signature { display: flex; width: 37mm; min-height: 11mm; flex-direction: column; justify-content: space-between; align-items: center; font-weight: bold; text-align: center; }
+        .approval-signature .signature-label { align-self: flex-end; }
+        .part-two-heading { margin: 3mm 0 1.5mm; padding-top: 1.5mm; border-top: 1px solid #111; text-align: center; font-weight: bold; font-size: 12px; }
+        .part-two { display: grid; height: 70mm; grid-template-columns: 1fr 1fr; border-top: 1px solid #111; }
+        .column { position: relative; display: flex; min-width: 0; flex-direction: column; gap: 2.1mm; padding: 2mm 2.2mm 1mm; }
+        .column + .column { border-left: 1px solid #111; }
+        .column h2 { margin: 0 0 .5mm; text-align: center; font-size: 11px; }
+        .caps { text-align: center; font-size: 9px; font-weight: bold; }
+        .column-row { display: flex; min-height: 5mm; align-items: end; gap: 1.2mm; }
+        .column-row .field { min-width: 7mm; }
+        .dual-row { display: flex; align-items: end; gap: 2mm; }
+        .dual-item { display: flex; min-width: 0; flex: 1; align-items: end; gap: 1mm; white-space: nowrap; }
+        .hint { margin: -1.5mm 0 0; text-align: center; font-size: 9px; }
+        .receipt-long { margin-top: 1mm; }
+        .receipt-date-row { margin-top: 2mm; align-items: flex-start; min-height: 13mm; }
+        .receipt-sign { width: 29mm; flex: 0 0 29mm; font-weight: bold; text-align: center; white-space: normal; }
+        .receipt-sign .signature-space { display: block; height: 7mm; }
+        .bottom-row { display: flex; align-items: end; justify-content: space-between; gap: 2mm; margin-top: auto; }
+        .bottom-row .field { min-width: 10mm; }
+        .bottom-label { font-weight: bold; white-space: nowrap; }
+        .screen-actions { position: absolute; top: 4mm; right: 5mm; }
+        .screen-actions button { border: 1px solid #111; border-radius: 2px; padding: 5px 10px; background: #fff; cursor: pointer; font-weight: bold; }
+        @page { size: 148mm 210mm; margin: 0; }
+        @media print {
+            html, body { width: 148mm; height: 210mm; background: #fff; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .voucher { width: 148mm; height: 210mm; margin: 0; box-shadow: none; page-break-after: avoid; break-after: avoid; }
+            .screen-actions { display: none !important; }
+            .field { background: transparent !important; }
+        }
+        @media screen and (max-width: 520px) {
+            .voucher { transform-origin: top left; margin: 8px 0; }
+        }
+    </style>
+</head>
+<body>
+<main class="voucher">
+    <div class="screen-actions"><button type="button" onclick="window.print()">Print</button></div>
+    <header class="voucher-header">
+        <div class="logo-box"><img src="/images/methodist-emblem.png" alt="Methodist Church cross and flame emblem"></div>
+        <div>
+            <h1 class="church-name">Central Methodist Church</h1>
+            <p class="church-denomination">THE METHODIST CHURCH IN INDIA</p>
+            <p class="church-address">Nr. Nehru Park, 'E' Road, Bakat Sagar Scheme, Sardarpura, Jodhpur&nbsp; ☎️ 0291-2620071</p>
+        </div>
+    </header>
+
+    <section class="title-row">
+        <div class="serial-date">S.No. <span class="field" contenteditable="true" th:text="${voucher.serialNumber}"></span></div>
+        <h2 class="title">PAYMENT VOUCHER</h2>
+        <div class="serial-date serial-date--right">Date : <span class="field" contenteditable="true" th:text="${#temporals.format(voucher.voucherDate, 'dd/MM/yyyy')}"></span></div>
+    </section>
+
+    <div class="section-title"><strong>PART - I</strong><span>APPROVAL</span></div>
+    <section class="part-one">
+        <div class="form-row">Approval is hereby accorded for payment of Rs. <span class="field" contenteditable="true" th:text="${voucher.approvedAmount}"></span></div>
+        <div class="form-row words-row">Rupees <span class="field" contenteditable="true" th:text="${voucher.amountInWords}"></span> only) towards expenditure</div>
+        <div class="form-row">in the connection with <span class="field" contenteditable="true" th:text="${voucher.purpose}"></span></div>
+        <div class="form-row">Payment to be made to <span class="field" contenteditable="true" th:text="${voucher.payee}"></span></div>
+        <div class="form-row approval-row"><span class="serial-date">Bill No <span class="field short-field" contenteditable="true" th:text="${voucher.billNumber}"></span></span><span class="approval-signature"><span class="signature-label">Signature</span><span></span></span></div>
+        <div class="form-row approval-row"><span class="serial-date">Date <span class="field short-field" contenteditable="true" th:text="${voucher.billDate == null ? '' : #temporals.format(voucher.billDate, 'dd/MM/yyyy')}"></span></span><span class="approval-signature">Pastor / Treasurer</span></div>
+    </section>
+
+    <div class="part-two-heading">PART - II</div>
+    <section class="part-two">
+        <div class="column">
+            <h2>PAYMENT</h2>
+            <div class="caps">PAID BY <span th:text="${voucher.paymentMethod}">CASH/CHEQUE</span></div>
+            <div class="dual-row">
+                <span class="dual-item">No. <span class="field" contenteditable="true" th:text="${voucher.paymentReferenceNumber}"></span></span>
+                <span class="dual-item">Date. <span class="field" contenteditable="true" th:text="${voucher.paymentReferenceDate == null ? '' : #temporals.format(voucher.paymentReferenceDate, 'dd/MM/yyyy')}"></span></span>
+            </div>
+            <p class="hint">(as per details below)</p>
+            <div class="column-row">Total Amount of bills Rs. <span class="field" contenteditable="true" th:text="${voucher.totalBillsAmount}"></span></div>
+            <div class="column-row">Less Advance Rs.: <span class="field" contenteditable="true" th:text="${voucher.advanceAmount}"></span></div>
+            <div class="column-row"><strong>Net Amount Rs.:</strong> <span class="field" contenteditable="true" th:text="${voucher.netAmount}"></span></div>
+            <div class="bottom-row"><span class="dual-item">Date : <span class="field" contenteditable="true" th:text="${#temporals.format(voucher.paymentDate, 'dd/MM/yyyy')}"></span></span><span class="bottom-label">Treasurer</span></div>
+        </div>
+        <div class="column">
+            <h2>RECEIPT</h2>
+            <div class="column-row">RECEIVED <span th:text="${voucher.receiptMethod == null ? 'CASH/CHEQUE' : voucher.receiptMethod}">CASH/CHEQUE</span> No. <span class="field" contenteditable="true" th:text="${voucher.receiptReferenceNumber}"></span></div>
+            <div class="dual-row receipt-long">
+                <span class="dual-item"><span class="field" contenteditable="true"></span></span>
+                <span class="dual-item">Dated <span class="field" contenteditable="true" th:text="${voucher.receiptDate == null ? '' : #temporals.format(voucher.receiptDate, 'dd/MM/yyyy')}"></span></span>
+            </div>
+            <div class="column-row">for Rs. <span class="field" contenteditable="true" th:text="${voucher.receiptAmount == null ? voucher.netAmount : voucher.receiptAmount}"></span> in full</div>
+            <div>clearance of bills under referance.</div>
+            <div class="dual-row receipt-date-row"><span class="dual-item">Date : <span class="field" contenteditable="true" th:text="${voucher.receiptDate == null ? '' : #temporals.format(voucher.receiptDate, 'dd/MM/yyyy')}"></span></span><span class="receipt-sign"><span class="signature-space"></span>Signature of Receipent</span></div>
+            <div class="bottom-row"><span class="bottom-label">Paid by</span><span class="field" contenteditable="true" th:text="${voucher.paidBy}"></span></div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

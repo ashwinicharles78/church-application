@@ -8,6 +8,8 @@ import { AddPersonComponent } from './add-person/add-person.component';
 import { PreviewMemberComponent } from './preview-member-component/preview-member-component.component';
 import { SubscriptionEditComponent } from './subscription-edit/subscription-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { PaymentVoucherCreateComponent } from './payment-vouchers/payment-voucher-create.component';
+import { PaymentVoucherListComponent } from './payment-vouchers/payment-voucher-list.component';
 
 
 export const routes: Routes = [
@@ -23,5 +25,7 @@ export const routes: Routes = [
     { path: 'add', component: AddPersonComponent},
     { path: 'family-tree', component: FamilyTreeComponent},
     { path: 'subscription/:id', component:SubscriptionEditComponent},
+    { path: 'payment-vouchers/new', component: PaymentVoucherCreateComponent },
+    { path: 'payment-vouchers', component: PaymentVoucherListComponent },
     { path: '**', redirectTo: '' }
 ];

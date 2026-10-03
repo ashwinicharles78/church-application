@@ -1,0 +1,61 @@
+<main class="voucher-page">
+  <header class="voucher-page-header">
+    <div>
+      <p class="voucher-eyebrow">Outgoing payments</p>
+      <h1>Create payment voucher</h1>
+    </div>
+    <a class="voucher-back-link" routerLink="/payment-vouchers">All vouchers</a>
+  </header>
+
+  <p class="voucher-alert voucher-alert--error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+  <section class="voucher-success" *ngIf="createdVoucher as voucher" role="status">
+    <div><strong>Voucher {{ voucher.serialNumber }} saved.</strong><span>Net amount: {{ voucher.netAmount | currency:'INR':'symbol':'1.0-0' }}</span></div>
+    <button type="button" class="voucher-button voucher-button--primary" (click)="printVoucher()">Print voucher</button>
+  </section>
+
+  <form class="voucher-form" [formGroup]="form" (ngSubmit)="submit()">
+    <section class="voucher-form-section">
+      <h2>Approval</h2>
+      <div class="voucher-form-grid">
+        <label><span>Date</span><input type="date" formControlName="voucherDate"></label>
+        <label><span>Approval amount (Rs.)</span><input type="number" min="0" step="1" formControlName="approvedAmount"></label>
+        <label class="span-two"><span>Amount in words</span><input type="text" maxlength="500" formControlName="amountInWords"></label>
+        <label class="span-two"><span>Purpose / connection</span><input type="text" maxlength="500" formControlName="purpose"></label>
+        <label class="span-two"><span>Payment to</span><input type="text" maxlength="255" formControlName="payee"></label>
+        <label><span>Bill number</span><input type="text" formControlName="billNumber"></label>
+        <label><span>Bill date</span><input type="date" formControlName="billDate"></label>
+      </div>
+    </section>
+
+    <section class="voucher-form-section">
+      <h2>Payment</h2>
+      <div class="voucher-form-grid">
+        <label><span>Paid by</span><select formControlName="paymentMethod"><option value="CASH">Cash</option><option value="CHEQUE">Cheque</option></select></label>
+        <label><span>Cheque number</span><input type="text" formControlName="paymentReferenceNumber"></label>
+        <label><span>Cheque date</span><input type="date" formControlName="paymentReferenceDate"></label>
+        <label><span>Payment date</span><input type="date" formControlName="paymentDate"></label>
+        <label><span>Total amount of bills (Rs.)</span><input type="number" min="0" step="1" formControlName="totalBillsAmount"></label>
+        <label><span>Less advance (Rs.)</span><input type="number" min="0" step="1" formControlName="advanceAmount"></label>
+        <label><span>Net amount (Rs.)</span><output>{{ netAmount | currency:'INR':'symbol':'1.0-0' }}</output></label>
+      </div>
+      <p class="voucher-validation" *ngIf="form.controls.advanceAmount.value > form.controls.totalBillsAmount.value">Advance cannot exceed total amount of bills.</p>
+    </section>
+
+    <section class="voucher-form-section">
+      <h2>Receipt</h2>
+      <div class="voucher-form-grid">
+        <label><span>Received by</span><select formControlName="receiptMethod"><option value="">Not recorded</option><option value="CASH">Cash</option><option value="CHEQUE">Cheque</option></select></label>
+        <label><span>Receipt cheque number</span><input type="text" formControlName="receiptReferenceNumber"></label>
+        <label><span>Receipt date</span><input type="date" formControlName="receiptDate"></label>
+        <label><span>Receipt amount (Rs.)</span><input type="number" min="0" step="1" formControlName="receiptAmount"></label>
+        <label class="span-two"><span>Paid by</span><input type="text" formControlName="paidBy"></label>
+      </div>
+    </section>
+
+    <div class="voucher-form-actions">
+      <button type="submit" class="voucher-button voucher-button--primary" [disabled]="form.invalid || saving || form.controls.advanceAmount.value > form.controls.totalBillsAmount.value">
+        {{ saving ? 'Saving...' : 'Save voucher' }}
+      </button>
+    </div>
+  </form>
+</main>

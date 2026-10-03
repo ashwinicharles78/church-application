@@ -44,6 +44,39 @@
     </div>
   </section>
 
+  <section class="vouchers-section" aria-labelledby="vouchers-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Outgoing payments</p>
+        <h2 id="vouchers-title">Payment vouchers</h2>
+      </div>
+      <div class="voucher-heading-actions">
+        <a class="text-link" routerLink="/payment-vouchers">Show all vouchers <span aria-hidden="true">→</span></a>
+        <a class="primary-action voucher-create-action" routerLink="/payment-vouchers/new">Create voucher</a>
+      </div>
+    </div>
+
+    <p class="inline-state" *ngIf="vouchersLoading" role="status">Loading recent vouchers...</p>
+    <p class="inline-state inline-state--error" *ngIf="vouchersError" role="alert">Payment vouchers could not be loaded.</p>
+    <p class="inline-state" *ngIf="!vouchersLoading && !vouchersError && recentVouchers.length === 0">No payment vouchers have been created.</p>
+
+    <div class="voucher-table-wrap" *ngIf="!vouchersLoading && !vouchersError && recentVouchers.length">
+      <table class="voucher-table">
+        <thead><tr><th>Serial number</th><th>Date</th><th>Payee</th><th>Purpose</th><th class="amount-cell">Net amount</th><th></th></tr></thead>
+        <tbody>
+          <tr *ngFor="let voucher of recentVouchers">
+            <td class="voucher-serial">{{ voucher.serialNumber }}</td>
+            <td>{{ voucher.voucherDate | date:'mediumDate' }}</td>
+            <td>{{ voucher.payee }}</td>
+            <td>{{ voucher.purpose }}</td>
+            <td class="amount-cell">{{ voucher.netAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+            <td><a class="voucher-print-link" [href]="voucherService.printUrl(voucher.serialNumber)" target="_blank" rel="noopener">Print</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="dashboard-lower" aria-label="Upcoming events and church tools">
     <div class="events-section">
       <div class="section-heading section-heading--compact">

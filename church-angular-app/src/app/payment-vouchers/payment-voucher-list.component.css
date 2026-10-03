@@ -1,0 +1,25 @@
+.voucher-page { max-width: 1120px; margin: 0 auto; padding: 36px 24px 64px; color: #292923; }
+.voucher-page-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding-bottom: 18px; border-bottom: 1px solid #d9d5cf; }
+.voucher-page-header h1 { margin: 0; font: 600 34px/1.1 'Cormorant Garamond', Georgia, serif; }
+.voucher-eyebrow { margin: 0 0 5px; color: #a52b32; font: 700 11px 'DM Sans', sans-serif; text-transform: uppercase; }
+.voucher-search { display: flex; align-items: center; gap: 10px; margin: 22px 0; }
+.voucher-search label { color: #504d46; font-size: 12px; font-weight: 700; }
+.voucher-search input { width: min(340px, 100%); min-height: 40px; border: 1px solid #cbc7bf; border-radius: 3px; padding: 8px 10px; font: 14px 'DM Sans', sans-serif; }
+.voucher-button { border: 1px solid #292923; border-radius: 3px; padding: 9px 13px; color: #292923; background: white; cursor: pointer; font: 700 12px 'DM Sans', sans-serif; text-decoration: none; white-space: nowrap; }
+.voucher-button--primary { color: white; background: #292923; }
+.voucher-button:hover:not(:disabled) { color: white; background: #a52b32; border-color: #a52b32; }
+.voucher-button:disabled { opacity: .45; cursor: not-allowed; }
+.voucher-clear { border: 0; color: #a52b32; background: none; cursor: pointer; font: 700 12px 'DM Sans', sans-serif; }
+.voucher-table-wrap { width: 100%; overflow-x: auto; }
+.voucher-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.voucher-table th, .voucher-table td { padding: 12px 10px; border-bottom: 1px solid #dedbd4; text-align: left; vertical-align: top; }
+.voucher-table th { color: #6f6b64; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+.voucher-table td { max-width: 300px; overflow-wrap: anywhere; }
+.voucher-table .amount-cell { text-align: right; white-space: nowrap; }
+.voucher-serial { color: #a52b32; font-weight: 700; white-space: nowrap; }
+.voucher-print-link { color: #38634f; font-weight: 700; }
+.voucher-state { padding: 24px 0; color: #6f6b64; font-size: 13px; }
+.voucher-state--error { color: #a52b32; }
+.voucher-pagination { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 18px; color: #6f6b64; font-size: 12px; }
+.voucher-pagination div { display: flex; gap: 8px; }
+@media (max-width: 650px) { .voucher-page { padding: 24px 17px 44px; } .voucher-page-header { align-items: flex-start; flex-direction: column; } .voucher-search { align-items: stretch; flex-wrap: wrap; } .voucher-search label { width: 100%; } .voucher-search input { flex: 1 1 180px; } .voucher-pagination { align-items: flex-start; flex-direction: column; } }
